@@ -57,6 +57,6 @@ public class GuildSettingsManager implements Manager {
 
     @Override
     public void startDatabaseCleaner() {
-
+        //TODO databaseCleaner
     }
 }
