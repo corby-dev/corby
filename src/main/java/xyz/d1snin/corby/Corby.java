@@ -49,7 +49,7 @@ public class Corby {
         } catch (InterruptedException e) {
             Logger.log(LoggingTypes.ERROR, "Cant connect to discord.");
         }
-        startUpdatePresence(true);
+        startUpdatePresence();
     }
 
     public static void start() throws LoginException, InterruptedException {
@@ -78,13 +78,13 @@ public class Corby {
         API.awaitReady();
         System.out.println(
                 "\n" +
-                "   ██████╗ ██████╗ ██████╗ ██████╗ ██╗   ██╗  \n" +
-                "  ██╔════╝██╔═══██╗██╔══██╗██╔══██╗╚██╗ ██╔╝  \n" +
-                "  ██║     ██║   ██║██████╔╝██████╔╝ ╚████╔╝   \n" +
-                "  ██║     ██║   ██║██╔══██╗██╔══██╗  ╚██╔╝    \n" +
-                "  ╚██████╗╚██████╔╝██║  ██║██████╔╝   ██║     \n" +
-                "   ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝    ╚═╝       "
-                + "\n"
+                        "   ██████╗ ██████╗ ██████╗ ██████╗ ██╗   ██╗  \n" +
+                        "  ██╔════╝██╔═══██╗██╔══██╗██╔══██╗╚██╗ ██╔╝  \n" +
+                        "  ██║     ██║   ██║██████╔╝██████╔╝ ╚████╔╝   \n" +
+                        "  ██║     ██║   ██║██╔══██╗██╔══██╗  ╚██╔╝    \n" +
+                        "  ╚██████╗╚██████╔╝██║  ██║██████╔╝   ██║     \n" +
+                        "   ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝    ╚═╝       "
+                        + "\n"
         );
 
         BOT_PFP_URL = API.getSelfUser().getAvatarUrl();
@@ -99,29 +99,16 @@ public class Corby {
                 "~ Ping:        " + API.getGatewayPing());
     }
 
-    private static void startUpdatePresence(boolean randomize) {
-        if (randomize) {
-            new Thread(() -> {
-                while (true) {
-                    switch (new Random().nextInt(3)) {
-                        case 1:
-                            API.getPresence().setActivity(Activity.watching("'help | Ping: " + API.getGatewayPing()));
-                        case 2:
-                            API.getPresence().setActivity(Activity.watching("                 (__) \n" +
-                                    "                 (oo) \n" +
-                                    "           /------\\/ \n" +
-                                    "          / |    ||   \n" +
-                                    "         *  /\\---/\\ \n" +
-                                    "            ~~   ~~   \n" +
-                                    "...\"Have you mooed today?\"..."));
-                        try {
-                            Thread.sleep(10000);
-                        } catch (InterruptedException ignored) {
-                        }
-                    }
+    private static void startUpdatePresence() {
+        new Thread(() -> {
+            while (true) {
+                API.getPresence().setActivity(Activity.watching("'help | Ping: " + API.getGatewayPing()));
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException ignored) {
                 }
-            }).start();
-        }
+            }
+        }).start();
     }
 
     public static void shutdown() {
@@ -139,7 +126,8 @@ public class Corby {
         API.shutdown();
         try {
             start();
-        } catch (LoginException | InterruptedException ignored) {}
+        } catch (LoginException | InterruptedException ignored) {
+        }
     }
 
     public static int NORMAL_SHUTDOWN_EXIT_CODE = 0;
