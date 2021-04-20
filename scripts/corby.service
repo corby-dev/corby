@@ -1,3 +1,5 @@
+[Unit]
+Description=Start corby
 [Service]
 WorkingDirectory=/root/
 ExecStart=/root/corby/scripts/start.sh
