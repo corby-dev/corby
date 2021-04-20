@@ -5,13 +5,11 @@ import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.utils.Embeds;
 
-import java.util.Arrays;
-
 public class ShutdownCommand extends Command {
 
     public ShutdownCommand() {
         this.admincommand = true;
-        this.aliases = Arrays.asList("shut", "shutdown", "bye", "goodnight", "term");
+        this.aliases = "shut, shutdown, bye, goodnight, terminate";
     }
 
     @Override

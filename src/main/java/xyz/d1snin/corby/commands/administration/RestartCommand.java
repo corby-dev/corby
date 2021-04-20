@@ -5,13 +5,11 @@ import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.utils.Embeds;
 
-import java.util.Arrays;
-
 public class RestartCommand extends Command {
 
     public RestartCommand() {
         this.admincommand = true;
-        this.aliases = Arrays.asList("reload", "reboot", "restart");
+        this.aliases = "reload, reboot, restart";
     }
 
     @Override

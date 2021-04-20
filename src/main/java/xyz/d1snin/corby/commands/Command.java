@@ -10,15 +10,13 @@ import xyz.d1snin.corby.database.managers.GuildSettingsManager;
 import xyz.d1snin.corby.utils.ColorUtil;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.EnumSet;
-import java.util.List;
 
 public abstract class Command extends ListenerAdapter {
 
     protected abstract void execute(MessageReceivedEvent e, String[] args);
 
-    protected List<String> aliases = Collections.singletonList("null");
+    protected String aliases = "null";
     protected Permission[] permissions = new Permission[0];
     protected boolean admincommand = false;
 
@@ -69,7 +67,7 @@ public abstract class Command extends ListenerAdapter {
     }
 
     private boolean isCommand(Message message, MessageReceivedEvent event) {
-        for (String alias : aliases) {
+        for (String alias : aliases.split(", ")) {
             if (Arrays.asList(getCommandArgs(message)).contains(GuildSettingsManager.getGuildPrefix(event.getGuild()) + alias))
                 return true;
         }

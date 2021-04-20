@@ -5,12 +5,10 @@ import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.utils.Embeds;
 
-import java.util.Arrays;
-
 public class PingCommand extends Command {
 
     public PingCommand() {
-        this.aliases = Arrays.asList("ping", "hello?");
+        this.aliases = "ping";
     }
 
     @Override

@@ -6,12 +6,10 @@ import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.GuildSettingsManager;
 import xyz.d1snin.corby.utils.Embeds;
 
-import java.util.Collections;
-
 public class PrefixCommand extends Command {
 
     public PrefixCommand() {
-        this.aliases = Collections.singletonList("prefix");
+        this.aliases = "prefix";
         this.permissions = new Permission[] {
                 Permission.ADMINISTRATOR
         };

@@ -7,12 +7,10 @@ import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.utils.Embeds;
 
-import java.util.Collections;
-
 public class WhoisCommand extends Command {
 
     public WhoisCommand() {
-        this.aliases = Collections.singletonList("whois");
+        this.aliases = "whois";
     }
 
     @Override
