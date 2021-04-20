@@ -107,7 +107,7 @@ public class Corby {
                         case 1:
                             API.getPresence().setActivity(Activity.watching("'help | Ping: " + API.getGatewayPing()));
                         case 2:
-                            API.getPresence().setActivity(Activity.watching("'help | Invite me in your Discord server! " + INVITE_URL));
+                            API.getPresence().setActivity(Activity.watching("'help | Invite me! " + INVITE_URL));
                         case 3:
                             API.getPresence().setActivity(Activity.watching("                 (__) \n" +
                                     "                 (oo) \n" +
