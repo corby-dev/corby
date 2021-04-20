@@ -114,6 +114,7 @@ public class Corby {
         Database.close();
         System.out.println("       <----------------------------->       ");
         API.shutdown();
+        System.exit(NORMAL_SHUTDOWN_EXIT_CODE);
     }
 
     public static void restart() {

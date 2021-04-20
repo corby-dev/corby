@@ -16,7 +16,7 @@ public class ShutdownCommand extends Command {
 
     @Override
     protected void execute(MessageReceivedEvent e, String[] args) {
-        e.getTextChannel().sendMessage(Embeds.createDefaultEmbed(e, "Terminating... Bye!")).queue();
+        e.getTextChannel().sendMessage(Embeds.createDefaultEmbed(e, "Terminating... Bye!")).complete();
         Corby.shutdown();
     }
 }
