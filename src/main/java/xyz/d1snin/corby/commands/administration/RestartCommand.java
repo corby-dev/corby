@@ -19,7 +19,6 @@ public class RestartCommand extends Command {
         if (args.length > 1) {
             if (args[1].equals("server")) {
                 e.getTextChannel().sendMessage(Embeds.createDefaultEmbed(e, "Restarting server...")).complete();
-                Corby.shutdown();
                 try {
                     Runtime.getRuntime().exec("systemctl reboot");
                 } catch (IOException ioException) {
