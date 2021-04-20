@@ -20,6 +20,7 @@ import xyz.d1snin.corby.utils.logging.Logger;
 import xyz.d1snin.corby.utils.logging.LoggingTypes;
 
 import javax.security.auth.login.LoginException;
+import java.util.Random;
 
 public class Corby {
 
@@ -48,7 +49,7 @@ public class Corby {
         } catch (InterruptedException e) {
             Logger.log(LoggingTypes.ERROR, "Cant connect to discord.");
         }
-        startUpdatePresence();
+        startUpdatePresence(true);
     }
 
     public static void start() throws LoginException, InterruptedException {
@@ -98,15 +99,31 @@ public class Corby {
                 "~ Ping:        " + API.getGatewayPing());
     }
 
-    private static void startUpdatePresence() {
-        new Thread(() -> {
-            while (true) {
-                API.getPresence().setActivity(Activity.watching("'help | Ping: " + API.getGatewayPing()));
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException ignored) {}
-            }
-        }).start();
+    private static void startUpdatePresence(boolean randomize) {
+        if (randomize) {
+            new Thread(() -> {
+                while (true) {
+                    switch (new Random().nextInt(4)) {
+                        case 1:
+                            API.getPresence().setActivity(Activity.watching("'help | Ping: " + API.getGatewayPing()));
+                        case 2:
+                            API.getPresence().setActivity(Activity.watching("'help | Invite me in your Discord server! " + INVITE_URL));
+                        case 3:
+                            API.getPresence().setActivity(Activity.watching("                 (__) \n" +
+                                    "                 (oo) \n" +
+                                    "           /------\\/ \n" +
+                                    "          / |    ||   \n" +
+                                    "         *  /\\---/\\ \n" +
+                                    "            ~~   ~~   \n" +
+                                    "...\"Have you mooed today?\"..."));
+                        try {
+                            Thread.sleep(10000);
+                        } catch (InterruptedException ignored) {
+                        }
+                    }
+                }
+            }).start();
+        }
     }
 
     public static void shutdown() {
