@@ -7,9 +7,11 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import xyz.d1snin.corby.commands.administration.RestartCommand;
 import xyz.d1snin.corby.commands.administration.ShutdownCommand;
 import xyz.d1snin.corby.commands.misc.PingCommand;
-import xyz.d1snin.corby.commands.moderation.PrefixCommand;
+import xyz.d1snin.corby.commands.misc.WhoisCommand;
+import xyz.d1snin.corby.commands.settings.PrefixCommand;
 import xyz.d1snin.corby.database.Database;
 import xyz.d1snin.corby.database.DatabasePreparedStatements;
 import xyz.d1snin.corby.manager.ConfigFileManager;
@@ -66,18 +68,22 @@ public class Corby {
         jdaBuilder.addEventListeners(
                 new PingCommand(),
                 new PrefixCommand(),
-                new ShutdownCommand()
+                new ShutdownCommand(),
+                new WhoisCommand(),
+                new RestartCommand()
         );
 
         API = jdaBuilder.build();
         API.awaitReady();
         System.out.println(
+                "\n" +
                 "   ██████╗ ██████╗ ██████╗ ██████╗ ██╗   ██╗  \n" +
                 "  ██╔════╝██╔═══██╗██╔══██╗██╔══██╗╚██╗ ██╔╝  \n" +
                 "  ██║     ██║   ██║██████╔╝██████╔╝ ╚████╔╝   \n" +
                 "  ██║     ██║   ██║██╔══██╗██╔══██╗  ╚██╔╝    \n" +
                 "  ╚██████╗╚██████╔╝██║  ██║██████╔╝   ██║     \n" +
                 "   ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝    ╚═╝       "
+                + "\n"
         );
 
         BOT_PFP_URL = API.getSelfUser().getAvatarUrl();
@@ -104,9 +110,21 @@ public class Corby {
     }
 
     public static void shutdown() {
+        Logger.log(LoggingTypes.INFO, "Terminating... Bye!");
         Database.close();
-        API.shutdownNow();
+        System.out.println("       <----------------------------->       ");
+        API.shutdown();
         System.exit(NORMAL_SHUTDOWN_EXIT_CODE);
+    }
+
+    public static void restart() {
+        Logger.log(LoggingTypes.INFO, "Restarting...");
+        Database.close();
+        System.out.println("       <----------------------------->       ");
+        API.shutdown();
+        try {
+            start();
+        } catch (LoginException | InterruptedException ignored) {}
     }
 
     public static int NORMAL_SHUTDOWN_EXIT_CODE = 0;

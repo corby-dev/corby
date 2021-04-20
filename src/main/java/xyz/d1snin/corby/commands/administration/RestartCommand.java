@@ -7,16 +7,16 @@ import xyz.d1snin.corby.utils.Embeds;
 
 import java.util.Arrays;
 
-public class ShutdownCommand extends Command {
+public class RestartCommand extends Command {
 
-    public ShutdownCommand() {
+    public RestartCommand() {
         this.admincommand = true;
-        this.aliases = Arrays.asList("shut", "shutdown", "bye", "goodnight", "term");
+        this.aliases = Arrays.asList("reload", "reboot", "restart");
     }
 
     @Override
     protected void execute(MessageReceivedEvent e, String[] args) {
-        e.getTextChannel().sendMessage(Embeds.createDefaultEmbed(e, "Terminating... Bye!")).queue();
-        Corby.shutdown();
+        e.getTextChannel().sendMessage(Embeds.createDefaultEmbed(e, "Restarting...")).queue();
+        Corby.restart();
     }
 }

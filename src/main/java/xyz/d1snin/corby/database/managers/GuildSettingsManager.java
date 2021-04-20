@@ -7,7 +7,7 @@ import xyz.d1snin.corby.database.DatabasePreparedStatements;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class GuildSettingsManager implements Manager {
+public class GuildSettingsManager {
     public static void setGuildPrefix(Guild guild, String prefix) {
         try {
             if (!isDatabaseContainsPrefix(guild)) {
@@ -53,10 +53,5 @@ public class GuildSettingsManager implements Manager {
             e.printStackTrace();
         }
         return false;
-    }
-
-    @Override
-    public void startDatabaseCleaner() {
-        //TODO databaseCleaner
     }
 }
