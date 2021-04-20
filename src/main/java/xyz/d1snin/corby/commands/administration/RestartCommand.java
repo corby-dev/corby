@@ -21,7 +21,7 @@ public class RestartCommand extends Command {
                 e.getTextChannel().sendMessage(Embeds.createDefaultEmbed(e, "Restarting server...")).complete();
                 Corby.shutdown();
                 try {
-                    Runtime.getRuntime().exec("reboot");
+                    Runtime.getRuntime().exec("systemctl reboot");
                 } catch (IOException ioException) {
                     ioException.printStackTrace();
                 }
