@@ -103,12 +103,10 @@ public class Corby {
         if (randomize) {
             new Thread(() -> {
                 while (true) {
-                    switch (new Random().nextInt(4)) {
+                    switch (new Random().nextInt(3)) {
                         case 1:
                             API.getPresence().setActivity(Activity.watching("'help | Ping: " + API.getGatewayPing()));
                         case 2:
-                            API.getPresence().setActivity(Activity.watching("'help | Invite me! " + INVITE_URL));
-                        case 3:
                             API.getPresence().setActivity(Activity.watching("                 (__) \n" +
                                     "                 (oo) \n" +
                                     "           /------\\/ \n" +
