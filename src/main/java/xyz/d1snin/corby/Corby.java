@@ -77,14 +77,12 @@ public class Corby {
         API = jdaBuilder.build();
         API.awaitReady();
         System.out.println(
-                "\n" +
-                        "   ██████╗ ██████╗ ██████╗ ██████╗ ██╗   ██╗  \n" +
+                 "\n" + "   ██████╗ ██████╗ ██████╗ ██████╗ ██╗   ██╗  \n" +
                         "  ██╔════╝██╔═══██╗██╔══██╗██╔══██╗╚██╗ ██╔╝  \n" +
                         "  ██║     ██║   ██║██████╔╝██████╔╝ ╚████╔╝   \n" +
                         "  ██║     ██║   ██║██╔══██╗██╔══██╗  ╚██╔╝    \n" +
                         "  ╚██████╗╚██████╔╝██║  ██║██████╔╝   ██║     \n" +
-                        "   ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝    ╚═╝       "
-                        + "\n"
+                        "   ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝    ╚═╝       " + "\n"
         );
 
         BOT_PFP_URL = API.getSelfUser().getAvatarUrl();
@@ -114,7 +112,6 @@ public class Corby {
     public static void shutdown() {
         Logger.log(LoggingTypes.INFO, "Terminating... Bye!");
         Database.close();
-        System.out.println("       <----------------------------->       ");
         API.shutdown();
         System.exit(NORMAL_SHUTDOWN_EXIT_CODE);
     }
@@ -122,7 +119,6 @@ public class Corby {
     public static void restart() {
         Logger.log(LoggingTypes.INFO, "Restarting...");
         Database.close();
-        System.out.println("       <----------------------------->       ");
         API.shutdown();
         try {
             start();
