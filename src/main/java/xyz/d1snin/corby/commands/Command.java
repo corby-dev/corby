@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.managers.GuildSettingsManager;
-import xyz.d1snin.corby.utils.ColorUtil;
 import xyz.d1snin.corby.utils.Embeds;
 
 import java.util.Arrays;

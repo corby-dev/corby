@@ -21,6 +21,7 @@ import xyz.d1snin.corby.manager.ConfigFileManager;
 import xyz.d1snin.corby.utils.JSONUtils;
 
 import javax.security.auth.login.LoginException;
+import java.awt.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -40,6 +41,9 @@ public class Corby {
     public static String ID;
     public static String TOKEN;
     public static String NAME_AS_TAG;
+
+    public static Color DEFAULT_COLOR = new Color(74, 129, 248);
+    public static Color ERROR_COLOR = Color.RED;
 
     public static int NORMAL_SHUTDOWN_EXIT_CODE = 0;
     public static int CANT_CONNECT_TO_THE_DATABASE = 11;

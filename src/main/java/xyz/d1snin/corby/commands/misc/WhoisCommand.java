@@ -27,7 +27,9 @@ public class WhoisCommand extends Command {
         Member member = e.getMessage().getMentionedMembers().isEmpty() ? e.getGuild().getMemberById(args[1]) : e.getMessage().getMentionedMembers().get(0);
 
         //!
+        assert user != null;
         e.getTextChannel().sendMessage(user.getAsTag()).queue();
+        assert member != null;
         e.getTextChannel().sendMessage(member.getAsMention()).queue();
     }
 }
