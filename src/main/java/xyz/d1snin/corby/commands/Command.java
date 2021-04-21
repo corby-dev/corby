@@ -8,9 +8,11 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.managers.GuildSettingsManager;
 import xyz.d1snin.corby.utils.ColorUtil;
+import xyz.d1snin.corby.utils.Embeds;
 
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.Objects;
 
 public abstract class Command extends ListenerAdapter {
 
@@ -42,7 +44,26 @@ public abstract class Command extends ListenerAdapter {
                 return;
             }
 
-            execute(e, getCommandArgs(msg));
+            try {
+                execute(e, getCommandArgs(msg));
+            } catch (Exception exception) {
+                e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, "**An exception was caught while executing a command.**"
+                        + "\n\n**Caused by:**\n`"
+                        + (exception.getCause() == null ? "No reason given." : exception.getCause())
+                        + "`\n\n**Message:**\n`"
+                        + exception.getClass().getName() + ": " + exception.getMessage()
+                        + "`\n\nAll necessary information has been sent to the owner! You can delete this message with the button below.")).queue(
+                        (message -> message.addReaction(Corby.EMOTE_TRASH).queue())
+                );
+                Corby.getAPI().openPrivateChannelById(Corby.OWNER_ID).complete().sendMessage(Embeds.createDefaultEmbed(e, "**An exception was thrown while trying to execute a command.**"
+                + "\n\n**User message:**\n`"
+                + e.getMessage().getContentRaw()
+                + "`\n\n**Exception message:**\n`"
+                + exception.getClass().getName() + ": " + exception.getMessage()
+                + "`\n\n**Caused by:**\n`"
+                + (exception.getCause() == null ? "No reason given." : exception.getCause()) + "`")).queue();
+            }
+
         }
     }
 
@@ -51,11 +72,9 @@ public abstract class Command extends ListenerAdapter {
 
         if (permissions.length == 0) return true;
 
-        EnumSet<Permission> permissions = event.getMember().getPermissions();
+        EnumSet<Permission> userPermissions = Objects.requireNonNull(event.getMember()).getPermissions();
 
-        if (permissions.containsAll(Arrays.asList(this.permissions))) return true;
-
-        return false;
+        return userPermissions.containsAll(Arrays.asList(this.permissions));
     }
 
     private String getPermissionString() {

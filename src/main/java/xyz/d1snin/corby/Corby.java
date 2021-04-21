@@ -7,6 +7,8 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import xyz.d1snin.corby.commands.administration.RestartCommand;
 import xyz.d1snin.corby.commands.administration.ShutdownCommand;
 import xyz.d1snin.corby.commands.misc.PingCommand;
@@ -14,13 +16,15 @@ import xyz.d1snin.corby.commands.misc.WhoisCommand;
 import xyz.d1snin.corby.commands.settings.PrefixCommand;
 import xyz.d1snin.corby.database.Database;
 import xyz.d1snin.corby.database.DatabasePreparedStatements;
+import xyz.d1snin.corby.event.ReactionUpdateEvent;
 import xyz.d1snin.corby.manager.ConfigFileManager;
 import xyz.d1snin.corby.utils.JSONUtils;
-import xyz.d1snin.corby.utils.logging.Logger;
-import xyz.d1snin.corby.utils.logging.LoggingTypes;
 
 import javax.security.auth.login.LoginException;
-import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Corby {
 
@@ -37,36 +41,48 @@ public class Corby {
     public static String TOKEN;
     public static String NAME_AS_TAG;
 
+    public static int NORMAL_SHUTDOWN_EXIT_CODE = 0;
+    public static int CANT_CONNECT_TO_THE_DATABASE = 11;
+    public static int BAD_TOKEN = 21;
+
+    public static String EMOTE_TRASH = "\uD83D\uDDD1";
+
+    public static final Logger logger = LoggerFactory.getLogger(BOT_NAME);
+
+    private static final ExecutorService service = Executors.newCachedThreadPool();
+    private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
     public static void main(String[] args) {
         try {
             ConfigFileManager.createConfigFile(CONFIG_FILE_NAME);
             TOKEN = JSONUtils.readJSON(CONFIG_FILE_NAME, "token");
-            Logger.log(LoggingTypes.LOADER, "Starting...");
+            logger.info("Starting...");
             start();
         } catch (LoginException e) {
-            Logger.log(LoggingTypes.ERROR, "Your bot token is invalid.");
+            logger.error("Your bot token is invalid.");
             System.exit(BAD_TOKEN);
         } catch (InterruptedException e) {
-            Logger.log(LoggingTypes.ERROR, "Cant connect to discord.");
+            logger.error("Cant connect to discord.");
         }
         startUpdatePresence();
     }
 
     public static void start() throws LoginException, InterruptedException {
-        Logger.log(LoggingTypes.DATABASE, "Trying to connect to the database...");
+        logger.info("Trying to connect to the database...");
         Database.createConnection();
-        Logger.log(LoggingTypes.DATABASE, "Loading prepared database statements...");
+        logger.info("Loading prepared database statements...");
         DatabasePreparedStatements.loadAllPreparedStatements();
 
         JDABuilder jdaBuilder = JDABuilder.createDefault(TOKEN);
 
-        jdaBuilder.enableIntents(GatewayIntent.GUILD_PRESENCES);
+        jdaBuilder.enableIntents(GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGE_REACTIONS);
         jdaBuilder.enableCache(CacheFlag.CLIENT_STATUS, CacheFlag.VOICE_STATE, CacheFlag.ACTIVITY);
         jdaBuilder.setEnableShutdownHook(true);
-
         jdaBuilder.setStatus(OnlineStatus.IDLE);
 
         jdaBuilder.addEventListeners(
+                new ReactionUpdateEvent(),
+
                 new PingCommand(),
                 new PrefixCommand(),
                 new ShutdownCommand(),
@@ -90,34 +106,28 @@ public class Corby {
         ID = API.getSelfUser().getId();
         NAME_AS_TAG = API.getSelfUser().getAsTag();
 
-        Logger.log(LoggingTypes.LOADER, "Bot has started up!\n   " +
+        logger.info("Bot has started up!\n   " +
                 "~ Name:        " + NAME_AS_TAG + "\n   " +
                 "~ ID:          " + ID + "\n   " +
                 "~ Invite URL:  " + INVITE_URL + "\n   " +
-                "~ Ping:        " + API.getGatewayPing());
+                "~ Ping:        " + API.getGatewayPing() + "\n");
     }
 
     private static void startUpdatePresence() {
-        new Thread(() -> {
-            while (true) {
-                API.getPresence().setActivity(Activity.watching("'help | Ping: " + API.getGatewayPing()));
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException ignored) {
-                }
-            }
-        }).start();
+        scheduler.scheduleWithFixedDelay(() -> API.getPresence().setActivity(Activity.watching("'help | Ping: " + API.getGatewayPing())), 0, 10, TimeUnit.SECONDS);
     }
 
     public static void shutdown() {
-        Logger.log(LoggingTypes.INFO, "Terminating... Bye!");
+        logger.warn("Terminating... Bye!");
         Database.close();
         API.shutdown();
+        getService().shutdown();
+        scheduler.shutdown();
         System.exit(NORMAL_SHUTDOWN_EXIT_CODE);
     }
 
     public static void restart() {
-        Logger.log(LoggingTypes.INFO, "Restarting...");
+        logger.warn("Restarting...");
         Database.close();
         API.shutdown();
         try {
@@ -126,13 +136,11 @@ public class Corby {
         }
     }
 
-    public static int NORMAL_SHUTDOWN_EXIT_CODE = 0;
-
-    public static int CANT_CONNECT_TO_THE_DATABASE = 11;
-
-    public static int BAD_TOKEN = 21;
-
     public static JDA getAPI() {
         return API;
+    }
+
+    public static ExecutorService getService() {
+        return service;
     }
 }

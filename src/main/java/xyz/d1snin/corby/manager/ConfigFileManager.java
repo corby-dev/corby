@@ -1,7 +1,6 @@
 package xyz.d1snin.corby.manager;
 
-import xyz.d1snin.corby.utils.logging.Logger;
-import xyz.d1snin.corby.utils.logging.LoggingTypes;
+import xyz.d1snin.corby.Corby;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,10 +10,10 @@ public class ConfigFileManager {
         try {
             File file = new File(fileName);
             if (file.createNewFile()) {
-                Logger.log(LoggingTypes.LOADER, "File created: " + file.getName() + ", please edit the generated file using the bot token.");
+                Corby.logger.warn("File created: " + file.getName() + ", please edit the generated file using the bot token.");
                 System.exit(0);
             } else {
-                Logger.log(LoggingTypes.LOADER, "Founded " + fileName);
+                Corby.logger.info("Founded " + fileName);
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,7 +1,6 @@
 package xyz.d1snin.corby.database;
 
-import xyz.d1snin.corby.utils.logging.Logger;
-import xyz.d1snin.corby.utils.logging.LoggingTypes;
+import xyz.d1snin.corby.Corby;
 
 import java.sql.*;
 
@@ -20,7 +19,7 @@ public class DatabasePreparedStatements {
             psGetGuildPrefix = connection.prepareStatement("SELECT prefix FROM guildprefix WHERE guildid = ?;");
             psCheckGuildPrefixContains = connection.prepareStatement("SELECT 1 FROM guildprefix WHERE guildid = ?;");
         } catch (SQLException e) {
-            Logger.log(LoggingTypes.ERROR, "Error while trying to load all prepared statements of the database. Stacktrace:");
+            Corby.logger.error("Error while trying to load all prepared statements of the database. Stacktrace:");
             e.printStackTrace();
         }
     }
@@ -31,15 +30,15 @@ public class DatabasePreparedStatements {
             psSetGuildPrefixUpdate.close();
             psGetGuildPrefix.close();
             psCheckGuildPrefixContains.close();
-            Logger.log(LoggingTypes.DATABASE, "Successfully closed all prepared statements.");
+            Corby.logger.warn("Successfully closed all prepared statements.");
         } catch (SQLException e) {
-            Logger.log(LoggingTypes.ERROR, "Something went wrong while trying to close all prepared statements. Stacktrace:");
+            Corby.logger.error("Something went wrong while trying to close all prepared statements. Stacktrace:");
             e.printStackTrace();
         }
     }
 
     public static void printSQLError(SQLException e) {
-        Logger.log(LoggingTypes.ERROR, "Error while trying to execute prepared statement. Stacktrace:");
+        Corby.logger.error("Error while trying to execute prepared statement. Stacktrace:");
         e.printStackTrace();
     }
 }
