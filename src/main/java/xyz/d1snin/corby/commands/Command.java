@@ -30,9 +30,9 @@ public abstract class Command extends ListenerAdapter {
         }
 
         if (isCommand(msg, e)) {
-            if (!hasPermission(e)) {
+            if (!hasPermission(e)) { //TODO: send this from template
                 e.getTextChannel().sendMessage(new EmbedBuilder()
-                        .setColor(ColorUtil.getErrorColor())
+                        .setColor(Corby.ERROR_COLOR)
                         .setDescription("You must have permissions `" + getPermissionString() + "` to use this command.")
                         .setFooter(e.getAuthor().getName(), e.getAuthor().getEffectiveAvatarUrl())
                         .build()).queue();
