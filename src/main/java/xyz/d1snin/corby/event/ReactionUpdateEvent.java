@@ -17,7 +17,9 @@ public class ReactionUpdateEvent extends ListenerAdapter {
 
             if (event.getReaction().getReactionEmote().getName().equals(Corby.config.emote_trash)
                     && !event.getReaction().isSelf()) {
-                event.retrieveMessage().queue((message -> message.delete().queue()));
+                if (event.retrieveMessage().complete().getReactions().get(0).isSelf()) {
+                    event.retrieveMessage().queue((message -> message.delete().queue()));
+                }
                 return;
             }
             if (event.getReaction().getReactionEmote().getName().equals(Corby.config.emote_star)) {
