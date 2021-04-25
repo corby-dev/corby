@@ -9,66 +9,58 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.commands.administration.RestartCommand;
 import xyz.d1snin.corby.commands.administration.ShutdownCommand;
 import xyz.d1snin.corby.commands.misc.PingCommand;
-import xyz.d1snin.corby.commands.misc.WhoisCommand;
 import xyz.d1snin.corby.commands.settings.PrefixCommand;
 import xyz.d1snin.corby.database.Database;
 import xyz.d1snin.corby.database.DatabasePreparedStatements;
 import xyz.d1snin.corby.event.ReactionUpdateEvent;
-import xyz.d1snin.corby.manager.ConfigFileManager;
-import xyz.d1snin.corby.utils.JSONUtils;
+import xyz.d1snin.corby.event.ServerJoinEvent;
+import xyz.d1snin.corby.manager.config.ConfigFileManager;
+import xyz.d1snin.corby.manager.config.ConfigManager;
+import xyz.d1snin.corby.manager.config.Config;
 
 import javax.security.auth.login.LoginException;
-import java.awt.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.*;
 
 public class Corby {
 
     private static JDA API;
 
-    public static final String BOT_PREFIX_DEFAULT = "'";
-    public static final String BOT_NAME = "Corby";
-    public static final String CONFIG_FILE_NAME = "config.json";
-    public static final String OWNER_ID = "637302865047584788";
-
-    public static String BOT_PFP_URL;
-    public static String INVITE_URL;
-    public static String ID;
-    public static String TOKEN;
-    public static String NAME_AS_TAG;
-
-    public static Color DEFAULT_COLOR = new Color(74, 129, 248);
-    public static Color ERROR_COLOR = Color.RED;
-
-    public static int NORMAL_SHUTDOWN_EXIT_CODE = 0;
-    public static int CANT_CONNECT_TO_THE_DATABASE = 11;
-    public static int BAD_TOKEN = 21;
-
-    public static String EMOTE_TRASH = "\uD83D\uDDD1";
-
-    public static final Logger logger = LoggerFactory.getLogger(BOT_NAME);
-
     private static final ExecutorService service = Executors.newCachedThreadPool();
     private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
+    private static final List<String> presences = new ArrayList<>();
+    private static final Random random = new Random();
+
+    public static Config config = ConfigManager.init();
+
+    public static final Logger logger = LoggerFactory.getLogger(config.bot_name);
+
     public static void main(String[] args) {
+
+        Thread.currentThread().setName("Worker");
+
         try {
-            ConfigFileManager.createConfigFile(CONFIG_FILE_NAME);
-            TOKEN = JSONUtils.readJSON(CONFIG_FILE_NAME, "token");
+            ConfigFileManager.initConfigFile();
             logger.info("Starting...");
             start();
         } catch (LoginException e) {
             logger.error("Your bot token is invalid.");
-            System.exit(BAD_TOKEN);
+            System.exit(Config.ExitCodes.BAD_TOKEN_EXIT_CODE);
         } catch (InterruptedException e) {
             logger.error("Cant connect to discord.");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
         startUpdatePresence();
+
     }
 
     public static void start() throws LoginException, InterruptedException {
@@ -77,7 +69,9 @@ public class Corby {
         logger.info("Loading prepared database statements...");
         DatabasePreparedStatements.loadAllPreparedStatements();
 
-        JDABuilder jdaBuilder = JDABuilder.createDefault(TOKEN);
+        Command.startCooldownUpdater();
+
+        JDABuilder jdaBuilder = JDABuilder.createDefault(config.token);
 
         jdaBuilder.enableIntents(GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGE_REACTIONS);
         jdaBuilder.enableCache(CacheFlag.CLIENT_STATUS, CacheFlag.VOICE_STATE, CacheFlag.ACTIVITY);
@@ -86,12 +80,12 @@ public class Corby {
 
         jdaBuilder.addEventListeners(
                 new ReactionUpdateEvent(),
+                new ServerJoinEvent(),
 
-                new PingCommand(),
-                new PrefixCommand(),
-                new ShutdownCommand(),
-                new WhoisCommand(),
-                new RestartCommand()
+                Command.add(new PingCommand()),
+                Command.add(new PrefixCommand()),
+                Command.add(new ShutdownCommand()),
+                Command.add(new RestartCommand())
         );
 
         API = jdaBuilder.build();
@@ -105,20 +99,27 @@ public class Corby {
                         "   ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝    ╚═╝       " + "\n"
         );
 
-        BOT_PFP_URL = API.getSelfUser().getAvatarUrl();
-        INVITE_URL = API.getInviteUrl(Permission.ADMINISTRATOR);
-        ID = API.getSelfUser().getId();
-        NAME_AS_TAG = API.getSelfUser().getAsTag();
+        config.setBotPfpUrl(API.getSelfUser().getAvatarUrl());
+        config.setInviteUrl(API.getInviteUrl(Permission.ADMINISTRATOR));
+        config.setId(API.getSelfUser().getId());
+        config.setNameAsTag(API.getSelfUser().getAsTag());
 
         logger.info("Bot has started up!\n   " +
-                "~ Name:        " + NAME_AS_TAG + "\n   " +
-                "~ ID:          " + ID + "\n   " +
-                "~ Invite URL:  " + INVITE_URL + "\n   " +
+                "~ Name:        " + config.name_as_tag + "\n   " +
+                "~ ID:          " + config.id + "\n   " +
+                "~ Invite URL:  " + config.invite_url + "\n   " +
                 "~ Ping:        " + API.getGatewayPing() + "\n");
     }
 
     private static void startUpdatePresence() {
-        scheduler.scheduleWithFixedDelay(() -> API.getPresence().setActivity(Activity.watching("'help | Ping: " + API.getGatewayPing())), 0, 10, TimeUnit.SECONDS);
+        scheduler.scheduleWithFixedDelay(() -> API.getPresence().setActivity(Activity.watching("'help | " + getPresence())), 0, 7, TimeUnit.SECONDS);
+    }
+
+    private static String getPresence() {
+        presences.clear();
+        presences.add("Ping: " + API.getGatewayPing());
+        presences.add(API.getGuilds().size() + " Servers!");
+        return presences.get(random.nextInt(presences.size()));
     }
 
     public static void shutdown() {
@@ -127,7 +128,7 @@ public class Corby {
         API.shutdown();
         getService().shutdown();
         scheduler.shutdown();
-        System.exit(NORMAL_SHUTDOWN_EXIT_CODE);
+        System.exit(Config.ExitCodes.NORMAL_SHUTDOWN_EXIT_CODE);
     }
 
     public static void restart() {

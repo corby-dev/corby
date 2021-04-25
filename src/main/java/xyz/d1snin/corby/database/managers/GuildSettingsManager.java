@@ -32,7 +32,7 @@ public class GuildSettingsManager {
             DatabasePreparedStatements.psGetGuildPrefix.setLong(1, guild.getIdLong());
             ResultSet rs = DatabasePreparedStatements.psGetGuildPrefix.executeQuery();
             if (!rs.next()) {
-                return Corby.BOT_PREFIX_DEFAULT;
+                return Corby.config.bot_prefix_default;
             }
             result = rs.getString(1);
         } catch (SQLException e) {

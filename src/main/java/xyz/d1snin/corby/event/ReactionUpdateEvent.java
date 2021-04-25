@@ -7,7 +7,7 @@ import xyz.d1snin.corby.Corby;
 public class ReactionUpdateEvent extends ListenerAdapter {
     @Override
     public void onGenericGuildMessageReaction(GenericGuildMessageReactionEvent event) {
-        if (event.getReaction().getReactionEmote().getName().equals(Corby.EMOTE_TRASH)
+        if (event.getReaction().getReactionEmote().getName().equals(Corby.config.emote_trash)
                 && !event.getReaction().isSelf()) {
             event.retrieveMessage().queue((message -> message.delete().queue()));
         }

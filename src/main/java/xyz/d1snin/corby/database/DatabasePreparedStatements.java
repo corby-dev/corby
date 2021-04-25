@@ -18,7 +18,8 @@ public class DatabasePreparedStatements {
             psSetGuildPrefixUpdate = connection.prepareStatement("UPDATE guildprefix SET prefix = ? WHERE guildid = ?;");
             psGetGuildPrefix = connection.prepareStatement("SELECT prefix FROM guildprefix WHERE guildid = ?;");
             psCheckGuildPrefixContains = connection.prepareStatement("SELECT 1 FROM guildprefix WHERE guildid = ?;");
-        } catch (SQLException e) {
+            Corby.logger.info("All prepared statements was loaded.");
+        } catch (Exception e) {
             Corby.logger.error("Error while trying to load all prepared statements of the database. Stacktrace:");
             e.printStackTrace();
         }
@@ -31,7 +32,7 @@ public class DatabasePreparedStatements {
             psGetGuildPrefix.close();
             psCheckGuildPrefixContains.close();
             Corby.logger.warn("Successfully closed all prepared statements.");
-        } catch (SQLException e) {
+        } catch (Exception e) {
             Corby.logger.error("Something went wrong while trying to close all prepared statements. Stacktrace:");
             e.printStackTrace();
         }
