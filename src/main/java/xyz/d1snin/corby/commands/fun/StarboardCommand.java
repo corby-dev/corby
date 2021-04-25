@@ -116,6 +116,14 @@ public class StarboardCommand extends Command {
                 return;
             }
 
+            if (stars > 100 || stars < 1) {
+                e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e,
+                        "Please use the following syntax:" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard set_stars <value from 1 to 100>`")).queue(
+                        (message -> message.addReaction(Corby.config.emote_trash).queue())
+                );
+                return;
+            }
+
             if (!GuildSettingsManager.getGuildStarboardIsEnabled(e.getGuild())) {
                 e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e,
                         "It seems starboard is not enabled on your server, use `" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "starboard enable` to enable starboard."))
