@@ -17,16 +17,24 @@ public class ConfigManager {
                 reader.read("owner_id"),
                 Integer.parseInt(reader.read("default_cooldown_seconds")),
                 new Color(
-                        Integer.parseInt(reader.read("default_color").split(" ")[0]),
-                        Integer.parseInt(reader.read("default_color").split(" ")[1]),
-                        Integer.parseInt(reader.read("default_color").split(" ")[2])
+                        Integer.parseInt(reader.read("default_color").split("\\s")[0]),
+                        Integer.parseInt(reader.read("default_color").split("\\s")[1]),
+                        Integer.parseInt(reader.read("default_color").split("\\s")[2])
                 ),
                 new Color(
-                        Integer.parseInt(reader.read("error_color").split(" ")[0]),
-                        Integer.parseInt(reader.read("error_color").split(" ")[1]),
-                        Integer.parseInt(reader.read("error_color").split(" ")[2])
+                        Integer.parseInt(reader.read("error_color").split("\\s")[0]),
+                        Integer.parseInt(reader.read("error_color").split("\\s")[1]),
+                        Integer.parseInt(reader.read("error_color").split("\\s")[2])
                 ),
-                reader.read("emote_trash")
+                new Color(
+                        Integer.parseInt(reader.read("starboard_color").split("\\s")[0]),
+                        Integer.parseInt(reader.read("starboard_color").split("\\s")[1]),
+                        Integer.parseInt(reader.read("starboard_color").split("\\s")[2])
+                ),
+                reader.read("emote_trash"),
+                reader.read("emote_star"),
+                Integer.parseInt(reader.read("default_starboard_stars")),
+                Boolean.parseBoolean(reader.read("default_starboard_isenabled"))
         );
     }
 }

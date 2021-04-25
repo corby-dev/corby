@@ -15,13 +15,26 @@ public class Config {
     public String name_as_tag; //!
     public Color default_color;
     public Color error_color;
+    public Color starboard_color;
     public String emote_trash;
+    public String emote_star;
+    public int default_starboard_stars;
+    public boolean default_starboard_isenabled;
 
     public Config(
 
-            String token, String bot_prefix_default, String bot_name,
-            String owner_id, int default_cooldown_seconds,
-            Color default_color, Color error_color, String emote_trash
+            String token,
+            String bot_prefix_default,
+            String bot_name,
+            String owner_id,
+            int default_cooldown_seconds,
+            Color default_color,
+            Color error_color,
+            Color starboard_color,
+            String emote_trash,
+            String emote_star,
+            int default_starboard_stars,
+            boolean default_starboard_isenabled
 
     ) {
 
@@ -32,7 +45,11 @@ public class Config {
         this.default_cooldown_seconds = default_cooldown_seconds;
         this.default_color = default_color;
         this.error_color = error_color;
+        this.starboard_color = starboard_color;
         this.emote_trash = emote_trash;
+        this.emote_star = emote_star;
+        this.default_starboard_stars = default_starboard_stars;
+        this.default_starboard_isenabled = default_starboard_isenabled;
 
     }
 

@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.commands.administration.RestartCommand;
 import xyz.d1snin.corby.commands.administration.ShutdownCommand;
+import xyz.d1snin.corby.commands.fun.StarboardCommand;
 import xyz.d1snin.corby.commands.misc.PingCommand;
 import xyz.d1snin.corby.commands.settings.PrefixCommand;
 import xyz.d1snin.corby.database.Database;
@@ -69,8 +70,6 @@ public class Corby {
         logger.info("Loading prepared database statements...");
         DatabasePreparedStatements.loadAllPreparedStatements();
 
-        Command.startCooldownUpdater();
-
         JDABuilder jdaBuilder = JDABuilder.createDefault(config.token);
 
         jdaBuilder.enableIntents(GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGE_REACTIONS);
@@ -85,7 +84,8 @@ public class Corby {
                 Command.add(new PingCommand()),
                 Command.add(new PrefixCommand()),
                 Command.add(new ShutdownCommand()),
-                Command.add(new RestartCommand())
+                Command.add(new RestartCommand()),
+                Command.add(new StarboardCommand())
         );
 
         API = jdaBuilder.build();
@@ -109,6 +109,8 @@ public class Corby {
                 "~ ID:          " + config.id + "\n   " +
                 "~ Invite URL:  " + config.invite_url + "\n   " +
                 "~ Ping:        " + API.getGatewayPing() + "\n");
+
+        Command.startCooldownUpdater();
     }
 
     private static void startUpdatePresence() {
