@@ -21,6 +21,7 @@ public abstract class Command extends ListenerAdapter {
 
     protected String aliases = "null";
     protected Permission[] permissions = new Permission[0];
+    protected Permission[] botPermissions = new Permission[0];
     protected boolean admincommand = false;
 
     public void onMessageReceived(MessageReceivedEvent e) {
@@ -77,6 +78,10 @@ public abstract class Command extends ListenerAdapter {
         });
     }
 
+    public void onLoad() {
+        Corby.permissions.addAll(Arrays.asList(botPermissions));
+    }
+
     private boolean hasPermission(MessageReceivedEvent event) {
 
         if (permissions.length == 0) return true;
@@ -108,6 +113,8 @@ public abstract class Command extends ListenerAdapter {
 
     public static Command add(Command command) {
         commands.add(command);
+        command.onLoad();
+        Corby.permissions.addAll(Corby.defaultPermissions);
         return command;
     }
 

@@ -14,6 +14,9 @@ public class StarboardCommand extends Command {
     public StarboardCommand() {
         this.aliases = "starboard";
         this.permissions = new Permission[]{Permission.ADMINISTRATOR};
+        this.botPermissions = new Permission[] {
+                Permission.MESSAGE_ADD_REACTION
+        };
     }
 
     @Override

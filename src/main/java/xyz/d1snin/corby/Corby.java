@@ -13,6 +13,7 @@ import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.commands.administration.RestartCommand;
 import xyz.d1snin.corby.commands.administration.ShutdownCommand;
 import xyz.d1snin.corby.commands.fun.StarboardCommand;
+import xyz.d1snin.corby.commands.misc.HelpCommand;
 import xyz.d1snin.corby.commands.misc.PingCommand;
 import xyz.d1snin.corby.commands.settings.PrefixCommand;
 import xyz.d1snin.corby.database.Database;
@@ -24,9 +25,7 @@ import xyz.d1snin.corby.manager.config.ConfigManager;
 import xyz.d1snin.corby.manager.config.Config;
 
 import javax.security.auth.login.LoginException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.*;
 
 public class Corby {
@@ -34,14 +33,21 @@ public class Corby {
     private static JDA API;
 
     private static final ExecutorService service = Executors.newCachedThreadPool();
-    private static final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    private static final ScheduledExecutorService schedulerPresence = Executors.newSingleThreadScheduledExecutor();
 
     private static final List<String> presences = new ArrayList<>();
+    public static Set<Permission> permissions = new TreeSet<>();
+    public static List<Permission> defaultPermissions = Arrays.asList(
+            Permission.MESSAGE_HISTORY,
+            Permission.MESSAGE_READ,
+            Permission.MESSAGE_WRITE,
+            Permission.VIEW_CHANNEL
+    );
     private static final Random random = new Random();
 
     public static Config config = ConfigManager.init();
 
-    public static final Logger logger = LoggerFactory.getLogger(config.bot_name);
+    public static Logger logger = LoggerFactory.getLogger("loader");
 
     public static void main(String[] args) {
 
@@ -61,7 +67,7 @@ public class Corby {
         }
 
         startUpdatePresence();
-
+        Command.startCooldownUpdater();
     }
 
     public static void start() throws LoginException, InterruptedException {
@@ -73,7 +79,7 @@ public class Corby {
         JDABuilder jdaBuilder = JDABuilder.createDefault(config.token);
 
         jdaBuilder.enableIntents(GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGE_REACTIONS);
-        jdaBuilder.enableCache(CacheFlag.CLIENT_STATUS, CacheFlag.VOICE_STATE, CacheFlag.ACTIVITY);
+        jdaBuilder.enableCache(CacheFlag.CLIENT_STATUS, CacheFlag.VOICE_STATE, CacheFlag.ACTIVITY, CacheFlag.ROLE_TAGS);
         jdaBuilder.setEnableShutdownHook(true);
         jdaBuilder.setStatus(OnlineStatus.IDLE);
 
@@ -85,7 +91,8 @@ public class Corby {
                 Command.add(new PrefixCommand()),
                 Command.add(new ShutdownCommand()),
                 Command.add(new RestartCommand()),
-                Command.add(new StarboardCommand())
+                Command.add(new StarboardCommand()),
+                Command.add(new HelpCommand())
         );
 
         API = jdaBuilder.build();
@@ -99,22 +106,24 @@ public class Corby {
                         "   ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝    ╚═╝       " + "\n"
         );
 
-        config.setBotPfpUrl(API.getSelfUser().getAvatarUrl());
-        config.setInviteUrl(API.getInviteUrl(Permission.ADMINISTRATOR));
+        config.setBotName(API.getSelfUser().getName());
+        config.setBotPfpUrl(API.getSelfUser().getEffectiveAvatarUrl());
+        config.setInviteUrl(API.getInviteUrl(permissions));
         config.setId(API.getSelfUser().getId());
         config.setNameAsTag(API.getSelfUser().getAsTag());
 
-        logger.info("Bot has started up!\n   " +
-                "~ Name:        " + config.name_as_tag + "\n   " +
-                "~ ID:          " + config.id + "\n   " +
-                "~ Invite URL:  " + config.invite_url + "\n   " +
-                "~ Ping:        " + API.getGatewayPing() + "\n");
+        logger = LoggerFactory.getLogger(config.bot_name);
 
-        Command.startCooldownUpdater();
+        logger.info("Bot has started up!\n    " +
+                "~ PFP:         " + config.bot_pfp_url + "\n    " +
+                "~ Name:        " + config.name_as_tag + "\n    " +
+                "~ ID:          " + config.id + "\n    " +
+                "~ Invite URL:  " + config.invite_url + "\n    " +
+                "~ Ping:        " + API.getGatewayPing() + "\n    ");
     }
 
     private static void startUpdatePresence() {
-        scheduler.scheduleWithFixedDelay(() -> API.getPresence().setActivity(Activity.watching("'help | " + getPresence())), 0, 7, TimeUnit.SECONDS);
+        schedulerPresence.scheduleWithFixedDelay(() -> API.getPresence().setActivity(Activity.watching("'help | " + getPresence())), 0, 7, TimeUnit.SECONDS);
     }
 
     private static String getPresence() {
@@ -129,7 +138,7 @@ public class Corby {
         Database.close();
         API.shutdown();
         getService().shutdown();
-        scheduler.shutdown();
+        schedulerPresence.shutdown();
         System.exit(Config.ExitCodes.NORMAL_SHUTDOWN_EXIT_CODE);
     }
 
@@ -139,8 +148,7 @@ public class Corby {
         API.shutdown();
         try {
             start();
-        } catch (LoginException | InterruptedException ignored) {
-        }
+        } catch (LoginException | InterruptedException ignored) {}
     }
 
     public static JDA getAPI() {

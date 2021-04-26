@@ -6,9 +6,9 @@ public class Config {
 
     public String token;
     public String bot_prefix_default;
-    public String bot_name;
     public String owner_id;
     public int default_cooldown_seconds;
+    public String bot_name; //!
     public String bot_pfp_url; //!
     public String invite_url; //!
     public String id; //!
@@ -18,14 +18,15 @@ public class Config {
     public Color starboard_color;
     public String emote_trash;
     public String emote_star;
+    public String emote_white_check_mark;
     public int default_starboard_stars;
     public boolean default_starboard_isenabled;
+    public String help_page_url;
 
     public Config(
 
             String token,
             String bot_prefix_default,
-            String bot_name,
             String owner_id,
             int default_cooldown_seconds,
             Color default_color,
@@ -33,14 +34,15 @@ public class Config {
             Color starboard_color,
             String emote_trash,
             String emote_star,
+            String emote_white_check_mark,
             int default_starboard_stars,
-            boolean default_starboard_isenabled
+            boolean default_starboard_isenabled,
+            String help_page_url
 
     ) {
 
         this.token = token;
         this.bot_prefix_default = bot_prefix_default;
-        this.bot_name = bot_name;
         this.owner_id = owner_id;
         this.default_cooldown_seconds = default_cooldown_seconds;
         this.default_color = default_color;
@@ -48,8 +50,10 @@ public class Config {
         this.starboard_color = starboard_color;
         this.emote_trash = emote_trash;
         this.emote_star = emote_star;
+        this.emote_white_check_mark = emote_white_check_mark;
         this.default_starboard_stars = default_starboard_stars;
         this.default_starboard_isenabled = default_starboard_isenabled;
+        this.help_page_url = help_page_url;
 
     }
 
@@ -67,6 +71,10 @@ public class Config {
 
     public void setNameAsTag(String name_as_tag) {
         this.name_as_tag = name_as_tag;
+    }
+
+    public void setBotName(String bot_name) {
+        this.bot_name = bot_name;
     }
 
     public static class ExitCodes {

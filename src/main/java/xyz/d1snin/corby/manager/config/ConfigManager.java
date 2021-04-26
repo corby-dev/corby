@@ -13,7 +13,6 @@ public class ConfigManager {
         return new Config(
                 reader.read("token"),
                 reader.read("bot_prefix_default"),
-                reader.read("bot_name"),
                 reader.read("owner_id"),
                 Integer.parseInt(reader.read("default_cooldown_seconds")),
                 new Color(
@@ -33,8 +32,10 @@ public class ConfigManager {
                 ),
                 reader.read("emote_trash"),
                 reader.read("emote_star"),
+                reader.read("emote_white_check_mark"),
                 Integer.parseInt(reader.read("default_starboard_stars")),
-                Boolean.parseBoolean(reader.read("default_starboard_isenabled"))
+                Boolean.parseBoolean(reader.read("default_starboard_isenabled")),
+                reader.read("help_page_url")
         );
     }
 }

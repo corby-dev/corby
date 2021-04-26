@@ -10,7 +10,7 @@ public class PrefixCommand extends Command {
 
     public PrefixCommand() {
         this.aliases = "prefix";
-        this.permissions = new Permission[] {
+        this.permissions = new Permission[]{
                 Permission.ADMINISTRATOR
         };
     }

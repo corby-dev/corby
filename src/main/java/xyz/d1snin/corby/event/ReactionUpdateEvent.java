@@ -2,6 +2,7 @@ package xyz.d1snin.corby.event;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import xyz.d1snin.corby.Corby;
@@ -28,8 +29,15 @@ public class ReactionUpdateEvent extends ListenerAdapter {
                 if (!GuildSettingsManager.getGuildStarboardIsEnabled(event.getGuild())) return;
 
                 Message msg = event.retrieveMessage().complete();
+                MessageReaction reaction = msg.getReactions().get(0);
 
-                if (msg.getReactions().get(0).getCount() == GuildSettingsManager.getGuildStarboardStars(event.getGuild())) {
+                for (MessageReaction r : msg.getReactions()) {
+                    if (r.getReactionEmote().getName().equals(Corby.config.emote_star)) {
+                        reaction = r;
+                    }
+                }
+
+                if (reaction.getCount() == GuildSettingsManager.getGuildStarboardStars(event.getGuild())) {
                     Objects.requireNonNull(GuildSettingsManager.getGuildStarboardChannel(event.getGuild())).sendMessage(new EmbedBuilder()
                             .setAuthor(msg.getAuthor().getAsTag(), msg.getJumpUrl(), msg.getAuthor().getAvatarUrl())
                             .setDescription("[[context]](" + msg.getJumpUrl() + ")" +
