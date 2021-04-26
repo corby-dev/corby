@@ -25,57 +25,59 @@ public abstract class Command extends ListenerAdapter {
     protected boolean admincommand = false;
 
     public void onMessageReceived(MessageReceivedEvent e) {
-        Corby.getService().execute(() -> {
 
-            Message msg = e.getMessage();
+        if (!e.getChannelType().isGuild()) {
+            return;
+        }
 
-            if (e.getAuthor().isBot()) {
+        Message msg = e.getMessage();
+
+        if (e.getAuthor().isBot()) {
+            return;
+        }
+
+        if (isCommand(msg, e)) {
+            if (!hasPermission(e)) {
+                e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, "You must have permissions `" + getPermissionString() + "` to use this command.")).queue();
                 return;
             }
 
-            if (isCommand(msg, e)) {
-                if (!hasPermission(e)) {
-                    e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, "You must have permissions `" + getPermissionString() + "` to use this command.")).queue();
-                    return;
-                }
-
-                if (admincommand && !e.getAuthor().getId().equals(Corby.config.owner_id)) {
-                    return;
-                }
-
-                if (cooldowns.contains(e.getAuthor())) {
-                    e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, "You are now on cooldown, please wait a moment before using the command again.")).queue(
-                            (message -> message.addReaction(Corby.config.emote_trash).queue())
-                    );
-                    return;
-                }
-
-                try {
-                    Corby.getService().execute(() ->
-                            execute(e, getCommandArgs(msg))
-                    );
-                    cooldowns.add(e.getAuthor());
-                } catch (Exception exception) {
-                    e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, "**An exception was caught while executing a command.**"
-                            + "\n\n**Caused by:**\n`"
-                            + (exception.getCause() == null ? "No reason given." : exception.getCause())
-                            + "`\n\n**Message:**\n`"
-                            + exception.getClass().getName() + ": " + exception.getMessage()
-                            + "`\n\nAll necessary information has been sent to the owner! You can delete this message with the button below.")).queue(
-                            (message -> message.addReaction(Corby.config.emote_trash).queue())
-                    );
-                    Corby.getAPI().openPrivateChannelById(Corby.config.owner_id).complete().sendMessage(Embeds.createDefaultEmbed(e, "**An exception was thrown while trying to execute a command.**"
-                            + "\n\n**User message:**\n`"
-                            + e.getMessage().getContentRaw()
-                            + "`\n\n**Exception message:**\n`"
-                            + exception.getClass().getName() + ": " + exception.getMessage()
-                            + "`\n\n**Caused by:**\n`"
-                            + (exception.getCause() == null ? "No reason given." : exception.getCause()) + "`")).queue();
-                    Corby.logger.debug("Exception");
-                    exception.printStackTrace();
-                }
+            if (admincommand && !e.getAuthor().getId().equals(Corby.config.owner_id)) {
+                return;
             }
-        });
+
+            if (cooldowns.contains(e.getAuthor())) {
+                e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, "You are now on cooldown, please wait a moment before using the command again.")).queue(
+                        (message -> message.addReaction(Corby.config.emote_trash).queue())
+                );
+                return;
+            }
+
+            try {
+                Corby.getService().execute(() ->
+                        execute(e, getCommandArgs(msg))
+                );
+                cooldowns.add(e.getAuthor());
+            } catch (Exception exception) {
+                e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, "**An exception was caught while executing a command.**"
+                        + "\n\n**Caused by:**\n`"
+                        + (exception.getCause() == null ? "No reason given." : exception.getCause())
+                        + "`\n\n**Message:**\n`"
+                        + exception.getClass().getName() + ": " + exception.getMessage()
+                        + "`\n\nAll necessary information has been sent to the owner! You can delete this message with the button below.")).queue(
+                        (message -> message.addReaction(Corby.config.emote_trash).queue())
+                );
+                Corby.getAPI().openPrivateChannelById(Corby.config.owner_id).complete().sendMessage(Embeds.createDefaultEmbed(e, "**An exception was thrown while trying to execute a command.**"
+                        + "\n\n**User message:**\n`"
+                        + e.getMessage().getContentRaw()
+                        + "`\n\n**Exception message:**\n`"
+                        + exception.getClass().getName() + ": " + exception.getMessage()
+                        + "`\n\n**Caused by:**\n`"
+                        + (exception.getCause() == null ? "No reason given." : exception.getCause()) + "`")).queue();
+                Corby.logger.debug("Exception");
+                exception.printStackTrace();
+            }
+        }
     }
 
     public void onLoad() {
