@@ -40,7 +40,7 @@ public class StarboardCommand extends Command {
         if (args[1].equalsIgnoreCase("enable")) {
             if (GuildSettingsManager.getGuildStarboardChannel(e.getGuild()) == null) {
                 e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e,
-                        "It seems starboard is not configured on your server, use `" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "starboard set_channel <#channel>` to configure starboard."))
+                        "It seems starboard is not configured on your server, use `" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "starboard channel <#channel>` to configure starboard."))
                         .queue((message -> message.addReaction(Corby.config.emote_trash).queue())
                         );
             } else if (GuildSettingsManager.getGuildStarboardIsEnabled(e.getGuild())) {
@@ -68,15 +68,15 @@ public class StarboardCommand extends Command {
             }
         }
 
-        if (args[1].equalsIgnoreCase("set_channel") || args[1].equalsIgnoreCase("setchannel")) {
+        if (args[1].equalsIgnoreCase("channel")) {
             if (e.getMessage().getMentionedChannels().isEmpty()) {
                 e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e,
-                        "Please use the following syntax:" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard set_channel <#channel>`")).queue(
+                        "Please use the following syntax:" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard channel <#channel>`")).queue(
                         (message -> message.addReaction(Corby.config.emote_trash).queue())
                 );
             } else if (!e.getGuild().getChannels().contains(e.getMessage().getMentionedChannels().get(0))) {
                 e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e,
-                        "Please use the following syntax:" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard set_channel <#channel>`")).queue(
+                        "Please use the following syntax:" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard channel <#channel>`")).queue(
                         (message -> message.addReaction(Corby.config.emote_trash).queue())
                 );
             } else if (!GuildSettingsManager.getGuildStarboardIsEnabled(e.getGuild())) {
@@ -94,14 +94,14 @@ public class StarboardCommand extends Command {
                 GuildSettingsManager.setGuildStarboardChannel(e.getGuild(), e.getMessage().getMentionedChannels().get(0));
                 e.getTextChannel().sendMessage(Embeds.createDefaultEmbed(e,
                         "Starboard successfully installed on the channel " + e.getMessage().getMentionedChannels().get(0).getAsMention() + ".\n" +
-                                "Now you can set the required number of stars for a message, use `" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "starboard set_stars <value from 1 to 100>`")).queue();
+                                "Now you can set the required number of stars for a message, use `" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "starboard stars <value from 1 to 100>`")).queue();
             }
         }
 
-        if (args[1].equalsIgnoreCase("set_stars") || args[1].equalsIgnoreCase("setstars")) {
+        if (args[1].equalsIgnoreCase("stars")) {
             if (args.length < 3) {
                 e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e,
-                        "Please use the following syntax:" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard set_stars <value from 1 to 100>`")).queue(
+                        "Please use the following syntax:" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard stars <value from 1 to 100>`")).queue(
                         (message -> message.addReaction(Corby.config.emote_trash).queue())
                 );
                 return;
@@ -113,7 +113,7 @@ public class StarboardCommand extends Command {
                 stars = Integer.parseInt(args[2]);
             } catch (NumberFormatException formatException) {
                 e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e,
-                        "Please use the following syntax:" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard set_stars <value from 1 to 100>`")).queue(
+                        "Please use the following syntax:" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard stars <value from 1 to 100>`")).queue(
                         (message -> message.addReaction(Corby.config.emote_trash).queue())
                 );
                 return;
@@ -121,7 +121,7 @@ public class StarboardCommand extends Command {
 
             if (stars > 100 || stars < 1) {
                 e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e,
-                        "Please use the following syntax:" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard set_stars <value from 1 to 100>`")).queue(
+                        "Please use the following syntax:" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard stars <value from 1 to 100>`")).queue(
                         (message -> message.addReaction(Corby.config.emote_trash).queue())
                 );
                 return;
@@ -137,7 +137,7 @@ public class StarboardCommand extends Command {
 
             if (GuildSettingsManager.getGuildStarboardChannel(e.getGuild()) == null) {
                 e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e,
-                        "It seems starboard is not configured on your server, use `" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "starboard set_channel <#channel>` to configure starboard."))
+                        "It seems starboard is not configured on your server, use `" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "starboard channel <#channel>` to configure starboard."))
                         .queue((message -> message.addReaction(Corby.config.emote_trash).queue())
                         );
             } else {
