@@ -93,8 +93,7 @@ public class StarboardCommand extends Command {
             } else {
                 GuildSettingsManager.setGuildStarboardChannel(e.getGuild(), e.getMessage().getMentionedChannels().get(0));
                 e.getTextChannel().sendMessage(Embeds.createDefaultEmbed(e,
-                        "Starboard successfully installed on the channel " + e.getMessage().getMentionedChannels().get(0).getAsMention() + ".\n" +
-                                "Now you can set the required number of stars for a message, use `" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "starboard stars <value from 1 to 100>`")).queue();
+                        "Starboard successfully installed on the channel " + e.getMessage().getMentionedChannels().get(0).getAsMention())).queue();
             }
         }
 
