@@ -71,12 +71,12 @@ public class StarboardCommand extends Command {
         if (args[1].equalsIgnoreCase("channel")) {
             if (e.getMessage().getMentionedChannels().isEmpty()) {
                 e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e,
-                        "Please use the following syntax: " + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard channel <#channel>`")).queue(
+                        "Please use the following syntax: `" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "starboard channel <#channel>`")).queue(
                         (message -> message.addReaction(Corby.config.emote_trash).queue())
                 );
             } else if (!e.getGuild().getChannels().contains(e.getMessage().getMentionedChannels().get(0))) {
                 e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e,
-                        "Please use the following syntax: " + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard channel <#channel>`")).queue(
+                        "Please use the following syntax: `" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "starboard channel <#channel>`")).queue(
                         (message -> message.addReaction(Corby.config.emote_trash).queue())
                 );
             } else if (!GuildSettingsManager.getGuildStarboardIsEnabled(e.getGuild())) {
