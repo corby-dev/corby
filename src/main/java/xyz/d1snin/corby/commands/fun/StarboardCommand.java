@@ -71,12 +71,12 @@ public class StarboardCommand extends Command {
         if (args[1].equalsIgnoreCase("channel")) {
             if (e.getMessage().getMentionedChannels().isEmpty()) {
                 e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e,
-                        "Please use the following syntax:" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard channel <#channel>`")).queue(
+                        "Please use the following syntax: " + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard channel <#channel>`")).queue(
                         (message -> message.addReaction(Corby.config.emote_trash).queue())
                 );
             } else if (!e.getGuild().getChannels().contains(e.getMessage().getMentionedChannels().get(0))) {
                 e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e,
-                        "Please use the following syntax:" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard channel <#channel>`")).queue(
+                        "Please use the following syntax: " + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard channel <#channel>`")).queue(
                         (message -> message.addReaction(Corby.config.emote_trash).queue())
                 );
             } else if (!GuildSettingsManager.getGuildStarboardIsEnabled(e.getGuild())) {
@@ -100,7 +100,7 @@ public class StarboardCommand extends Command {
         if (args[1].equalsIgnoreCase("stars")) {
             if (args.length < 3) {
                 e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e,
-                        "Please use the following syntax:" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard stars <value from 1 to 100>`")).queue(
+                        "Please use the following syntax: " + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard stars <value from 1 to 100>`")).queue(
                         (message -> message.addReaction(Corby.config.emote_trash).queue())
                 );
                 return;
@@ -112,7 +112,7 @@ public class StarboardCommand extends Command {
                 stars = Integer.parseInt(args[2]);
             } catch (NumberFormatException formatException) {
                 e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e,
-                        "Please use the following syntax:" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard stars <value from 1 to 100>`")).queue(
+                        "Please use the following syntax: " + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard stars <value from 1 to 100>`")).queue(
                         (message -> message.addReaction(Corby.config.emote_trash).queue())
                 );
                 return;
@@ -120,7 +120,7 @@ public class StarboardCommand extends Command {
 
             if (stars > 100 || stars < 1) {
                 e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e,
-                        "Please use the following syntax:" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard stars <value from 1 to 100>`")).queue(
+                        "Please use the following syntax: " + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "`starboard stars <value from 1 to 100>`")).queue(
                         (message -> message.addReaction(Corby.config.emote_trash).queue())
                 );
                 return;
