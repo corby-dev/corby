@@ -79,11 +79,6 @@ public class StarboardCommand extends Command {
                         "Please use the following syntax: `" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "starboard channel <#channel>`")).queue(
                         (message -> message.addReaction(Corby.config.emote_trash).queue())
                 );
-            } else if (!GuildSettingsManager.getGuildStarboardIsEnabled(e.getGuild())) {
-                e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e,
-                        "It seems starboard is not enabled on your server, use `" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "starboard enable` to enable starboard."))
-                        .queue((message -> message.addReaction(Corby.config.emote_trash).queue())
-                        );
             } else if (Objects.requireNonNull(GuildSettingsManager.getGuildStarboardChannel(e.getGuild())).getIdLong() == e.getMessage().getMentionedChannels().get(0).getIdLong()) {
                 e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e,
                         "It looks like the channel for the starboard is already installed."
