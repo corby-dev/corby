@@ -30,6 +30,8 @@ public class ReactionUpdateEvent extends ListenerAdapter {
 
                 Message msg = event.retrieveMessage().complete();
                 MessageReaction reaction = msg.getReactions().get(0);
+                
+                if(msg.getAuthor().getAsTag().equals("Corby#3833")) return; // <- stops from starboarding itself idk if its useful or if theres a way to check the current name without hardcoding it but idk how jda works
 
                 for (MessageReaction r : msg.getReactions()) {
                     if (r.getReactionEmote().getName().equals(Corby.config.emote_star)) {
