@@ -29,6 +29,7 @@ dependencies {
     implementation group:'org.xerial', name:'sqlite-jdbc', version:'3.8.11.2'
     implementation 'com.github.sg4e:java-danbooru-wrapper:master-SNAPSHOT'
     implementation group: 'org.json', name: 'json', version: '20090211'
+    implementation "com.github.bottom-software-foundation:bottom-java:2.0.1"
 
 }
 sourceSets {
