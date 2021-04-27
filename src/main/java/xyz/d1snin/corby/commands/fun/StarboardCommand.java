@@ -76,15 +76,13 @@ public class StarboardCommand extends Command {
                 );
             } else if (!e.getGuild().getChannels().contains(e.getMessage().getMentionedChannels().get(0))) {
                 e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e,
-                        "Please use the following syntax: `" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "starboard channel <#channel>`")).queue(
+                        "Please use the following syntax: `w" + GuildSettingsManager.getGuildPrefix(e.getGuild()) + "starboard channel <#channel>`")).queue(
                         (message -> message.addReaction(Corby.config.emote_trash).queue())
                 );
-            } else if (Objects.requireNonNull(GuildSettingsManager.getGuildStarboardChannel(e.getGuild())).getIdLong() == e.getMessage().getMentionedChannels().get(0).getIdLong()) {
+            } else if (GuildSettingsManager.getGuildStarboardChannel(e.getGuild()) != null &&
+                    GuildSettingsManager.getGuildStarboardChannel(e.getGuild()).getIdLong() == e.getMessage().getMentionedChannels().get(0).getIdLong()) {
                 e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e,
-                        "It looks like the channel for the starboard is already installed."
-                )).queue(
-                        (message -> message.addReaction(Corby.config.emote_trash).queue())
-                );
+                        "It looks like the channel for the starboard is already installed.")).queue((message -> message.addReaction(Corby.config.emote_trash).queue()));
             } else {
                 GuildSettingsManager.setGuildStarboardChannel(e.getGuild(), e.getMessage().getMentionedChannels().get(0));
                 e.getTextChannel().sendMessage(Embeds.createDefaultEmbed(e,
