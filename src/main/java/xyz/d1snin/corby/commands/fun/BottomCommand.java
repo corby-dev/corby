@@ -18,9 +18,13 @@ public class BottomCommand extends Command {
     protected void execute(MessageReceivedEvent e, String[] args) {
         try {
 
-            final String result = "Result: %s";
-            final String usage = "Please use the following syntax: `%sbottom <encode or decode> <your message, 2 - 30 characters>`";
-            final String usageE = "Please use the following syntax: `%sbottom encode <your message, 2 - 30 characters>`";
+            final int edMsgLimit = 1900;
+            final int msgLimit1 = 2;
+            final int msgLimit2 = 800;
+
+            final String result = "**Result:**\n%s\nPowered by [bottom-software-foundation](https://github.com/bottom-software-foundation/bottom-java).";
+            final String usage = "Please use the following syntax: `%sbottom <encode or decode> <your message>`";
+            final String usageE = "Please use the following syntax: `%sbottom encode <your message, %d  - %d characters>`";
             final String longR = "Sorry, generated result is too long.";
 
             if (args.length < 3) {
@@ -37,13 +41,13 @@ public class BottomCommand extends Command {
                     String encodedMessage = Bottom.encode(message);
 
 
-                    if (encodedMessage.length() > 200) {
+                    if (encodedMessage.length() > edMsgLimit) {
                         e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, longR))
                                 .queue((message1 -> message1.addReaction(Corby.config.emote_trash).queue()));
                         return;
                     }
 
-                    if (message.length() > 50 || message.length() < 2) {
+                    if (message.length() > msgLimit2 || message.length() < msgLimit1) {
                         e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, String.format(usageE, GuildSettingsManager.getGuildPrefix(e.getGuild()))))
                                 .queue((message1 -> message1.addReaction(Corby.config.emote_trash).queue()));
                         return;
@@ -57,7 +61,7 @@ public class BottomCommand extends Command {
 
                     String decodedMessage = Bottom.decode(message);
 
-                    if (decodedMessage.length() > 200) {
+                    if (decodedMessage.length() > edMsgLimit) {
                         e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, longR))
                                 .queue((message1 -> message1.addReaction(Corby.config.emote_trash).queue()));
                         return;
