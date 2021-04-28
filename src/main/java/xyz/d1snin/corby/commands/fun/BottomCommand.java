@@ -22,7 +22,7 @@ public class BottomCommand extends Command {
             final int msgLimit1 = 2;
             final int msgLimit2 = 800;
 
-            final String result = "**Result:**\n%s\nPowered by [bottom-software-foundation](https://github.com/bottom-software-foundation/bottom-java).";
+            final String result = "**Result:**\n\n%s\n\nPowered by [bottom-software-foundation](https://github.com/bottom-software-foundation/bottom-java).";
             final String usage = "Please use the following syntax: `%sbottom <encode or decode> <your message>`";
             final String usageE = "Please use the following syntax: `%sbottom encode <your message, %d  - %d characters>`";
             final String longR = "Sorry, generated result is too long.";
