@@ -48,7 +48,7 @@ public class BottomCommand extends Command {
                     }
 
                     if (message.length() > msgLimit2 || message.length() < msgLimit1) {
-                        e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, String.format(usageE, GuildSettingsManager.getGuildPrefix(e.getGuild()))))
+                        e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, String.format(usageE, GuildSettingsManager.getGuildPrefix(e.getGuild()), msgLimit1, msgLimit2)))
                                 .queue((message1 -> message1.addReaction(Corby.config.emote_trash).queue()));
                         return;
                     }
