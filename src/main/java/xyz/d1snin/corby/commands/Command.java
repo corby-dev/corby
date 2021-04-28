@@ -103,7 +103,8 @@ public abstract class Command extends ListenerAdapter {
 
     private boolean isCommand(Message message, MessageReceivedEvent event) {
         for (String alias : aliases.split(", ")) {
-            if (Arrays.asList(getCommandArgs(message)).contains(GuildSettingsManager.getGuildPrefix(event.getGuild()) + alias))
+            if (Arrays.asList(getCommandArgs(message)).contains(GuildSettingsManager.getGuildPrefix(event.getGuild()) + alias)
+                    && getCommandArgs(message)[0].startsWith(GuildSettingsManager.getGuildPrefix(event.getGuild())))
                 return true;
         }
         return false;

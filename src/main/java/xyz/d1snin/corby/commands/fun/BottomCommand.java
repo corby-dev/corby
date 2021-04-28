@@ -6,6 +6,7 @@ import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import com.github.bottomSoftwareFoundation.bottom.Bottom;
 import xyz.d1snin.corby.database.managers.GuildSettingsManager;
+import xyz.d1snin.corby.event.ReactionUpdateEvent;
 import xyz.d1snin.corby.utils.Embeds;
 
 public class BottomCommand extends Command {
@@ -18,9 +19,9 @@ public class BottomCommand extends Command {
     protected void execute(MessageReceivedEvent e, String[] args) {
         try {
 
-            final int edMsgLimit = 1900;
+            final int edMsgLimit = 300;
             final int msgLimit1 = 2;
-            final int msgLimit2 = 800;
+            final int msgLimit2 = 200;
 
             final String result = "**Result:**\n\n%s\n\nPowered by [bottom-software-foundation](https://github.com/bottom-software-foundation/bottom-java).";
             final String usage = "Please use the following syntax: `%sbottom <encode or decode> <your message>`";
@@ -43,7 +44,8 @@ public class BottomCommand extends Command {
 
                     if (encodedMessage.length() > edMsgLimit) {
                         e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, longR))
-                                .queue((message1 -> message1.addReaction(Corby.config.emote_trash).queue()));
+                                .queue((message1 -> message1.addReaction(Corby.config.emote_trash)
+                                        .queue((message2) -> ReactionUpdateEvent.addListener(message1.getReactions().get(0)))));
                         return;
                     }
 
