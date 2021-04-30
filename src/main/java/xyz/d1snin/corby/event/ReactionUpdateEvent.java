@@ -36,6 +36,7 @@ public class ReactionUpdateEvent extends ListenerAdapter {
                 if (GuildSettingsManager.getGuildStarboardChannel(event.getGuild()) == null) return;
                 if (!GuildSettingsManager.getGuildStarboardIsEnabled(event.getGuild())) return;
                 Message msg = event.retrieveMessage().complete();
+                if (msg.getAuthor().getId().equals(Corby.config.id)) return;
                 MessageReaction reaction = msg.getReactions().get(0);
                 for (MessageReaction r : msg.getReactions()) {
                     if (r.getReactionEmote().getName().equals(Corby.config.emote_star)) {
