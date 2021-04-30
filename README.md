@@ -2,14 +2,14 @@
 [![Build Status](https://travis-ci.com/d1snin/corby.svg?branch=development)](https://travis-ci.com/d1snin/corby)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-#Corby:
+# Corby:
 Corby is a bot that aims to log any events that occur in your discord server and to moderate it, I am open to any of your pool requests
-#Instructions:
+# Instructions:
 Here you can find instructions for use
-###Commands:
+### Commands:
 You can find the commands my bot supports on [this](https://d1snin.xyz/corby/) web page.
 
-###Self hosting:
+### Self hosting:
 You can install and run my bot on your machine and use it for your own purposes, for this you need to create a configuration file named `config.json`.
 Then fill it in according to the following template:
 ```json
@@ -30,7 +30,7 @@ Then fill it in according to the following template:
   "help_page_url": ""
 }
 ```
-####Descriptions:
+#### Descriptions:
 `token` - your bot token\
 `bot_prefx_default` - bot prefix\
 `owner_id` - your discord id\
@@ -45,7 +45,7 @@ Then fill it in according to the following template:
 `default_starboard_stars` - the number of stars required for a message to appear on the starboard\
 `default_starboard_isenabled` - (boolean) default toggle for the starboard on the server\
 `help_page_url` - link to the page with information about commands
-####An example of writing config.json
+#### An example of writing config.json
 ```json
 {
   "token": "aaaaaaaaaaaaabbbbbbbbbccccccccccccccccdddddd",
@@ -68,7 +68,7 @@ The next step you need to create a database and execute a [script](https://githu
 
 Then you can start the bot with the command `./gradlew run`.
 
-###Contributing:
+### Contributing:
 I am open to any pull requests, just clone the repository and import gradle project.
 Please observe [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html). 
 Also make sure you test your changes to work.
