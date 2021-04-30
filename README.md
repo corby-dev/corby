@@ -56,7 +56,7 @@ Then fill it in according to the following template:
   "error_color": "255 0 0",
   "success_color": "70 255 0",
   "starboard_color": "255 215 0",
-  "emote_trash": "\uD83D\uDDD1️",
+  "emote_trash": "\uD83D\uDDD1",
   "emote_star": "⭐",
   "emote_white_check_mark": "✅",
   "default_starboard_stars": "3",
