@@ -15,6 +15,7 @@ public class Config {
     public String name_as_tag; //!
     public Color default_color;
     public Color error_color;
+    public Color success_color;
     public Color starboard_color;
     public String emote_trash;
     public String emote_star;
@@ -31,6 +32,7 @@ public class Config {
             int default_cooldown_seconds,
             Color default_color,
             Color error_color,
+            Color success_color,
             Color starboard_color,
             String emote_trash,
             String emote_star,
@@ -47,6 +49,7 @@ public class Config {
         this.default_cooldown_seconds = default_cooldown_seconds;
         this.default_color = default_color;
         this.error_color = error_color;
+        this.success_color = success_color;
         this.starboard_color = starboard_color;
         this.emote_trash = emote_trash;
         this.emote_star = emote_star;

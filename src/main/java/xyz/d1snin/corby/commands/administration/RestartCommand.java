@@ -3,6 +3,7 @@ package xyz.d1snin.corby.commands.administration;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
+import xyz.d1snin.corby.utils.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class RestartCommand extends Command {
     protected void execute(MessageReceivedEvent e, String[] args) {
         if (args.length > 1) {
             if (args[1].equals("server")) {
-                e.getTextChannel().sendMessage(Embeds.createDefaultEmbed(e, "Restarting server...")).complete();
+                e.getTextChannel().sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Restarting server...")).complete();
                 try {
                     Runtime.getRuntime().exec("systemctl reboot");
                 } catch (IOException ioException) {
@@ -27,7 +28,7 @@ public class RestartCommand extends Command {
             }
             return;
         }
-        e.getTextChannel().sendMessage(Embeds.createDefaultEmbed(e, "Restarting...")).queue();
+        e.getTextChannel().sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Restarting...")).complete();
         Corby.restart();
     }
 }

@@ -2,8 +2,10 @@ package xyz.d1snin.corby.commands.settings;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.GuildSettingsManager;
+import xyz.d1snin.corby.utils.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
 public class PrefixCommand extends Command {
@@ -18,29 +20,33 @@ public class PrefixCommand extends Command {
     @Override
     protected void execute(MessageReceivedEvent e, String[] args) {
 
+        final String currPrefix = "Current prefix is `%s`.";
+        final String prefixAlready = "Bot prefix is already `%s`.";
+        final String cannotBeMoreThen = "The prefix cannot be more than 5 characters.";
+        final String successChanged = "The prefix was successfully changed to `%s`.";
+
         String currentPrefix = GuildSettingsManager.getGuildPrefix(e.getGuild());
 
         if (args.length < 2) {
-            e.getTextChannel().sendMessage(Embeds.createDefaultEmbed(e, "Current prefix is `" + currentPrefix + "`\n" +
-                    "Use " + currentPrefix + "prefix <New Prefix> to change it!")).queue();
+            e.getTextChannel().sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), String.format(currPrefix, currentPrefix))).queue();
             return;
         }
 
         String newPrefix = args[1];
 
         if (currentPrefix.equals(newPrefix)) {
-            e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, "Bot prefix is already `" + newPrefix + "`")).queue();
+            Embeds.createAndSendWithReaction(EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), Corby.config.emote_trash,
+                    String.format(prefixAlready, newPrefix));
             return;
         }
 
         if (newPrefix.length() > 5) {
-            e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, "The prefix cannot be more than 5 characters.")).queue();
+            Embeds.createAndSendWithReaction(EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), Corby.config.emote_trash, cannotBeMoreThen);
             return;
         }
 
         GuildSettingsManager.setGuildPrefix(e.getGuild(), newPrefix);
 
-        e.getTextChannel().sendMessage(Embeds.createDefaultEmbed(e, "The prefix was successfully changed to `" + newPrefix + "`" +
-                "\nExample of usage: " + newPrefix + "ping")).queue();
+        e.getTextChannel().sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), successChanged)).queue();
     }
 }

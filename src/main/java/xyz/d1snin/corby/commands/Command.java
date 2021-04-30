@@ -7,6 +7,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.managers.GuildSettingsManager;
+import xyz.d1snin.corby.utils.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
 import java.util.*;
@@ -26,6 +27,9 @@ public abstract class Command extends ListenerAdapter {
 
     public void onMessageReceived(MessageReceivedEvent e) {
 
+        final String invalidPermission = "You must have permissions %s to use this command.";
+        final String userOnCooldown = "You are now on cooldown, please wait a moment before using the command again.";
+
         if (!e.getChannelType().isGuild()) {
             return;
         }
@@ -38,7 +42,8 @@ public abstract class Command extends ListenerAdapter {
 
         if (isCommand(msg, e)) {
             if (!hasPermission(e)) {
-                e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, "You must have permissions `" + getPermissionString() + "` to use this command.")).queue();
+                Embeds.createAndSendWithReaction(EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), Corby.config.emote_trash,
+                        String.format(invalidPermission, getPermissionString()));
                 return;
             }
 
@@ -47,35 +52,31 @@ public abstract class Command extends ListenerAdapter {
             }
 
             if (cooldowns.contains(e.getAuthor())) {
-                e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, "You are now on cooldown, please wait a moment before using the command again.")).queue(
-                        (message -> message.addReaction(Corby.config.emote_trash).queue())
-                );
+                Embeds.createAndSendWithReaction(EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), Corby.config.emote_trash, userOnCooldown);
                 return;
             }
 
             try {
-                Corby.getService().execute(() ->
-                        execute(e, getCommandArgs(msg))
-                );
+
+                Corby.getService().execute(() -> execute(e, getCommandArgs(msg)));
+
                 cooldowns.add(e.getAuthor());
             } catch (Exception exception) {
-                e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, "**An exception was caught while executing a command.**"
-                        + "\n\n**Caused by:**\n`"
-                        + (exception.getCause() == null ? "No reason given." : exception.getCause())
-                        + "`\n\n**Message:**\n`"
-                        + exception.getClass().getName() + ": " + exception.getMessage()
-                        + "`\n\nAll necessary information has been sent to the owner! You can delete this message with the button below.")).queue(
-                        (message -> message.addReaction(Corby.config.emote_trash).queue())
-                );
-                Corby.getAPI().openPrivateChannelById(Corby.config.owner_id).complete().sendMessage(Embeds.createDefaultEmbed(e, "**An exception was thrown while trying to execute a command.**"
+
+                Embeds.createAndSendWithReaction(EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), Corby.config.emote_trash,
+                        "**An exception was caught while executing a command.**"
+                        + "\nAll necessary information has been sent to the owner!");
+
+                Corby.getAPI().openPrivateChannelById(Corby.config.owner_id).complete().sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(),
+                        "**An exception was thrown while trying to execute a command.**"
                         + "\n\n**User message:**\n`"
                         + e.getMessage().getContentRaw()
                         + "`\n\n**Exception message:**\n`"
                         + exception.getClass().getName() + ": " + exception.getMessage()
                         + "`\n\n**Caused by:**\n`"
-                        + (exception.getCause() == null ? "No reason given." : exception.getCause()) + "`")).queue();
-                Corby.logger.debug("Exception");
-                exception.printStackTrace();
+                        + (exception.getCause() == null ? "No reason given." : exception.getCause()) + "`"
+                        + "`\n\n**Stacktrace:**\n`"
+                        + exception.getStackTrace()[0])).queue();
             }
         }
     }

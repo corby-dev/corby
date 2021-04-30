@@ -26,6 +26,11 @@ public class ConfigManager {
                         Integer.parseInt(reader.read("error_color").split("\\s")[2])
                 ),
                 new Color(
+                        Integer.parseInt(reader.read("success_color").split("\\s")[0]),
+                        Integer.parseInt(reader.read("success_color").split("\\s")[1]),
+                        Integer.parseInt(reader.read("success_color").split("\\s")[2])
+                ),
+                new Color(
                         Integer.parseInt(reader.read("starboard_color").split("\\s")[0]),
                         Integer.parseInt(reader.read("starboard_color").split("\\s")[1]),
                         Integer.parseInt(reader.read("starboard_color").split("\\s")[2])

@@ -6,7 +6,7 @@ import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import com.github.bottomSoftwareFoundation.bottom.Bottom;
 import xyz.d1snin.corby.database.managers.GuildSettingsManager;
-import xyz.d1snin.corby.event.ReactionUpdateEvent;
+import xyz.d1snin.corby.utils.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
 public class BottomCommand extends Command {
@@ -29,7 +29,7 @@ public class BottomCommand extends Command {
             final String longR = "Sorry, generated result is too long.";
 
             if (args.length < 3) {
-                e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, String.format(usage, GuildSettingsManager.getGuildPrefix(e.getGuild()))))
+                e.getTextChannel().sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), String.format(usage, GuildSettingsManager.getGuildPrefix(e.getGuild()))))
                         .queue((message1 -> message1.addReaction(Corby.config.emote_trash).queue()));
                 return;
             }
@@ -43,19 +43,17 @@ public class BottomCommand extends Command {
 
 
                     if (encodedMessage.length() > edMsgLimit) {
-                        e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, longR))
-                                .queue((message1 -> message1.addReaction(Corby.config.emote_trash)
-                                        .queue((message2) -> ReactionUpdateEvent.addListener(message1.getReactions().get(0)))));
+                        Embeds.createAndSendWithReaction(EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), Corby.config.emote_trash, longR);
                         return;
                     }
 
                     if (message.length() > msgLimit2 || message.length() < msgLimit1) {
-                        e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, String.format(usageE, GuildSettingsManager.getGuildPrefix(e.getGuild()), msgLimit1, msgLimit2)))
-                                .queue((message1 -> message1.addReaction(Corby.config.emote_trash).queue()));
+                        Embeds.createAndSendWithReaction(EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), Corby.config.emote_trash,
+                                String.format(usageE, GuildSettingsManager.getGuildPrefix(e.getGuild()), msgLimit1, msgLimit2));
                         return;
                     }
 
-                    e.getTextChannel().sendMessage(Embeds.createDefaultEmbed(e, String.format(result, encodedMessage))).queue();
+                    e.getTextChannel().sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), String.format(result, encodedMessage))).queue();
 
                     break;
 
@@ -64,25 +62,23 @@ public class BottomCommand extends Command {
                     String decodedMessage = Bottom.decode(message);
 
                     if (decodedMessage.length() > edMsgLimit) {
-                        e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, longR))
-                                .queue((message1 -> message1.addReaction(Corby.config.emote_trash).queue()));
+                        Embeds.createAndSendWithReaction(EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), Corby.config.emote_trash, longR);
                         return;
                     }
 
-                    e.getTextChannel().sendMessage(Embeds.createDefaultEmbed(e, String.format(result, decodedMessage))).queue();
+                    e.getTextChannel().sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), String.format(result, decodedMessage))).queue();
 
                     break;
 
                 default:
-                    e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, String.format(usage, GuildSettingsManager.getGuildPrefix(e.getGuild()))))
-                            .queue((message1 -> message1.addReaction(Corby.config.emote_trash).queue()));
+                    Embeds.createAndSendWithReaction(EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), Corby.config.emote_trash,
+                            String.format(usage, GuildSettingsManager.getGuildPrefix(e.getGuild())));
             }
         } catch (TranslationError exception) {
 
             final String tErr = "You cannot decrypt this message.";
 
-            e.getTextChannel().sendMessage(Embeds.createDefaultErrorEmbed(e, tErr))
-                    .queue((message -> message.addReaction(Corby.config.emote_trash).queue()));
+            Embeds.createAndSendWithReaction(EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), Corby.config.emote_trash, tErr);
         }
     }
 }
