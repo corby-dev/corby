@@ -2,8 +2,8 @@
 name: Improvement
 about: Improvement or simplification of already existing things
 title: "[IMPR]"
-labels: ''
-assignees: ''
+labels: improvement
+assignees: d1snin
 
 ---
 
