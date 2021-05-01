@@ -6,7 +6,6 @@ import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.api.sharding.ShardManager;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +13,7 @@ import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.commands.administration.RestartCommand;
 import xyz.d1snin.corby.commands.administration.ShutdownCommand;
 import xyz.d1snin.corby.commands.fun.BottomCommand;
+import xyz.d1snin.corby.commands.fun.CatCommand;
 import xyz.d1snin.corby.commands.fun.StarboardCommand;
 import xyz.d1snin.corby.commands.misc.HelpCommand;
 import xyz.d1snin.corby.commands.misc.PingCommand;
@@ -95,7 +95,8 @@ public class Corby {
                 Command.add(new RestartCommand()),
                 Command.add(new StarboardCommand()),
                 Command.add(new HelpCommand()),
-                Command.add(new BottomCommand())
+                Command.add(new BottomCommand()),
+                Command.add(new CatCommand())
         );
 
         API = jdaBuilder.build();

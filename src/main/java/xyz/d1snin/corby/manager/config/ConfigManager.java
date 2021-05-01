@@ -8,39 +8,40 @@ public class ConfigManager {
 
     public static Config init() {
 
-        JSONReader reader = new JSONReader("config.json");
+        final String file = "config.json";
+        JSONReader reader = new JSONReader();
 
         return new Config(
-                reader.read("token"),
-                reader.read("bot_prefix_default"),
-                reader.read("owner_id"),
-                Integer.parseInt(reader.read("default_cooldown_seconds")),
+                reader.readFromFile(file, "token"),
+                reader.readFromFile(file, "bot_prefix_default"),
+                reader.readFromFile(file, "owner_id"),
+                Integer.parseInt(reader.readFromFile(file, "default_cooldown_seconds")),
                 new Color(
-                        Integer.parseInt(reader.read("default_color").split("\\s")[0]),
-                        Integer.parseInt(reader.read("default_color").split("\\s")[1]),
-                        Integer.parseInt(reader.read("default_color").split("\\s")[2])
+                        Integer.parseInt(reader.readFromFile(file, "default_color").split("\\s")[0]),
+                        Integer.parseInt(reader.readFromFile(file, "default_color").split("\\s")[1]),
+                        Integer.parseInt(reader.readFromFile(file, "default_color").split("\\s")[2])
                 ),
                 new Color(
-                        Integer.parseInt(reader.read("error_color").split("\\s")[0]),
-                        Integer.parseInt(reader.read("error_color").split("\\s")[1]),
-                        Integer.parseInt(reader.read("error_color").split("\\s")[2])
+                        Integer.parseInt(reader.readFromFile(file, "error_color").split("\\s")[0]),
+                        Integer.parseInt(reader.readFromFile(file, "error_color").split("\\s")[1]),
+                        Integer.parseInt(reader.readFromFile(file, "error_color").split("\\s")[2])
                 ),
                 new Color(
-                        Integer.parseInt(reader.read("success_color").split("\\s")[0]),
-                        Integer.parseInt(reader.read("success_color").split("\\s")[1]),
-                        Integer.parseInt(reader.read("success_color").split("\\s")[2])
+                        Integer.parseInt(reader.readFromFile(file, "success_color").split("\\s")[0]),
+                        Integer.parseInt(reader.readFromFile(file, "success_color").split("\\s")[1]),
+                        Integer.parseInt(reader.readFromFile(file, "success_color").split("\\s")[2])
                 ),
                 new Color(
-                        Integer.parseInt(reader.read("starboard_color").split("\\s")[0]),
-                        Integer.parseInt(reader.read("starboard_color").split("\\s")[1]),
-                        Integer.parseInt(reader.read("starboard_color").split("\\s")[2])
+                        Integer.parseInt(reader.readFromFile(file, "starboard_color").split("\\s")[0]),
+                        Integer.parseInt(reader.readFromFile(file, "starboard_color").split("\\s")[1]),
+                        Integer.parseInt(reader.readFromFile(file, "starboard_color").split("\\s")[2])
                 ),
-                reader.read("emote_trash"),
-                reader.read("emote_star"),
-                reader.read("emote_white_check_mark"),
-                Integer.parseInt(reader.read("default_starboard_stars")),
-                Boolean.parseBoolean(reader.read("default_starboard_isenabled")),
-                reader.read("help_page_url")
+                reader.readFromFile(file, "emote_trash"),
+                reader.readFromFile(file, "emote_star"),
+                reader.readFromFile(file, "emote_white_check_mark"),
+                Integer.parseInt(reader.readFromFile(file, "default_starboard_stars")),
+                Boolean.parseBoolean(reader.readFromFile(file, "default_starboard_isenabled")),
+                reader.readFromFile(file, "help_page_url")
         );
     }
 }
