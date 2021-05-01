@@ -1,6 +1,5 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/d1snin/corby/badge/development)](https://www.codefactor.io/repository/github/d1snin/corby/overview/development)
 [![Build Status](https://travis-ci.com/d1snin/corby.svg?branch=development)](https://travis-ci.com/d1snin/corby)
-[![build](https://github.com/d1snin/corby/actions/workflows/gradle_build/badge.svg)](https://github.com/d1snin/corby/actions)
 [![<ORG_NAME>](https://circleci.com/gh/d1snin/corby.svg?style=svg)](https://circleci.com/gh/d1snin/corby)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
