@@ -65,7 +65,7 @@ Then fill it in according to the following template:
   "help_page_url": "https://d1snin.xyz/corby/"
 }
 ```
-The next step you need to create a database and execute a [script](https://github.com/d1snin/corby/blob/development/scripts/setupdb.sql) for this database to make it work for the bot.
+The next step you need to create a database and execute a [script](https://github.com/d1snin/corby/blob/development/scripts/setupdb.sql) for this database to make it work for the bot and add the database file with the extension `.db` along the path `corby/src/main/resources/corby.db`.
 
 Then you can start the bot with the command `./gradlew run`.
 
