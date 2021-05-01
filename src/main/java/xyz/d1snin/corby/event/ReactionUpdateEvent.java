@@ -15,7 +15,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 public class ReactionUpdateEvent extends ListenerAdapter {
 
-    private static final Set<MessageReaction> toExecuteList = new CopyOnWriteArraySet<>();
     private static final Set<MessageReaction> executed = new CopyOnWriteArraySet<>();
 
     @Override
@@ -24,10 +23,10 @@ public class ReactionUpdateEvent extends ListenerAdapter {
 
             if (event.getReaction().getReactionEmote().getName().equals(Corby.config.emote_trash)
                     && !event.getReaction().isSelf()
-                    && toExecuteList.contains(event.getReaction())) {
+                    && !executed.contains(event.getReaction())) {
                 if (event.retrieveMessage().complete().getReactions().get(0).isSelf()) {
                     event.retrieveMessage().queue((message -> message.delete().queue()));
-                    toExecuteList.remove(event.getReaction());
+                    executed.add(event.getReaction());
                 }
                 return;
             }
@@ -58,9 +57,5 @@ public class ReactionUpdateEvent extends ListenerAdapter {
             }
 
         } catch (IndexOutOfBoundsException ignored) {}
-    }
-
-    public static void addListener(MessageReaction msgReaction) {
-        toExecuteList.add(msgReaction);
     }
 }

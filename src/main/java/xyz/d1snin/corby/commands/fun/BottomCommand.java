@@ -29,8 +29,8 @@ public class BottomCommand extends Command {
             final String longR = "Sorry, generated result is too long.";
 
             if (args.length < 3) {
-                e.getTextChannel().sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), String.format(usage, GuildSettingsManager.getGuildPrefix(e.getGuild()))))
-                        .queue((message1 -> message1.addReaction(Corby.config.emote_trash).queue()));
+                Embeds.createAndSendWithReaction(EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), Corby.config.emote_trash,
+                        String.format(usage, GuildSettingsManager.getGuildPrefix(e.getGuild())));
                 return;
             }
 
