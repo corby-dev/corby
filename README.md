@@ -3,6 +3,8 @@
 [![<ORG_NAME>](https://circleci.com/gh/d1snin/corby.svg?style=svg)](https://circleci.com/gh/d1snin/corby)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
+[![corby pic](https://raw.githubusercontent.com/d1snin/corby/development/src/main/resources/corby.jpg)]
+
 # Corby:
 Corby is a bot that aims to log any events that occur in your discord server and to moderate it, I am open to any of your pool requests
 # Instructions:
