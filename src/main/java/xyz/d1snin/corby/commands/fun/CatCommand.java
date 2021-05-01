@@ -22,7 +22,7 @@ public class CatCommand extends Command {
 
         JSONReader reader = new JSONReader();
 
-        e.getTextChannel().sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Generating...")).queue(message -> {
+        e.getTextChannel().sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Fetching...")).queue(message -> {
             try {
                 message.editMessage(new EmbedBuilder()
                         .setDescription("Here is your cat ФwФ")
