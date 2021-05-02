@@ -35,13 +35,13 @@ public class PrefixCommand extends Command {
         String newPrefix = args[1];
 
         if (currentPrefix.equals(newPrefix)) {
-            Embeds.createAndSendWithReaction(EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), Corby.config.emote_trash,
+            Embeds.createAndSendWithReaction(EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), Corby.config.emoteTrash,
                     String.format(prefixAlready, newPrefix));
             return;
         }
 
         if (newPrefix.length() > 5) {
-            Embeds.createAndSendWithReaction(EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), Corby.config.emote_trash, cannotBeMoreThen);
+            Embeds.createAndSendWithReaction(EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), Corby.config.emoteTrash, cannotBeMoreThen);
             return;
         }
 

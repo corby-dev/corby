@@ -8,12 +8,18 @@ import xyz.d1snin.corby.utils.Embeds;
 
 public class PingCommand extends Command {
 
-    public PingCommand() {
-        this.use = "ping";
-    }
+  public PingCommand() {
+    this.use = "ping";
+  }
 
-    @Override
-    protected void execute(MessageReceivedEvent e, String[] args) {
-        e.getTextChannel().sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), String.format("Current ping: %dms", Corby.getAPI().getGatewayPing()))).queue();
-    }
+  @Override
+  protected void execute(MessageReceivedEvent e, String[] args) {
+    e.getTextChannel()
+        .sendMessage(
+            Embeds.create(
+                EmbedTemplate.DEFAULT,
+                e.getAuthor(),
+                String.format("Current ping: %dms", Corby.getAPI().getGatewayPing())))
+        .queue();
+  }
 }

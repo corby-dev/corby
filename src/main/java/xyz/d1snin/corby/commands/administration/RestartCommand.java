@@ -10,25 +10,30 @@ import java.io.IOException;
 
 public class RestartCommand extends Command {
 
-    public RestartCommand() {
-        this.admincommand = true;
-        this.use = "reload";
-    }
+  public RestartCommand() {
+    this.admincommand = true;
+    this.use = "reload";
+  }
 
-    @Override
-    protected void execute(MessageReceivedEvent e, String[] args) {
-        if (args.length > 1) {
-            if (args[1].equals("server")) {
-                e.getTextChannel().sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Restarting server...")).complete();
-                try {
-                    Runtime.getRuntime().exec("systemctl reboot");
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
-            }
-            return;
+  @Override
+  protected void execute(MessageReceivedEvent e, String[] args) {
+    if (args.length > 1) {
+      if (args[1].equals("server")) {
+        e.getTextChannel()
+            .sendMessage(
+                Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Restarting server..."))
+            .complete();
+        try {
+          Runtime.getRuntime().exec("systemctl reboot");
+        } catch (IOException ioException) {
+          ioException.printStackTrace();
         }
-        e.getTextChannel().sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Restarting...")).complete();
-        Corby.restart();
+      }
+      return;
     }
+    e.getTextChannel()
+        .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Restarting..."))
+        .complete();
+    Corby.restart();
+  }
 }
