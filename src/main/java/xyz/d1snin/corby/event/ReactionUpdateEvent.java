@@ -11,38 +11,43 @@ package xyz.d1snin.corby.event;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageReaction;
+import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.managers.GuildSettingsManager;
+import xyz.d1snin.corby.annotation.EventListener;
 
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-public class ReactionUpdateEvent extends ListenerAdapter {
+@EventListener(event = {GuildMessageReactionAddEvent.class, GuildMessageReactionRemoveEvent.class})
+public class ReactionUpdateEvent extends Listener {
 
   private static final Set<MessageReaction> executed = new CopyOnWriteArraySet<>();
 
   @Override
-  public void onGenericGuildMessageReaction(GenericGuildMessageReactionEvent event) {
+  protected void execute(GenericEvent event) {
+    GenericGuildMessageReactionEvent thisEvent = ((GenericGuildMessageReactionEvent) event);
     try {
 
-      if (event.getReaction().getReactionEmote().getName().equals(Corby.config.emoteTrash)
-          && !event.getReaction().isSelf()
-          && !executed.contains(event.getReaction())) {
-        if (event.retrieveMessage().complete().getReactions().get(0).isSelf()) {
-          event.retrieveMessage().queue((message -> message.delete().queue()));
-          executed.add(event.getReaction());
+      if (thisEvent.getReaction().getReactionEmote().getName().equals(Corby.config.emoteTrash)
+          && !thisEvent.getReaction().isSelf()
+          && !executed.contains(thisEvent.getReaction())) {
+        if (thisEvent.retrieveMessage().complete().getReactions().get(0).isSelf()) {
+          thisEvent.retrieveMessage().queue((message -> message.delete().queue()));
+          executed.add(thisEvent.getReaction());
         }
         return;
       }
 
-      if (event.getReaction().getReactionEmote().getName().equals(Corby.config.emoteStar)) {
-        if (GuildSettingsManager.getGuildStarboardChannel(event.getGuild()) == null) return;
-        if (!GuildSettingsManager.getGuildStarboardIsEnabled(event.getGuild())) return;
-        Message msg = event.retrieveMessage().complete();
+      if (thisEvent.getReaction().getReactionEmote().getName().equals(Corby.config.emoteStar)) {
+        if (GuildSettingsManager.getGuildStarboardChannel(thisEvent.getGuild()) == null) return;
+        if (!GuildSettingsManager.getGuildStarboardIsEnabled(thisEvent.getGuild())) return;
+        Message msg = thisEvent.retrieveMessage().complete();
         if (msg.getAuthor().getId().equals(Corby.config.id)) return;
         MessageReaction reaction = msg.getReactions().get(0);
         for (MessageReaction r : msg.getReactions()) {
@@ -50,9 +55,10 @@ public class ReactionUpdateEvent extends ListenerAdapter {
             reaction = r;
           }
         }
-        if (reaction.getCount() == GuildSettingsManager.getGuildStarboardStars(event.getGuild())
+        if (reaction.getCount() == GuildSettingsManager.getGuildStarboardStars(thisEvent.getGuild())
             && !executed.contains(reaction)) {
-          Objects.requireNonNull(GuildSettingsManager.getGuildStarboardChannel(event.getGuild()))
+          Objects.requireNonNull(
+                  GuildSettingsManager.getGuildStarboardChannel(thisEvent.getGuild()))
               .sendMessage(
                   new EmbedBuilder()
                       .setAuthor(
@@ -77,7 +83,6 @@ public class ReactionUpdateEvent extends ListenerAdapter {
           executed.add(reaction);
         }
       }
-
     } catch (IndexOutOfBoundsException ignored) {
     }
   }
