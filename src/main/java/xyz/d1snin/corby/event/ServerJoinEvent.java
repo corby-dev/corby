@@ -11,24 +11,29 @@ package xyz.d1snin.corby.event;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import xyz.d1snin.corby.Corby;
+import xyz.d1snin.corby.annotation.EventListener;
 
 import java.util.List;
 import java.util.Objects;
 
-public class ServerJoinEvent extends ListenerAdapter {
+@EventListener(event = GuildJoinEvent.class)
+public class ServerJoinEvent extends Listener {
+
   @Override
-  public void onGuildJoin(GuildJoinEvent event) {
+  protected void execute(GenericEvent event) {
 
-    List<GuildChannel> channels = event.getGuild().getChannels();
+    GuildJoinEvent thisEvent = ((GuildJoinEvent) event);
+
+    List<GuildChannel> channels = thisEvent.getGuild().getChannels();
     GuildChannel channel =
-        event.getGuild().getSystemChannel() == null
+        thisEvent.getGuild().getSystemChannel() == null
             ? channels.get(channels.size() - 1)
-            : event.getGuild().getSystemChannel();
+            : thisEvent.getGuild().getSystemChannel();
 
-    if (!Objects.requireNonNull(event.getGuild().getBotRole())
+    if (!Objects.requireNonNull(thisEvent.getGuild().getBotRole())
         .getPermissions()
         .containsAll(Corby.permissions)) {
       ((TextChannel) channel)
@@ -42,7 +47,7 @@ public class ServerJoinEvent extends ListenerAdapter {
                   .setFooter(Corby.config.botName, Corby.config.botPfpUrl)
                   .build())
           .queue((message -> message.addReaction(Corby.config.emoteTrash).queue()));
-      event.getGuild().leave().queue();
+      thisEvent.getGuild().leave().queue();
       return;
     }
 
