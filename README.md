@@ -71,7 +71,9 @@ Then fill it in according to the following template:
 }
 ```
 The next step you need to create a database and execute a [script](https://github.com/d1snin/corby/blob/development/scripts/setupdb.sql) for this database to make it work for the bot and add the database file with the extension `.db` along the path `corby/src/main/resources/corby.db`.
-it must have a name `corby.db` as shown above.
+
+It must have a name `corby.db` as shown above.
+
 You can create an empty database via Intellij IDEA. Click on this tab
 
 ![dbguide1](https://i.imgur.com/5CaxWAA.png)
