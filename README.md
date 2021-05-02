@@ -32,7 +32,7 @@ Then fill it in according to the following template:
   "emoteStar": "",
   "emoteWhiteCheckMark": "",
   "defaultStarboardStars": "",
-  "default_starboard_isenabled": "",
+  "defaultStarboardIsEnabled": "",
   "helpPageUrl": ""
 }
 ```
