@@ -7,7 +7,7 @@
 
 # Corby:
 
-###Made in 🇷🇺 with ❤️.
+### Made in 🇷🇺 with ❤️.
 
 Corby is a bot that aims to log any events that occur in your discord server and to moderate it, I am open to any of your pool requests
 
