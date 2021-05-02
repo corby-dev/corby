@@ -126,7 +126,8 @@ public class StarboardCommand extends Command {
         }
 
         if (GuildSettingsManager.getGuildStarboardChannel(e.getGuild()) != null
-            && Objects.requireNonNull(GuildSettingsManager.getGuildStarboardChannel(e.getGuild())).getIdLong()
+            && Objects.requireNonNull(GuildSettingsManager.getGuildStarboardChannel(e.getGuild()))
+                    .getIdLong()
                 == e.getMessage().getMentionedChannels().get(0).getIdLong()) {
           Embeds.createAndSendWithReaction(
               EmbedTemplate.ERROR,
@@ -207,6 +208,8 @@ public class StarboardCommand extends Command {
         e.getTextChannel()
             .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), sbStars))
             .queue();
+
+      default:
     }
   }
 }
