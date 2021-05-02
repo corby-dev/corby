@@ -30,11 +30,19 @@ public class CatCommand extends Command {
                 message
                     .editMessage(
                         new EmbedBuilder()
-                            .setDescription("Here is your cat ФwФ")
+                            .setDescription(
+                                "**Fact about cats:** "
+                                    + reader.readFromURL(
+                                        "text",
+                                        new URL(
+                                            "https://cat-fact.herokuapp.com/facts/random?animal_type=cat&amount=1"),
+                                        true))
                             .setColor(Corby.config.defaultColor)
                             .setImage(
                                 reader.readFromURL(
-                                    "url", new URL("https://api.thecatapi.com/v1/images/search")))
+                                    "url",
+                                    new URL("https://api.thecatapi.com/v1/images/search"),
+                                    false))
                             .setFooter(
                                 e.getAuthor().getName() + " | ID: " + e.getAuthor().getId(),
                                 e.getAuthor().getEffectiveAvatarUrl())
