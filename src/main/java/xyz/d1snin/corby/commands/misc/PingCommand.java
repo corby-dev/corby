@@ -9,7 +9,7 @@ import xyz.d1snin.corby.utils.Embeds;
 public class PingCommand extends Command {
 
     public PingCommand() {
-        this.aliases = "ping";
+        this.use = "ping";
     }
 
     @Override

@@ -9,7 +9,7 @@ import xyz.d1snin.corby.database.managers.GuildSettingsManager;
 public class HelpCommand extends Command {
 
     public HelpCommand() {
-        this.aliases = "help";
+        this.use = "help";
     }
 
     @Override

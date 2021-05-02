@@ -20,7 +20,7 @@ public abstract class Command extends ListenerAdapter {
     private static final List<Command> commands = new ArrayList<>();
     private static final List<User> cooldowns = new CopyOnWriteArrayList<>();
 
-    protected String aliases = "null";
+    protected String use = "null";
     protected Permission[] permissions = new Permission[0];
     protected Permission[] botPermissions = new Permission[0];
     protected boolean admincommand = false;
@@ -65,18 +65,18 @@ public abstract class Command extends ListenerAdapter {
 
                 Embeds.createAndSendWithReaction(EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), Corby.config.emote_trash,
                         "**An exception was caught while executing a command.**"
-                        + "\nAll necessary information has been sent to the owner!");
+                                + "\nAll necessary information has been sent to the owner!");
 
                 Corby.getAPI().openPrivateChannelById(Corby.config.owner_id).complete().sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(),
                         "**An exception was thrown while trying to execute a command.**"
-                        + "\n\n**User message:**\n`"
-                        + e.getMessage().getContentRaw()
-                        + "`\n\n**Exception message:**\n`"
-                        + exception.getClass().getName() + ": " + exception.getMessage()
-                        + "`\n\n**Caused by:**\n`"
-                        + (exception.getCause() == null ? "No reason given." : exception.getCause()) + "`"
-                        + "`\n\n**Stacktrace:**\n`"
-                        + exception.getStackTrace()[0])).queue();
+                                + "\n\n**User message:**\n`"
+                                + e.getMessage().getContentRaw()
+                                + "`\n\n**Exception message:**\n`"
+                                + exception.getClass().getName() + ": " + exception.getMessage()
+                                + "`\n\n**Caused by:**\n`"
+                                + (exception.getCause() == null ? "No reason given." : exception.getCause()) + "`"
+                                + "`\n\n**Stacktrace:**\n`"
+                                + exception.getStackTrace()[0])).queue();
             }
         }
     }
@@ -103,12 +103,8 @@ public abstract class Command extends ListenerAdapter {
     }
 
     private boolean isCommand(Message message, MessageReceivedEvent event) {
-        for (String alias : aliases.split(", ")) {
-            if (Arrays.asList(getCommandArgs(message)).contains(GuildSettingsManager.getGuildPrefix(event.getGuild()) + alias)
-                    && getCommandArgs(message)[0].startsWith(GuildSettingsManager.getGuildPrefix(event.getGuild())))
-                return true;
-        }
-        return false;
+        return Arrays.asList(getCommandArgs(message)).contains(GuildSettingsManager.getGuildPrefix(event.getGuild()) + use)
+                && getCommandArgs(message)[0].startsWith(GuildSettingsManager.getGuildPrefix(event.getGuild()));
     }
 
     protected String[] getCommandArgs(Message message) {

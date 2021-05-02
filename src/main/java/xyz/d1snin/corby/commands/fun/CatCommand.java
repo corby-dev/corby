@@ -14,7 +14,7 @@ import java.net.URL;
 public class CatCommand extends Command {
 
     public CatCommand() {
-        this.aliases = "cat";
+        this.use = "cat";
     }
 
     @Override
