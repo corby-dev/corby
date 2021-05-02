@@ -26,18 +26,31 @@ public class JSONReader {
     }
   }
 
-  public String readFromURL(String object, URL url) {
+  public String readFromURL(String object, URL url, boolean isCatFact) {
 
     String result = "";
 
-    try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
+    if (!isCatFact) {
+      try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
 
-      JSONArray jsonArray = (JSONArray) new JSONParser().parse(reader);
-      JSONObject jsonObject = (JSONObject) jsonArray.get(0);
-      result = (String) jsonObject.get(object);
+        JSONArray jsonArray = (JSONArray) new JSONParser().parse(reader);
+        JSONObject jsonObject = (JSONObject) jsonArray.get(0);
+        result = (String) jsonObject.get(object);
 
-    } catch (IOException | ParseException e) {
-      e.printStackTrace();
+      } catch (IOException | ParseException e) {
+        e.printStackTrace();
+      }
+    } else {
+      do {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
+
+          JSONObject jsonObject = (JSONObject) new JSONParser().parse(reader);
+          result = (String) jsonObject.get(object);
+
+        } catch (IOException | ParseException e) {
+          e.printStackTrace();
+        }
+      } while (result.length() < 15);
     }
     return result;
   }
