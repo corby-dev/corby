@@ -49,7 +49,7 @@ Then fill it in according to the following template:
 `emoteStar` - emote of star (unicode)\
 `emoteWhiteCheckMark` - emote of white check mark (unicode)\
 `defaultStarboardStars` - the number of stars required for a message to appear on the starboard\
-`default_starboard_isenabled` - (boolean) default toggle for the starboard on the server\
+`defaultStarboardIsEnabled` - (boolean) default toggle for the starboard on the server\
 `helpPageUrl` - link to the page with information about commands
 #### An example of writing config.json
 ```json
@@ -66,7 +66,7 @@ Then fill it in according to the following template:
   "emoteStar": "⭐",
   "emoteWhiteCheckMark": "✅",
   "defaultStarboardStars": "3",
-  "default_starboard_isenabled": "false",
+  "defaultStarboardIsEnabled": "false",
   "helpPageUrl": "https://d1snin.xyz/corby/"
 }
 ```
