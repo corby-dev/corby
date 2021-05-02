@@ -12,25 +12,25 @@ import java.awt.*;
 
 public class Config {
 
-  public String token;
-  public String botPrefixDefault;
-  public String ownerId;
-  public int defaultCooldownSeconds;
+  public final String token;
+  public final String botPrefixDefault;
+  public final String ownerId;
+  public final int defaultCooldownSeconds;
   public String botName; // ! - These variables are initialized at startup
   public String botPfpUrl; // !
   public String inviteUrl; // !
   public String id; // !
   public String nameAsTag; // !
-  public Color defaultColor;
-  public Color errorColor;
-  public Color successColor;
-  public Color starboardColor;
-  public String emoteTrash;
-  public String emoteStar;
-  public String emoteWhiteCheckMark;
-  public int defaultStarboardStars;
-  public boolean defaultStarboardIsEnabled;
-  public String helpPageUrl;
+  public final Color defaultColor;
+  public final Color errorColor;
+  public final Color successColor;
+  public final Color starboardColor;
+  public final String emoteTrash;
+  public final String emoteStar;
+  public final String emoteWhiteCheckMark;
+  public final int defaultStarboardStars;
+  public final boolean defaultStarboardIsEnabled;
+  public final String helpPageUrl;
 
   public Config(
       String token,
@@ -85,9 +85,9 @@ public class Config {
   }
 
   public static class ExitCodes {
-    public static int NORMAL_SHUTDOWN_EXIT_CODE = 0;
-    public static int CANT_CONNECT_TO_THE_DATABASE_EXIT_CODE = 11;
-    public static int BAD_TOKEN_EXIT_CODE = 21;
-    public static int BAD_CONFIG_EXIT_CODE = 22;
+    public static final int NORMAL_SHUTDOWN_EXIT_CODE = 0;
+    public static final int CANT_CONNECT_TO_THE_DATABASE_EXIT_CODE = 11;
+    public static final int BAD_TOKEN_EXIT_CODE = 21;
+    public static final int BAD_CONFIG_EXIT_CODE = 22;
   }
 }

@@ -39,7 +39,7 @@ public class Embeds {
   }
 
   public static void createAndSendWithReaction(
-      EmbedTemplate template, User u, TextChannel c, String unicode, String description) {
+      EmbedTemplate template, User u, TextChannel c, String description) {
     c.sendMessage(create(template, u, description))
         .queue((message -> message.addReaction(Corby.config.emoteTrash).queue()));
   }

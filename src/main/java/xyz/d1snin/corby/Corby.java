@@ -47,8 +47,8 @@ public class Corby {
       Executors.newSingleThreadScheduledExecutor();
 
   private static final List<String> presences = new ArrayList<>();
-  public static Set<Permission> permissions = new TreeSet<>();
-  public static List<Permission> defaultPermissions =
+  public static final Set<Permission> permissions = new TreeSet<>();
+  public static final List<Permission> defaultPermissions =
       Arrays.asList(
           Permission.MESSAGE_HISTORY,
           Permission.MESSAGE_READ,
@@ -56,7 +56,7 @@ public class Corby {
           Permission.VIEW_CHANNEL);
   private static final Random random = new Random();
 
-  public static Config config = ConfigManager.init();
+  public static final Config config = ConfigManager.init();
 
   public static Logger logger = LoggerFactory.getLogger("loader");
 

@@ -55,7 +55,6 @@ public abstract class Command extends ListenerAdapter {
             EmbedTemplate.ERROR,
             e.getAuthor(),
             e.getTextChannel(),
-            Corby.config.emoteTrash,
             String.format(invalidPermission, getPermissionString()));
         return;
       }
@@ -66,11 +65,7 @@ public abstract class Command extends ListenerAdapter {
 
       if (cooldowns.contains(e.getAuthor())) {
         Embeds.createAndSendWithReaction(
-            EmbedTemplate.ERROR,
-            e.getAuthor(),
-            e.getTextChannel(),
-            Corby.config.emoteTrash,
-            userOnCooldown);
+            EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), userOnCooldown);
         return;
       }
 
@@ -85,7 +80,6 @@ public abstract class Command extends ListenerAdapter {
             EmbedTemplate.ERROR,
             e.getAuthor(),
             e.getTextChannel(),
-            Corby.config.emoteTrash,
             "**An exception was caught while executing a command.**"
                 + "\nAll necessary information has been sent to the owner!");
 
