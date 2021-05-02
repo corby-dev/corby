@@ -86,7 +86,7 @@ Now fill in the required fields as shown below.
 
 ![dbguide3](https://i.imgur.com/EbAJIsg.png)
 
-Follow this path `scripts/setupdb.sql` and copy the content of the script and paste it into the field to execute the request and click `Execute`.
+Follow this path `scripts/setupdb.sql` and copy the content of the script and paste it into the field to execute the request and click `Execute`. Move the database file along the path `corby/src/main/resources`.
 
 ![dbguide4](https://i.imgur.com/RG172sF.png)
 
