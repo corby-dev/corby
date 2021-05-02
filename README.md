@@ -71,6 +71,22 @@ Then fill it in according to the following template:
 }
 ```
 The next step you need to create a database and execute a [script](https://github.com/d1snin/corby/blob/development/scripts/setupdb.sql) for this database to make it work for the bot and add the database file with the extension `.db` along the path `corby/src/main/resources/corby.db`.
+it must have a name `corby.db` as shown above.
+You can create an empty database via Intellij IDEA. Click on this tab
+
+![dbguide1](https://i.imgur.com/5CaxWAA.png)
+
+Now click on "+" to create a new database, then hover mouse over Data Source and select SQLite database.
+
+![dbguide2](https://i.imgur.com/vTb64f8.png)
+
+Now fill in the required fields as shown below.
+
+![dbguide3](https://i.imgur.com/EbAJIsg.png)
+
+Follow this path `scripts/setupdb.sql` and copy the content of the script and paste it into the field to execute the request and click `Execute`.
+
+![dbguide4](https://i.imgur.com/RG172sF.png)
 
 Then you can start the bot with the command `./gradlew run`.
 
