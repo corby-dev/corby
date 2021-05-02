@@ -8,14 +8,16 @@ import xyz.d1snin.corby.utils.Embeds;
 
 public class ShutdownCommand extends Command {
 
-    public ShutdownCommand() {
-        this.admincommand = true;
-        this.use = "shut";
-    }
+  public ShutdownCommand() {
+    this.admincommand = true;
+    this.use = "terminate";
+  }
 
-    @Override
-    protected void execute(MessageReceivedEvent e, String[] args) {
-        e.getTextChannel().sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Terminating... Bye!")).complete();
-        Corby.shutdown();
-    }
+  @Override
+  protected void execute(MessageReceivedEvent e, String[] args) {
+    e.getTextChannel()
+        .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Terminating... Bye!"))
+        .complete();
+    Corby.shutdown();
+  }
 }

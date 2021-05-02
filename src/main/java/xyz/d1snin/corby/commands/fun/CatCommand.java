@@ -13,26 +13,36 @@ import java.net.URL;
 
 public class CatCommand extends Command {
 
-    public CatCommand() {
-        this.use = "cat";
-    }
+  public CatCommand() {
+    this.use = "cat";
+  }
 
-    @Override
-    protected void execute(MessageReceivedEvent e, String[] args) {
+  @Override
+  protected void execute(MessageReceivedEvent e, String[] args) {
 
-        JSONReader reader = new JSONReader();
+    JSONReader reader = new JSONReader();
 
-        e.getTextChannel().sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Fetching...")).queue(message -> {
-            try {
-                message.editMessage(new EmbedBuilder()
-                        .setDescription("Here is your cat ФwФ")
-                        .setColor(Corby.config.default_color)
-                        .setImage(reader.readFromURL("url", new URL("https://api.thecatapi.com/v1/images/search")))
-                        .setFooter(e.getAuthor().getName() + " | ID: " + e.getAuthor().getId(), e.getAuthor().getEffectiveAvatarUrl())
-                        .build()).queue();
-            } catch (MalformedURLException malformedURLException) {
+    e.getTextChannel()
+        .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Fetching..."))
+        .queue(
+            message -> {
+              try {
+                message
+                    .editMessage(
+                        new EmbedBuilder()
+                            .setDescription("Here is your cat ФwФ")
+                            .setColor(Corby.config.defaultColor)
+                            .setImage(
+                                reader.readFromURL(
+                                    "url", new URL("https://api.thecatapi.com/v1/images/search")))
+                            .setFooter(
+                                e.getAuthor().getName() + " | ID: " + e.getAuthor().getId(),
+                                e.getAuthor().getEffectiveAvatarUrl())
+                            .build())
+                    .queue();
+              } catch (MalformedURLException malformedURLException) {
                 malformedURLException.printStackTrace();
-            }
-        });
-    }
+              }
+            });
+  }
 }
