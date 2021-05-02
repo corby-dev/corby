@@ -11,7 +11,7 @@ import xyz.d1snin.corby.utils.Embeds;
 public class PrefixCommand extends Command {
 
     public PrefixCommand() {
-        this.aliases = "prefix";
+        this.use = "prefix";
         this.permissions = new Permission[]{
                 Permission.ADMINISTRATOR
         };

@@ -12,7 +12,7 @@ import xyz.d1snin.corby.utils.Embeds;
 public class BottomCommand extends Command {
 
     public BottomCommand() {
-        this.aliases = "bottom";
+        this.use = "bottom";
     }
 
     @Override

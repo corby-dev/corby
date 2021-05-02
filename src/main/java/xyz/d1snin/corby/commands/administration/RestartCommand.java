@@ -12,7 +12,7 @@ public class RestartCommand extends Command {
 
     public RestartCommand() {
         this.admincommand = true;
-        this.aliases = "reload, reboot, restart";
+        this.use = "reload";
     }
 
     @Override

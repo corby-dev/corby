@@ -10,7 +10,7 @@ public class ShutdownCommand extends Command {
 
     public ShutdownCommand() {
         this.admincommand = true;
-        this.aliases = "shut, shutdown, bye, goodnight, terminate";
+        this.use = "shut";
     }
 
     @Override
