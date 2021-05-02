@@ -36,7 +36,7 @@ public class ConfigManager {
         reader.readFromFile(file, "emoteStar"),
         reader.readFromFile(file, "emoteWhiteCheckMark"),
         Integer.parseInt(reader.readFromFile(file, "defaultStarboardStars")),
-        Boolean.parseBoolean(reader.readFromFile(file, "default_starboard_isenabled")),
+        Boolean.parseBoolean(reader.readFromFile(file, "defaultStarboardIsEnabled")),
         reader.readFromFile(file, "helpPageUrl"));
   }
 }
