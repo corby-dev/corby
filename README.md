@@ -90,6 +90,8 @@ Follow this path `scripts/setupdb.sql` and copy the content of the script and pa
 
 ![dbguide4](https://i.imgur.com/RG172sF.png)
 
+![dbguide5](https://i.imgur.com/350dikW.png)
+
 Then you can start the bot with the command `./gradlew run`.
 
 ### Contributing:
