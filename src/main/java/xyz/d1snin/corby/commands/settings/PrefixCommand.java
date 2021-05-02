@@ -55,6 +55,6 @@ public class PrefixCommand extends Command {
 
         GuildSettingsManager.setGuildPrefix(e.getGuild(), newPrefix);
 
-        e.getTextChannel().sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), successChanged)).queue();
+        e.getTextChannel().sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), String.format(successChanged, newPrefix))).queue();
     }
 }
