@@ -15,6 +15,10 @@ public class MessageEvent extends Listener {
 
     MessageReceivedEvent thisEvent = ((MessageReceivedEvent) event);
 
+    if (!thisEvent.getChannelType().isGuild()) {
+      return;
+    }
+
     String arg = thisEvent.getMessage().getContentRaw().split("\\s+")[0];
 
     if (!arg.startsWith(GuildSettingsManager.getGuildPrefix(thisEvent.getGuild()))) {

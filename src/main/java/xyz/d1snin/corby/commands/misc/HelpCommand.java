@@ -13,6 +13,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.GuildSettingsManager;
+import xyz.d1snin.corby.utils.EmbedTemplate;
+import xyz.d1snin.corby.utils.Embeds;
+import xyz.d1snin.corby.utils.OtherUtils;
 
 public class HelpCommand extends Command {
 
@@ -22,32 +25,35 @@ public class HelpCommand extends Command {
 
   @Override
   protected void execute(MessageReceivedEvent e, String[] args) {
-    e.getMessage().addReaction(Corby.config.emoteWhiteCheckMark).queue();
-    e.getAuthor()
-        .openPrivateChannel()
-        .complete()
-        .sendMessage(
-            new EmbedBuilder()
-                .setAuthor(
-                    e.getGuild().getName(),
-                    Corby.config.helpPageUrl,
-                    e.getGuild().getIconUrl() == null
-                        ? "https://media.discordapp.net/attachments/835925114700300380/836291623885340723/iu.png"
-                        : e.getGuild().getIconUrl())
-                .setDescription(
-                    "**Server:** "
-                        + e.getGuild().getName()
-                        + "\n**Prefix for commands on this server:** `"
-                        + GuildSettingsManager.getGuildPrefix(e.getGuild())
-                        + "`"
-                        + "\n[Commands list]("
-                        + Corby.config.helpPageUrl
-                        + ")"
-                        + "\n[Invite me on your server!]("
-                        + Corby.config.inviteUrl
-                        + ")")
-                .setColor(Corby.config.defaultColor)
-                .build())
-        .queue();
+    OtherUtils.sendPrivateMessageSafe(
+        e.getAuthor(),
+        new EmbedBuilder()
+            .setAuthor(
+                e.getGuild().getName(),
+                Corby.config.helpPageUrl,
+                e.getGuild().getIconUrl() == null
+                    ? "https://media.discordapp.net/attachments/835925114700300380/836291623885340723/iu.png"
+                    : e.getGuild().getIconUrl())
+            .setDescription(
+                "**Server:** "
+                    + e.getGuild().getName()
+                    + "\n**Prefix for commands on this server:** `"
+                    + GuildSettingsManager.getGuildPrefix(e.getGuild())
+                    + "`"
+                    + "\n[Commands list]("
+                    + Corby.config.helpPageUrl
+                    + ")"
+                    + "\n[Invite me on your server!]("
+                    + Corby.config.inviteUrl
+                    + ")")
+            .setColor(Corby.config.defaultColor)
+            .build(),
+        () ->
+            Embeds.createAndSendWithReaction(
+                EmbedTemplate.ERROR,
+                e.getAuthor(),
+                e.getTextChannel(),
+                "Unable to send you a message, make sure you accept messages from server members."),
+        () -> e.getMessage().addReaction(Corby.config.emoteWhiteCheckMark).queue());
   }
 }
