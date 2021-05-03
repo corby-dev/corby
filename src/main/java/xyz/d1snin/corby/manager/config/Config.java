@@ -12,35 +12,31 @@ import java.awt.*;
 
 public class Config {
 
-  public final String token;
-  public final String botPrefixDefault;
-  public final String ownerId;
-  public final int defaultCooldownSeconds;
+  public String token;
+  public String botPrefixDefault;
+  public String ownerId;
+  public int defaultCooldownSeconds;
   public String botName; // ! - These variables are initialized at startup
   public String botPfpUrl; // !
   public String inviteUrl; // !
   public String id; // !
   public String nameAsTag; // !
-  public final Color defaultColor;
-  public final Color errorColor;
-  public final Color successColor;
-  public final Color starboardColor;
-  public final String emoteTrash;
-  public final String emoteStar;
-  public final String emoteWhiteCheckMark;
-  public final int defaultStarboardStars;
-  public final boolean defaultStarboardIsEnabled;
-  public final String helpPageUrl;
+  public Color defaultColor; // !
+  public Color errorColor; // !
+  public Color successColor; // !
+  public Color starboardColor; // !
+  public String emoteTrash;
+  public String emoteStar;
+  public String emoteWhiteCheckMark;
+  public int defaultStarboardStars;
+  public boolean defaultStarboardIsEnabled;
+  public String helpPageUrl;
 
   public Config(
       String token,
       String botPrefixDefault,
       String ownerId,
       int defaultCooldownSeconds,
-      Color defaultColor,
-      Color errorColor,
-      Color successColor,
-      Color starboardColor,
       String emoteTrash,
       String emoteStar,
       String emoteWhiteCheckMark,
@@ -52,10 +48,6 @@ public class Config {
     this.botPrefixDefault = botPrefixDefault;
     this.ownerId = ownerId;
     this.defaultCooldownSeconds = defaultCooldownSeconds;
-    this.defaultColor = defaultColor;
-    this.errorColor = errorColor;
-    this.successColor = successColor;
-    this.starboardColor = starboardColor;
     this.emoteTrash = emoteTrash;
     this.emoteStar = emoteStar;
     this.emoteWhiteCheckMark = emoteWhiteCheckMark;
@@ -64,25 +56,28 @@ public class Config {
     this.helpPageUrl = helpPageUrl;
   }
 
-  public void setBotPfpUrl(String botPfpUrl) {
+  public void initOther(
+      Color defaultColor,
+      Color errorColor,
+      Color successColor,
+      Color starboardColor,
+      String botName,
+      String botPfpUrl,
+      String inviteUrl,
+      String id,
+      String nameAsTag) {
+    this.defaultColor = defaultColor;
+    this.errorColor = errorColor;
+    this.successColor = successColor;
+    this.starboardColor = starboardColor;
+    this.botName = botName;
     this.botPfpUrl = botPfpUrl;
-  }
-
-  public void setInviteUrl(String inviteUrl) {
     this.inviteUrl = inviteUrl;
-  }
-
-  public void setId(String id) {
     this.id = id;
-  }
-
-  public void setNameAsTag(String nameAsTag) {
     this.nameAsTag = nameAsTag;
   }
 
-  public void setBotName(String botName) {
-    this.botName = botName;
-  }
+  public Config() {}
 
   public static class ExitCodes {
     public static final int NORMAL_SHUTDOWN_EXIT_CODE = 0;
