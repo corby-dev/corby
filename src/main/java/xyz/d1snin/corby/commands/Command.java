@@ -136,7 +136,9 @@ public abstract class Command extends ListenerAdapter {
 
   private boolean isCommand(Message message, MessageReceivedEvent event) {
     return Arrays.asList(getCommandArgs(message))
-            .contains(GuildSettingsManager.getGuildPrefix(event.getGuild()) + use)
+            .get(0)
+            .toLowerCase()
+            .equals(GuildSettingsManager.getGuildPrefix(event.getGuild()) + use)
         && getCommandArgs(message)[0].startsWith(
             GuildSettingsManager.getGuildPrefix(event.getGuild()));
   }
