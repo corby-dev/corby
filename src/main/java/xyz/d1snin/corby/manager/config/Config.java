@@ -83,6 +83,6 @@ public class Config {
     public static final int NORMAL_SHUTDOWN_EXIT_CODE = 0;
     public static final int CANT_CONNECT_TO_THE_DATABASE_EXIT_CODE = 11;
     public static final int BAD_TOKEN_EXIT_CODE = 21;
-    public static final int BAD_CONFIG_EXIT_CODE = 22;
+    // --Commented out by Inspection (03.05.2021, 22:49):public static final int BAD_CONFIG_EXIT_CODE = 22;
   }
 }

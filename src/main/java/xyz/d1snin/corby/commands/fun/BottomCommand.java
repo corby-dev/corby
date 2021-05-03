@@ -10,6 +10,7 @@ package xyz.d1snin.corby.commands.fun;
 
 import com.github.bottomSoftwareFoundation.bottom.TranslationError;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import com.github.bottomSoftwareFoundation.bottom.Bottom;
 import xyz.d1snin.corby.database.managers.GuildSettingsManager;
@@ -42,6 +43,7 @@ public class BottomCommand extends Command {
             EmbedTemplate.ERROR,
             e.getAuthor(),
             e.getTextChannel(),
+            Corby.config.emoteTrash,
             String.format(usage, GuildSettingsManager.getGuildPrefix(e.getGuild())));
         return;
       }
@@ -57,7 +59,11 @@ public class BottomCommand extends Command {
 
           if (encodedMessage.length() > edMsgLimit) {
             Embeds.createAndSendWithReaction(
-                EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), longR);
+                EmbedTemplate.ERROR,
+                e.getAuthor(),
+                e.getTextChannel(),
+                Corby.config.emoteTrash,
+                longR);
             return;
           }
 
@@ -66,6 +72,7 @@ public class BottomCommand extends Command {
                 EmbedTemplate.ERROR,
                 e.getAuthor(),
                 e.getTextChannel(),
+                Corby.config.emoteTrash,
                 String.format(
                     usageE,
                     GuildSettingsManager.getGuildPrefix(e.getGuild()),
@@ -87,7 +94,11 @@ public class BottomCommand extends Command {
 
           if (decodedMessage.length() > edMsgLimit) {
             Embeds.createAndSendWithReaction(
-                EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), longR);
+                EmbedTemplate.ERROR,
+                e.getAuthor(),
+                e.getTextChannel(),
+                Corby.config.emoteTrash,
+                longR);
             return;
           }
 
@@ -104,6 +115,7 @@ public class BottomCommand extends Command {
               EmbedTemplate.ERROR,
               e.getAuthor(),
               e.getTextChannel(),
+              Corby.config.emoteTrash,
               String.format(usage, GuildSettingsManager.getGuildPrefix(e.getGuild())));
       }
     } catch (TranslationError exception) {
@@ -111,7 +123,7 @@ public class BottomCommand extends Command {
       final String tErr = "You cannot decrypt this message.";
 
       Embeds.createAndSendWithReaction(
-          EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), tErr);
+          EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), Corby.config.emoteTrash, tErr);
     }
   }
 }

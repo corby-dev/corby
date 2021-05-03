@@ -10,6 +10,7 @@ package xyz.d1snin.corby.commands.fun;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.GuildSettingsManager;
 import xyz.d1snin.corby.utils.EmbedTemplate;
@@ -52,6 +53,7 @@ public class StarboardCommand extends Command {
             EmbedTemplate.ERROR,
             e.getAuthor(),
             e.getTextChannel(),
+            Corby.config.emoteTrash,
             String.format(sbNotEnabled, GuildSettingsManager.getGuildPrefix(e.getGuild())));
       } else {
         e.getTextChannel()
@@ -77,13 +79,18 @@ public class StarboardCommand extends Command {
               EmbedTemplate.ERROR,
               e.getAuthor(),
               e.getTextChannel(),
+              Corby.config.emoteTrash,
               String.format(sbNotConfigured, GuildSettingsManager.getGuildPrefix(e.getGuild())));
           return;
         }
 
         if (GuildSettingsManager.getGuildStarboardIsEnabled(e.getGuild())) {
           Embeds.createAndSendWithReaction(
-              EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), sbAlreadyEnabled);
+              EmbedTemplate.ERROR,
+              e.getAuthor(),
+              e.getTextChannel(),
+              Corby.config.emoteTrash,
+              sbAlreadyEnabled);
           return;
         }
 
@@ -97,13 +104,21 @@ public class StarboardCommand extends Command {
       case "disable":
         if (!GuildSettingsManager.getGuildStarboardIsEnabled(e.getGuild())) {
           Embeds.createAndSendWithReaction(
-              EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), sbAlreadyDisabled);
+              EmbedTemplate.ERROR,
+              e.getAuthor(),
+              e.getTextChannel(),
+              Corby.config.emoteTrash,
+              sbAlreadyDisabled);
           return;
         }
 
         GuildSettingsManager.setGuildStarboardIsEnabled(e.getGuild(), false);
         Embeds.createAndSendWithReaction(
-            EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), sbDisabled);
+            EmbedTemplate.ERROR,
+            e.getAuthor(),
+            e.getTextChannel(),
+            Corby.config.emoteTrash,
+            sbDisabled);
 
         break;
 
@@ -113,6 +128,7 @@ public class StarboardCommand extends Command {
               EmbedTemplate.ERROR,
               e.getAuthor(),
               e.getTextChannel(),
+              Corby.config.emoteTrash,
               String.format(sbIncChannel, GuildSettingsManager.getGuildPrefix(e.getGuild())));
           return;
         }
@@ -122,7 +138,11 @@ public class StarboardCommand extends Command {
                     .getIdLong()
                 == e.getMessage().getMentionedChannels().get(0).getIdLong()) {
           Embeds.createAndSendWithReaction(
-              EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), sbChannelAlreadyInst);
+              EmbedTemplate.ERROR,
+              e.getAuthor(),
+              e.getTextChannel(),
+              Corby.config.emoteTrash,
+              sbChannelAlreadyInst);
           return;
         }
 
@@ -132,6 +152,7 @@ public class StarboardCommand extends Command {
             EmbedTemplate.ERROR,
             e.getAuthor(),
             e.getTextChannel(),
+            Corby.config.emoteTrash,
             String.format(
                 sbChannelInstalled, e.getMessage().getMentionedChannels().get(0).getAsMention()));
         break;
@@ -142,6 +163,7 @@ public class StarboardCommand extends Command {
               EmbedTemplate.ERROR,
               e.getAuthor(),
               e.getTextChannel(),
+              Corby.config.emoteTrash,
               String.format(sbStarsInc, GuildSettingsManager.getGuildPrefix(e.getGuild())));
           return;
         }
@@ -155,6 +177,7 @@ public class StarboardCommand extends Command {
               EmbedTemplate.ERROR,
               e.getAuthor(),
               e.getTextChannel(),
+              Corby.config.emoteTrash,
               String.format(sbStarsInc, GuildSettingsManager.getGuildPrefix(e.getGuild())));
           return;
         }
@@ -164,6 +187,7 @@ public class StarboardCommand extends Command {
               EmbedTemplate.ERROR,
               e.getAuthor(),
               e.getTextChannel(),
+              Corby.config.emoteTrash,
               String.format(sbStarsInc, GuildSettingsManager.getGuildPrefix(e.getGuild())));
           return;
         }
@@ -173,6 +197,7 @@ public class StarboardCommand extends Command {
               EmbedTemplate.ERROR,
               e.getAuthor(),
               e.getTextChannel(),
+              Corby.config.emoteTrash,
               String.format(sbNotEnabled, GuildSettingsManager.getGuildPrefix(e.getGuild())));
           return;
         }
@@ -182,6 +207,7 @@ public class StarboardCommand extends Command {
               EmbedTemplate.ERROR,
               e.getAuthor(),
               e.getTextChannel(),
+              Corby.config.emoteTrash,
               String.format(sbNotConfigured, GuildSettingsManager.getGuildPrefix(e.getGuild())));
           return;
         }

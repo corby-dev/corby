@@ -53,6 +53,7 @@ public class HelpCommand extends Command {
                 EmbedTemplate.ERROR,
                 e.getAuthor(),
                 e.getTextChannel(),
+                Corby.config.emoteTrash,
                 "Unable to send you a message, make sure you accept messages from server members."),
         () -> e.getMessage().addReaction(Corby.config.emoteWhiteCheckMark).queue());
   }
