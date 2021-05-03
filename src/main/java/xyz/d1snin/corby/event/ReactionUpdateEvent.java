@@ -30,7 +30,7 @@ public class ReactionUpdateEvent extends Listener {
   private static final Set<MessageReaction> executed = new CopyOnWriteArraySet<>();
 
   @Override
-  public void perform(GenericEvent event) {
+  protected void perform(GenericEvent event) {
     GenericGuildMessageReactionEvent thisEvent = ((GenericGuildMessageReactionEvent) event);
     try {
 

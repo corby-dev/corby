@@ -23,7 +23,7 @@ import java.util.Objects;
 public class ServerJoinEvent extends Listener {
 
   @Override
-  public void perform(GenericEvent event) {
+  protected void perform(GenericEvent event) {
 
     GuildJoinEvent thisEvent = ((GuildJoinEvent) event);
 

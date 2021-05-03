@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public abstract class Listener implements EventListener {
 
-  public abstract void perform(GenericEvent event);
+  protected abstract void perform(GenericEvent event);
 
   @Override
   public void onEvent(GenericEvent event) {
