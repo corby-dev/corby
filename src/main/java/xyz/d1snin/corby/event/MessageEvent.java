@@ -26,7 +26,7 @@ public class MessageEvent extends Listener {
       return;
     }
 
-    final String cantFound = "Couldn't find command: `%s`";
+    final String cantFound = "Could not find command: `%s`";
 
     if (!Command.getCommandUsages()
             .contains(
