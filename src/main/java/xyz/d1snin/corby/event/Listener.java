@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public abstract class Listener implements EventListener {
 
-  protected abstract void execute(GenericEvent event);
+  public abstract void perform(GenericEvent event);
 
   @Override
   public void onEvent(GenericEvent event) {
@@ -20,7 +20,7 @@ public abstract class Listener implements EventListener {
                   .getAnnotation(xyz.d1snin.corby.annotation.EventListener.class)
                   .event())
           .contains(thisEvent)) {
-        execute(thisEvent.cast(event));
+        perform(event);
       }
     }
   }
