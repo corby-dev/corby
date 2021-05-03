@@ -27,10 +27,6 @@ Then fill it in according to the following template:
   "botPrefixDefault": "",
   "ownerId": "",
   "defaultCooldownSeconds": "",
-  "defaultColor": "",
-  "errorColor": "",
-  "successColor": "",
-  "starboardColor": "",
   "emoteTrash": "",
   "emoteStar": "",
   "emoteWhiteCheckMark": "",
@@ -44,10 +40,6 @@ Then fill it in according to the following template:
 `bot_prefx_default` - bot prefix\
 `ownerId` - your discord id\
 `default_cooldowm_seconds` - User cannot use more than one command at this time\
-`defaultColor` - RGB color for embeds\
-`errorColor` - RGB color for embeds that inform the user that something went wrong\
-`successColor` - RGB color for embeds that inform the user that something went well\
-`starboardColor` - RGB color for embeds used for starboards\
 `emoteTrash` - emote of waste bascket (unicode)\
 `emoteStar` - emote of star (unicode)\
 `emoteWhiteCheckMark` - emote of white check mark (unicode)\
@@ -61,10 +53,6 @@ Then fill it in according to the following template:
   "botPrefixDefault": "!",
   "ownerId": "111111111111111111",
   "defaultCooldownSeconds": "2",
-  "defaultColor": "74 129 248",
-  "errorColor": "255 0 0",
-  "successColor": "70 255 0",
-  "starboardColor": "255 215 0",
   "emoteTrash": "\uD83D\uDDD1",
   "emoteStar": "⭐",
   "emoteWhiteCheckMark": "✅",
