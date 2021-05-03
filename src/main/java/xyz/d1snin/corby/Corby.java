@@ -35,7 +35,9 @@ import xyz.d1snin.corby.manager.config.ConfigManager;
 import xyz.d1snin.corby.manager.config.Config;
 
 import javax.security.auth.login.LoginException;
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.*;
 
 public class Corby {
@@ -119,11 +121,16 @@ public class Corby {
             + "   ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝    ╚═╝       "
             + "\n");
 
-    config.setBotName(API.getSelfUser().getName());
-    config.setBotPfpUrl(API.getSelfUser().getEffectiveAvatarUrl());
-    config.setInviteUrl(API.getInviteUrl(permissions));
-    config.setId(API.getSelfUser().getId());
-    config.setNameAsTag(API.getSelfUser().getAsTag());
+    config.initOther(
+        new Color(74, 129, 248),
+        new Color(255, 0, 0),
+        new Color(70, 255, 0),
+        new Color(255, 215, 0),
+        API.getSelfUser().getName(),
+        API.getSelfUser().getEffectiveAvatarUrl(),
+        API.getInviteUrl(permissions),
+        API.getSelfUser().getId(),
+        API.getSelfUser().getAsTag());
 
     logger = LoggerFactory.getLogger(config.botName);
 
