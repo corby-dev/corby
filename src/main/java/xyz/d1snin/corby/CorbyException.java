@@ -9,8 +9,10 @@
 package xyz.d1snin.corby;
 
 public class CorbyException extends RuntimeException {
-  public CorbyException(String msg, int exitCode) {
-    super(msg);
-    System.exit(exitCode);
-  }
+// --Commented out by Inspection START (03.05.2021, 22:49):
+//  public CorbyException(String msg, int exitCode) {
+//    super(msg);
+//    System.exit(exitCode);
+//  }
+// --Commented out by Inspection STOP (03.05.2021, 22:49)
 }
