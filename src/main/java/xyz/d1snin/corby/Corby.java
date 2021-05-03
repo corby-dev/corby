@@ -28,6 +28,7 @@ import xyz.d1snin.corby.commands.misc.PingCommand;
 import xyz.d1snin.corby.commands.settings.PrefixCommand;
 import xyz.d1snin.corby.database.Database;
 import xyz.d1snin.corby.database.DatabasePreparedStatements;
+import xyz.d1snin.corby.event.MessageEvent;
 import xyz.d1snin.corby.event.ReactionUpdateEvent;
 import xyz.d1snin.corby.event.ServerJoinEvent;
 import xyz.d1snin.corby.manager.config.ConfigFileManager;
@@ -100,6 +101,7 @@ public class Corby {
     jdaBuilder.addEventListeners(
         new ReactionUpdateEvent(),
         new ServerJoinEvent(),
+        new MessageEvent(),
         Command.add(new PingCommand()),
         Command.add(new PrefixCommand()),
         Command.add(new ShutdownCommand()),

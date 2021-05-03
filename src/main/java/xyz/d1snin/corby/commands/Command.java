@@ -26,6 +26,7 @@ public abstract class Command extends ListenerAdapter {
   protected abstract void execute(MessageReceivedEvent e, String[] args);
 
   private static final List<Command> commands = new ArrayList<>();
+  private static final Set<String> commandUsages = new HashSet<>();
   private static final List<User> cooldowns = new CopyOnWriteArrayList<>();
 
   protected String use = "null";
@@ -109,6 +110,7 @@ public abstract class Command extends ListenerAdapter {
 
   public void onLoad() {
     Corby.permissions.addAll(Arrays.asList(botPermissions));
+    commandUsages.add(use);
   }
 
   private boolean hasPermission(MessageReceivedEvent event) {
@@ -163,5 +165,9 @@ public abstract class Command extends ListenerAdapter {
 
   public static List<Command> getCommands() {
     return commands;
+  }
+
+  public static Set<String> getCommandUsages() {
+    return commandUsages;
   }
 }
