@@ -16,6 +16,7 @@ import xyz.d1snin.corby.database.managers.GuildSettingsManager;
 import xyz.d1snin.corby.utils.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
+import java.sql.SQLException;
 import java.util.Objects;
 
 public class StarboardCommand extends Command {
@@ -27,7 +28,7 @@ public class StarboardCommand extends Command {
   }
 
   @Override
-  protected void execute(MessageReceivedEvent e, String[] args) {
+  protected void execute(MessageReceivedEvent e, String[] args) throws SQLException {
 
     final String sbInfo =
         "Starboard is enabled on your server!\nRequired number of stars: %d\nChannel for starboard: %s";

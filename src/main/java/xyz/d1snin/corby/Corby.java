@@ -34,9 +34,12 @@ import xyz.d1snin.corby.event.ServerJoinEvent;
 import xyz.d1snin.corby.manager.config.ConfigFileManager;
 import xyz.d1snin.corby.manager.config.ConfigManager;
 import xyz.d1snin.corby.manager.config.Config;
+import xyz.d1snin.corby.utils.ExceptionUtils;
 
 import javax.security.auth.login.LoginException;
 import java.awt.*;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.*;
@@ -66,32 +69,31 @@ public class Corby {
           Permission.VIEW_CHANNEL);
   private static final Random random = new Random();
 
-  public static final Config config = ConfigManager.init();
+  public static Config config;
 
   public static Logger logger = LoggerFactory.getLogger("loader");
 
   public static void main(String[] args) {
-
-    Thread.currentThread().setName("Worker");
-
     try {
+      Thread.currentThread().setName("Worker");
+
       ConfigFileManager.initConfigFile();
       logger.info("Starting...");
       start();
-    } catch (LoginException e) {
-      logger.error("Your bot token is invalid.");
-      System.exit(Config.ExitCodes.BAD_TOKEN_EXIT_CODE);
-    } catch (InterruptedException e) {
-      logger.error("Cant connect to discord.");
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
 
-    startUpdatePresence();
-    Command.startCooldownUpdater();
+      startUpdatePresence();
+      Command.startCooldownUpdater();
+    } catch (Exception e) {
+      ExceptionUtils.processException(e);
+    }
   }
 
-  public static void start() throws LoginException, InterruptedException {
+  public static void start()
+      throws LoginException, InterruptedException, IOException, SQLException,
+          ClassNotFoundException {
+
+    config = ConfigManager.init();
+
     logger.info("Trying to connect to the database...");
     Database.createConnection();
     logger.info("Loading prepared database statements...");
@@ -177,7 +179,7 @@ public class Corby {
     return presences.get(random.nextInt(presences.size()));
   }
 
-  public static void shutdown() {
+  public static void shutdown() throws SQLException {
     logger.warn("Terminating... Bye!");
     Database.close();
     API.shutdown();
@@ -186,14 +188,13 @@ public class Corby {
     System.exit(Config.ExitCodes.NORMAL_SHUTDOWN_EXIT_CODE);
   }
 
-  public static void restart() {
+  public static void restart()
+      throws SQLException, LoginException, IOException, InterruptedException,
+          ClassNotFoundException {
     logger.warn("Restarting...");
     Database.close();
     API.shutdown();
-    try {
-      start();
-    } catch (LoginException | InterruptedException ignored) {
-    }
+    start();
   }
 
   public static JDA getAPI() {

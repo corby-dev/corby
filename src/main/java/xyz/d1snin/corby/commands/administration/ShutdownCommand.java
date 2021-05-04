@@ -6,6 +6,8 @@ import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.utils.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
+import java.sql.SQLException;
+
 public class ShutdownCommand extends Command {
 
   public ShutdownCommand() {
@@ -14,7 +16,7 @@ public class ShutdownCommand extends Command {
   }
 
   @Override
-  protected void execute(MessageReceivedEvent e, String[] args) {
+  protected void execute(MessageReceivedEvent e, String[] args) throws SQLException {
     e.getTextChannel()
         .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Terminating... Bye!"))
         .complete();

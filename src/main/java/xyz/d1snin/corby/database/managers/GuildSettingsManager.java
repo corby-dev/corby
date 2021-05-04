@@ -18,156 +18,112 @@ import java.sql.SQLException;
 
 public class GuildSettingsManager {
 
-  public static synchronized void setGuildPrefix(Guild guild, String prefix) {
-    try {
-      if (!isDatabaseContainsPrefix(guild)) {
-        DatabasePreparedStatements.psSetGuildPrefixInsert.setLong(1, guild.getIdLong());
-        DatabasePreparedStatements.psSetGuildPrefixInsert.setString(2, prefix);
-        DatabasePreparedStatements.psSetGuildPrefixInsert.executeUpdate();
-      } else {
-        DatabasePreparedStatements.psSetGuildPrefixUpdate.setString(1, prefix);
-        DatabasePreparedStatements.psSetGuildPrefixUpdate.setLong(2, guild.getIdLong());
-        DatabasePreparedStatements.psSetGuildPrefixUpdate.executeUpdate();
-      }
-    } catch (SQLException e) {
-      DatabasePreparedStatements.printSQLError(e);
+  public static synchronized void setGuildPrefix(Guild guild, String prefix) throws SQLException {
+    if (!isDatabaseContainsPrefix(guild)) {
+
+      DatabasePreparedStatements.psSetGuildPrefixInsert.setLong(1, guild.getIdLong());
+      DatabasePreparedStatements.psSetGuildPrefixInsert.setString(2, prefix);
+      DatabasePreparedStatements.psSetGuildPrefixInsert.executeUpdate();
+
+    } else {
+
+      DatabasePreparedStatements.psSetGuildPrefixUpdate.setString(1, prefix);
+      DatabasePreparedStatements.psSetGuildPrefixUpdate.setLong(2, guild.getIdLong());
+      DatabasePreparedStatements.psSetGuildPrefixUpdate.executeUpdate();
     }
   }
 
-  public static synchronized String getGuildPrefix(Guild guild) {
+  public static synchronized String getGuildPrefix(Guild guild) throws SQLException {
+    DatabasePreparedStatements.psGetGuildPrefix.setLong(1, guild.getIdLong());
+    ResultSet rs = DatabasePreparedStatements.psGetGuildPrefix.executeQuery();
 
-    String result = "";
-
-    try {
-      DatabasePreparedStatements.psGetGuildPrefix.setLong(1, guild.getIdLong());
-      ResultSet rs = DatabasePreparedStatements.psGetGuildPrefix.executeQuery();
-      if (!rs.next()) {
-        return Corby.config.botPrefixDefault;
-      }
-      result = rs.getString(1);
-    } catch (SQLException e) {
-      DatabasePreparedStatements.printSQLError(e);
+    if (!rs.next()) {
+      return Corby.config.botPrefixDefault;
     }
-    return result;
+
+    return rs.getString(1);
   }
 
-  private static synchronized boolean isDatabaseContainsPrefix(Guild guild) {
-    try {
-
-      DatabasePreparedStatements.psCheckGuildPrefixExists.setLong(1, guild.getIdLong());
-
-      try (ResultSet rs = DatabasePreparedStatements.psGetGuildPrefix.executeQuery()) {
-        return rs.next();
-      }
-    } catch (SQLException e) {
-      DatabasePreparedStatements.printSQLError(e);
-    }
-    return false;
-  }
-
-  public static synchronized void setGuildStarboardChannel(Guild guild, TextChannel channel) {
-    try {
-      if (!isDatabaseContainsStarboard(guild)) {
-        DatabasePreparedStatements.psSetGuildStarboardChannelInsert.setLong(1, guild.getIdLong());
-        DatabasePreparedStatements.psSetGuildStarboardChannelInsert.setLong(2, channel.getIdLong());
-        DatabasePreparedStatements.psSetGuildStarboardChannelInsert.setInt(
-            3, Corby.config.defaultStarboardStars);
-        DatabasePreparedStatements.psSetGuildStarboardChannelInsert.setString(
-            4, Corby.config.defaultStarboardIsEnabled ? "enabled" : "disabled");
-        DatabasePreparedStatements.psSetGuildStarboardChannelInsert.executeUpdate();
-      } else {
-        DatabasePreparedStatements.psSetGuildStarboardChannelUpdate.setLong(1, channel.getIdLong());
-        DatabasePreparedStatements.psSetGuildStarboardChannelUpdate.setLong(2, guild.getIdLong());
-        DatabasePreparedStatements.psSetGuildStarboardChannelUpdate.executeUpdate();
-      }
-    } catch (SQLException e) {
-      DatabasePreparedStatements.printSQLError(e);
+  private static synchronized boolean isDatabaseContainsPrefix(Guild guild) throws SQLException {
+    DatabasePreparedStatements.psCheckGuildPrefixExists.setLong(1, guild.getIdLong());
+    try (ResultSet rs = DatabasePreparedStatements.psGetGuildPrefix.executeQuery()) {
+      return rs.next();
     }
   }
 
-  public static synchronized TextChannel getGuildStarboardChannel(Guild guild) {
+  public static synchronized void setGuildStarboardChannel(Guild guild, TextChannel channel)
+      throws SQLException {
+    if (!isDatabaseContainsStarboard(guild)) {
 
-    TextChannel result = null;
+      DatabasePreparedStatements.psSetGuildStarboardChannelInsert.setLong(1, guild.getIdLong());
+      DatabasePreparedStatements.psSetGuildStarboardChannelInsert.setLong(2, channel.getIdLong());
+      DatabasePreparedStatements.psSetGuildStarboardChannelInsert.setInt(
+          3, Corby.config.defaultStarboardStars);
+      DatabasePreparedStatements.psSetGuildStarboardChannelInsert.setString(
+          4, Corby.config.defaultStarboardIsEnabled ? "enabled" : "disabled");
+      DatabasePreparedStatements.psSetGuildStarboardChannelInsert.executeUpdate();
 
-    try {
-      DatabasePreparedStatements.psGetGuildStarboardChannel.setLong(1, guild.getIdLong());
-      ResultSet rs = DatabasePreparedStatements.psGetGuildStarboardChannel.executeQuery();
-      if (!rs.next()) {
-        return null;
-      }
-      result = (TextChannel) guild.getGuildChannelById(rs.getLong(1));
-    } catch (SQLException e) {
-      DatabasePreparedStatements.printSQLError(e);
-    }
-    return result;
-  }
+    } else {
 
-  public static synchronized int getGuildStarboardStars(Guild guild) {
-    int result = 0;
-
-    try {
-      DatabasePreparedStatements.psGetGuildStarboardStars.setLong(1, guild.getIdLong());
-      ResultSet rs = DatabasePreparedStatements.psGetGuildStarboardStars.executeQuery();
-      if (!rs.next()) {
-        return -1;
-      }
-      result = rs.getInt(1);
-    } catch (SQLException e) {
-      DatabasePreparedStatements.printSQLError(e);
-    }
-    return result;
-  }
-
-  public static synchronized void setGuildStarboardStars(Guild guild, int stars) {
-    try {
-      DatabasePreparedStatements.psSetGuildStarboardStars.setInt(1, stars);
-      DatabasePreparedStatements.psSetGuildStarboardStars.setLong(2, guild.getIdLong());
-      DatabasePreparedStatements.psSetGuildStarboardStars.executeUpdate();
-    } catch (SQLException e) {
-      DatabasePreparedStatements.printSQLError(e);
+      DatabasePreparedStatements.psSetGuildStarboardChannelUpdate.setLong(1, channel.getIdLong());
+      DatabasePreparedStatements.psSetGuildStarboardChannelUpdate.setLong(2, guild.getIdLong());
+      DatabasePreparedStatements.psSetGuildStarboardChannelUpdate.executeUpdate();
     }
   }
 
-  public static synchronized void setGuildStarboardIsEnabled(Guild guild, boolean value) {
-    try {
-      DatabasePreparedStatements.psSetGuildStarboardIsEnabled.setString(
-          1, value ? "enabled" : "disabled");
-      DatabasePreparedStatements.psSetGuildStarboardIsEnabled.setLong(2, guild.getIdLong());
-      DatabasePreparedStatements.psSetGuildStarboardIsEnabled.executeUpdate();
-    } catch (SQLException e) {
-      DatabasePreparedStatements.printSQLError(e);
+  public static synchronized TextChannel getGuildStarboardChannel(Guild guild) throws SQLException {
+    DatabasePreparedStatements.psGetGuildStarboardChannel.setLong(1, guild.getIdLong());
+    ResultSet rs = DatabasePreparedStatements.psGetGuildStarboardChannel.executeQuery();
+
+    if (!rs.next()) {
+      return null;
     }
+
+    return (TextChannel) guild.getGuildChannelById(rs.getLong(1));
   }
 
-  public static synchronized boolean getGuildStarboardIsEnabled(Guild guild) {
+  public static synchronized int getGuildStarboardStars(Guild guild) throws SQLException {
+    DatabasePreparedStatements.psGetGuildStarboardStars.setLong(1, guild.getIdLong());
+    ResultSet rs = DatabasePreparedStatements.psGetGuildStarboardStars.executeQuery();
 
-    boolean result = false;
-
-    try {
-      DatabasePreparedStatements.psGetGuildStarboardIsEnabled.setLong(1, guild.getIdLong());
-      ResultSet rs = DatabasePreparedStatements.psGetGuildStarboardIsEnabled.executeQuery();
-      if (!rs.next()) {
-        return false;
-      }
-      result = rs.getString(1).equals("enabled");
-    } catch (SQLException e) {
-      DatabasePreparedStatements.printSQLError(e);
+    if (!rs.next()) {
+      return -1;
     }
-    return result;
+
+    return rs.getInt(1);
   }
 
-  private static synchronized boolean isDatabaseContainsStarboard(Guild guild) {
-    try {
+  public static synchronized void setGuildStarboardStars(Guild guild, int stars)
+      throws SQLException {
+    DatabasePreparedStatements.psSetGuildStarboardStars.setInt(1, stars);
+    DatabasePreparedStatements.psSetGuildStarboardStars.setLong(2, guild.getIdLong());
+    DatabasePreparedStatements.psSetGuildStarboardStars.executeUpdate();
+  }
 
-      DatabasePreparedStatements.psCheckGuildStarboardChannelExists.setLong(1, guild.getIdLong());
+  public static synchronized void setGuildStarboardIsEnabled(Guild guild, boolean value)
+      throws SQLException {
+    DatabasePreparedStatements.psSetGuildStarboardIsEnabled.setString(
+        1, value ? "enabled" : "disabled");
+    DatabasePreparedStatements.psSetGuildStarboardIsEnabled.setLong(2, guild.getIdLong());
+    DatabasePreparedStatements.psSetGuildStarboardIsEnabled.executeUpdate();
+  }
 
-      try (ResultSet rs =
-          DatabasePreparedStatements.psCheckGuildStarboardChannelExists.executeQuery()) {
-        return rs.next();
-      }
-    } catch (SQLException e) {
-      DatabasePreparedStatements.printSQLError(e);
+  public static synchronized boolean getGuildStarboardIsEnabled(Guild guild) throws SQLException {
+    DatabasePreparedStatements.psGetGuildStarboardIsEnabled.setLong(1, guild.getIdLong());
+    ResultSet rs = DatabasePreparedStatements.psGetGuildStarboardIsEnabled.executeQuery();
+
+    if (!rs.next()) {
+      return false;
     }
-    return false;
+
+    return rs.getString(1).equals("enabled");
+  }
+
+  private static synchronized boolean isDatabaseContainsStarboard(Guild guild) throws SQLException {
+    DatabasePreparedStatements.psCheckGuildStarboardChannelExists.setLong(1, guild.getIdLong());
+    try (ResultSet rs =
+        DatabasePreparedStatements.psCheckGuildStarboardChannelExists.executeQuery()) {
+      return rs.next();
+    }
   }
 }

@@ -18,19 +18,17 @@ import java.net.URL;
 
 public class JSONReader {
 
-  public String readFromURL(String object, URL url, boolean isCatFact) {
+  public String readFromURL(String object, URL url, boolean isCatFact)
+      throws IOException, ParseException {
 
-    String result = "";
+    String result;
 
     if (!isCatFact) {
       try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
 
         JSONArray jsonArray = (JSONArray) new JSONParser().parse(reader);
         JSONObject jsonObject = (JSONObject) jsonArray.get(0);
-        result = (String) jsonObject.get(object);
-
-      } catch (IOException | ParseException e) {
-        e.printStackTrace();
+        return (String) jsonObject.get(object);
       }
     } else {
       do {
@@ -38,9 +36,6 @@ public class JSONReader {
 
           JSONObject jsonObject = (JSONObject) new JSONParser().parse(reader);
           result = (String) jsonObject.get(object);
-
-        } catch (IOException | ParseException e) {
-          e.printStackTrace();
         }
       } while (result.length() < 15);
     }

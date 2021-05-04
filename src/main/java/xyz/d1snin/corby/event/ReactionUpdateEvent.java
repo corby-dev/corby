@@ -19,6 +19,7 @@ import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.managers.GuildSettingsManager;
 import xyz.d1snin.corby.annotation.EventListener;
 
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Set;
@@ -30,60 +31,70 @@ public class ReactionUpdateEvent extends Listener {
   private static final Set<MessageReaction> executed = new CopyOnWriteArraySet<>();
 
   @Override
-  protected void perform(GenericEvent event) {
+  protected void perform(GenericEvent event) throws SQLException {
     GenericGuildMessageReactionEvent thisEvent = ((GenericGuildMessageReactionEvent) event);
-    try {
 
-      if (thisEvent.getReaction().getReactionEmote().getName().equals(Corby.config.emoteTrash)
-          && !thisEvent.getReaction().isSelf()
-          && !executed.contains(thisEvent.getReaction())) {
-        if (thisEvent.retrieveMessage().complete().getReactions().get(0).isSelf()) {
-          thisEvent.retrieveMessage().queue((message -> message.delete().queue()));
-          executed.add(thisEvent.getReaction());
-        }
+    if (thisEvent.getReaction().getReactionEmote().getName().equals(Corby.config.emoteTrash)
+        && !thisEvent.getReaction().isSelf()
+        && !executed.contains(thisEvent.getReaction())) {
+      if (thisEvent.retrieveMessage().complete().getReactions().get(0).isSelf()) {
+        thisEvent.retrieveMessage().queue((message -> message.delete().queue()));
+        executed.add(thisEvent.getReaction());
+      }
+      return;
+    }
+
+    if (thisEvent.getReaction().getReactionEmote().getName().equals(Corby.config.emoteStar)) {
+      if (GuildSettingsManager.getGuildStarboardChannel(thisEvent.getGuild()) == null) {
+        return;
+      }
+      if (!GuildSettingsManager.getGuildStarboardIsEnabled(thisEvent.getGuild())) {
         return;
       }
 
-      if (thisEvent.getReaction().getReactionEmote().getName().equals(Corby.config.emoteStar)) {
-        if (GuildSettingsManager.getGuildStarboardChannel(thisEvent.getGuild()) == null) return;
-        if (!GuildSettingsManager.getGuildStarboardIsEnabled(thisEvent.getGuild())) return;
-        Message msg = thisEvent.retrieveMessage().complete();
-        if (msg.getAuthor().getId().equals(Corby.config.id)) return;
-        MessageReaction reaction = msg.getReactions().get(0);
-        for (MessageReaction r : msg.getReactions()) {
-          if (r.getReactionEmote().getName().equals(Corby.config.emoteStar)) {
-            reaction = r;
-          }
-        }
-        if (reaction.getCount() == GuildSettingsManager.getGuildStarboardStars(thisEvent.getGuild())
-            && !executed.contains(reaction)) {
-          Objects.requireNonNull(
-                  GuildSettingsManager.getGuildStarboardChannel(thisEvent.getGuild()))
-              .sendMessage(
-                  new EmbedBuilder()
-                      .setAuthor(
-                          msg.getAuthor().getAsTag(),
-                          msg.getJumpUrl(),
-                          msg.getAuthor().getAvatarUrl())
-                      .setDescription(
-                          "[[context]]("
-                              + msg.getJumpUrl()
-                              + ")"
-                              + "\n\n"
-                              + msg.getContentRaw()
-                              + "\n"
-                              + (msg.getAttachments().isEmpty()
-                                  ? ""
-                                  : msg.getAttachments().get(0).getUrl()))
-                      .setTimestamp(Instant.now())
-                      .setColor(Corby.config.starboardColor)
-                      .setFooter(Corby.config.botName, Corby.config.botPfpUrl)
-                      .build())
-              .queue();
-          executed.add(reaction);
+      Message msg = thisEvent.retrieveMessage().complete();
+
+      if (msg.getAuthor().getId().equals(Corby.config.id)) {
+        return;
+      }
+      if (msg.getReactions().isEmpty()) {
+        return;
+      }
+
+      MessageReaction reaction = msg.getReactions().get(0);
+
+      for (MessageReaction r : msg.getReactions()) {
+        if (r.getReactionEmote().getName().equals(Corby.config.emoteStar)) {
+          reaction = r;
         }
       }
-    } catch (IndexOutOfBoundsException ignored) {
+
+      if (reaction.getCount() == GuildSettingsManager.getGuildStarboardStars(thisEvent.getGuild())
+          && !executed.contains(reaction)) {
+        Objects.requireNonNull(GuildSettingsManager.getGuildStarboardChannel(thisEvent.getGuild()))
+            .sendMessage(
+                new EmbedBuilder()
+                    .setAuthor(
+                        msg.getAuthor().getAsTag(),
+                        msg.getJumpUrl(),
+                        msg.getAuthor().getAvatarUrl())
+                    .setDescription(
+                        "[[context]]("
+                            + msg.getJumpUrl()
+                            + ")"
+                            + "\n\n"
+                            + msg.getContentRaw()
+                            + "\n"
+                            + (msg.getAttachments().isEmpty()
+                                ? ""
+                                : msg.getAttachments().get(0).getUrl()))
+                    .setTimestamp(Instant.now())
+                    .setColor(Corby.config.starboardColor)
+                    .setFooter(Corby.config.botName, Corby.config.botPfpUrl)
+                    .build())
+            .queue();
+        executed.add(reaction);
+      }
     }
   }
 }
