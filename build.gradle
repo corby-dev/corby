@@ -30,7 +30,7 @@ dependencies {
     compile 'com.googlecode.json-simple:json-simple:1.1.1'
     compile 'org.xerial:sqlite-jdbc:3.34.0'
     compile 'com.github.bottom-software-foundation:bottom-java:v2.1.0'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.0.1'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
 }
 sourceSets {
     main.java.srcDir "src/main/java"
