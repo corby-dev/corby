@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.d1snin.corby.commands.Command;
@@ -45,7 +46,14 @@ public class Corby {
 
   private static JDA API;
 
-  private static final ExecutorService service = Executors.newCachedThreadPool();
+  private static final ExecutorService service =
+      Executors.newCachedThreadPool(
+          r -> {
+            Thread t = Executors.defaultThreadFactory().newThread(r);
+            t.setDaemon(true);
+            return t;
+          });
+
   private static final ScheduledExecutorService schedulerPresence =
       Executors.newSingleThreadScheduledExecutor();
 
