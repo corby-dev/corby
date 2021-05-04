@@ -17,6 +17,8 @@ import xyz.d1snin.corby.utils.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.OtherUtils;
 
+import java.sql.SQLException;
+
 public class HelpCommand extends Command {
 
   public HelpCommand() {
@@ -24,7 +26,7 @@ public class HelpCommand extends Command {
   }
 
   @Override
-  protected void execute(MessageReceivedEvent e, String[] args) {
+  protected void execute(MessageReceivedEvent e, String[] args) throws SQLException {
     OtherUtils.sendPrivateMessageSafe(
         e.getAuthor(),
         new EmbedBuilder()

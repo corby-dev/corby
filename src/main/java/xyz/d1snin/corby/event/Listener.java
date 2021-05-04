@@ -2,12 +2,14 @@ package xyz.d1snin.corby.event;
 
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
+import xyz.d1snin.corby.utils.ExceptionUtils;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 
 public abstract class Listener implements EventListener {
 
-  protected abstract void perform(GenericEvent event);
+  protected abstract void perform(GenericEvent event) throws SQLException;
 
   @Override
   public void onEvent(GenericEvent event) {
@@ -20,7 +22,11 @@ public abstract class Listener implements EventListener {
                   .getAnnotation(xyz.d1snin.corby.annotation.EventListener.class)
                   .event())
           .contains(thisEvent)) {
-        perform(event);
+        try {
+          perform(event);
+        } catch (Exception e) {
+          ExceptionUtils.processException(e);
+        }
       }
     }
   }

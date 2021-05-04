@@ -17,13 +17,19 @@ import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.managers.GuildSettingsManager;
 import xyz.d1snin.corby.utils.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
+import xyz.d1snin.corby.utils.ExceptionUtils;
 
+import javax.security.auth.login.LoginException;
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.*;
 
 public abstract class Command extends ListenerAdapter {
 
-  protected abstract void execute(MessageReceivedEvent e, String[] args);
+  protected abstract void execute(MessageReceivedEvent e, String[] args)
+      throws SQLException, LoginException, IOException, InterruptedException,
+          ClassNotFoundException;
 
   private static final List<Command> commands = new ArrayList<>();
   private static final Set<String> commandUsages = new HashSet<>();
@@ -35,82 +41,62 @@ public abstract class Command extends ListenerAdapter {
   protected boolean admincommand = false;
 
   public void onMessageReceived(MessageReceivedEvent e) {
+    try {
 
-    final String invalidPermission = "You must have permissions %s to use this command.";
-    final String userOnCooldown =
-        "You are now on cooldown, please wait a moment before using the command again.";
+      final String invalidPermission = "You must have permissions %s to use this command.";
+      final String userOnCooldown =
+          "You are now on cooldown, please wait a moment before using the command again.";
 
-    if (!e.getChannelType().isGuild()) {
-      return;
-    }
-
-    Message msg = e.getMessage();
-
-    if (e.getAuthor().isBot()) {
-      return;
-    }
-
-    if (isCommand(msg, e)) {
-      if (!hasPermission(e)) {
-        Embeds.createAndSendWithReaction(
-            EmbedTemplate.ERROR,
-            e.getAuthor(),
-            e.getTextChannel(),
-            Corby.config.emoteTrash,
-            String.format(invalidPermission, getPermissionString()));
+      if (!e.getChannelType().isGuild()) {
         return;
       }
 
-      if (admincommand && !e.getAuthor().getId().equals(Corby.config.ownerId)) {
+      Message msg = e.getMessage();
+
+      if (e.getAuthor().isBot()) {
         return;
       }
 
-      if (cooldowns.contains(e.getAuthor())) {
-        Embeds.createAndSendWithReaction(
-            EmbedTemplate.ERROR,
-            e.getAuthor(),
-            e.getTextChannel(),
-            Corby.config.emoteTrash,
-            userOnCooldown);
-        return;
-      }
+      if (isCommand(msg, e)) {
+        if (!hasPermission(e)) {
+          Embeds.createAndSendWithReaction(
+              EmbedTemplate.ERROR,
+              e.getAuthor(),
+              e.getTextChannel(),
+              Corby.config.emoteTrash,
+              String.format(invalidPermission, getPermissionString()));
+          return;
+        }
 
-      try {
+        if (admincommand && !e.getAuthor().getId().equals(Corby.config.ownerId)) {
+          return;
+        }
 
-        Corby.getService().execute(() -> execute(e, getCommandArgs(msg)));
+        if (cooldowns.contains(e.getAuthor())) {
+          Embeds.createAndSendWithReaction(
+              EmbedTemplate.ERROR,
+              e.getAuthor(),
+              e.getTextChannel(),
+              Corby.config.emoteTrash,
+              userOnCooldown);
+          return;
+        }
+
+        Corby.getService()
+            .execute(
+                () -> {
+                  try {
+                    execute(e, getCommandArgs(msg));
+                  } catch (Exception exception) {
+                    ExceptionUtils.processException(exception);
+                  }
+                });
 
         cooldowns.add(e.getAuthor());
-      } catch (Exception exception) {
-
-        Embeds.createAndSendWithReaction(
-            EmbedTemplate.ERROR,
-            e.getAuthor(),
-            e.getTextChannel(),
-            Corby.config.emoteTrash,
-            "**An exception was caught while executing a command.**"
-                + "\nAll necessary information has been sent to the owner!");
-
-        Corby.getAPI()
-            .openPrivateChannelById(Corby.config.ownerId)
-            .complete()
-            .sendMessage(
-                Embeds.create(
-                    EmbedTemplate.DEFAULT,
-                    e.getAuthor(),
-                    "**An exception was thrown while trying to execute a command.**"
-                        + "\n\n**User message:**\n`"
-                        + e.getMessage().getContentRaw()
-                        + "`\n\n**Exception message:**\n`"
-                        + exception.getClass().getName()
-                        + ": "
-                        + exception.getMessage()
-                        + "`\n\n**Caused by:**\n`"
-                        + (exception.getCause() == null ? "No reason given." : exception.getCause())
-                        + "`"
-                        + "`\n\n**Stacktrace:**\n`"
-                        + exception.getStackTrace()[0]))
-            .queue();
       }
+
+    } catch (SQLException exception) {
+      ExceptionUtils.processException(exception);
     }
   }
 
@@ -142,7 +128,7 @@ public abstract class Command extends ListenerAdapter {
     return sb.toString();
   }
 
-  private boolean isCommand(Message message, MessageReceivedEvent event) {
+  private boolean isCommand(Message message, MessageReceivedEvent event) throws SQLException {
     return Arrays.asList(getCommandArgs(message))
             .get(0)
             .toLowerCase()
@@ -169,11 +155,11 @@ public abstract class Command extends ListenerAdapter {
         cooldowns::clear, 0, Corby.config.defaultCooldownSeconds, TimeUnit.SECONDS);
   }
 
-// --Commented out by Inspection START (03.05.2021, 22:49):
-//  public static List<Command> getCommands() {
-//    return commands;
-//  }
-// --Commented out by Inspection STOP (03.05.2021, 22:49)
+  // --Commented out by Inspection START (03.05.2021, 22:49):
+  //  public static List<Command> getCommands() {
+  //    return commands;
+  //  }
+  // --Commented out by Inspection STOP (03.05.2021, 22:49)
 
   public static Set<String> getCommandUsages() {
     return commandUsages;

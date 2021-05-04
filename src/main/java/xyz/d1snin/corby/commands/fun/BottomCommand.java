@@ -17,6 +17,8 @@ import xyz.d1snin.corby.database.managers.GuildSettingsManager;
 import xyz.d1snin.corby.utils.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
+import java.sql.SQLException;
+
 public class BottomCommand extends Command {
 
   public BottomCommand() {
@@ -24,7 +26,7 @@ public class BottomCommand extends Command {
   }
 
   @Override
-  protected void execute(MessageReceivedEvent e, String[] args) {
+  protected void execute(MessageReceivedEvent e, String[] args) throws SQLException {
     try {
       final int edMsgLimit = 300;
       final int msgLimit1 = 2;

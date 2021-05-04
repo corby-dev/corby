@@ -9,10 +9,12 @@ import xyz.d1snin.corby.database.managers.GuildSettingsManager;
 import xyz.d1snin.corby.utils.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
+import java.sql.SQLException;
+
 @EventListener(event = MessageReceivedEvent.class)
 public class MessageEvent extends Listener {
   @Override
-  protected void perform(GenericEvent event) {
+  protected void perform(GenericEvent event) throws SQLException {
 
     MessageReceivedEvent thisEvent = ((MessageReceivedEvent) event);
 
