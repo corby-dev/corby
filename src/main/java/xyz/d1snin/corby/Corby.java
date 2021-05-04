@@ -45,7 +45,14 @@ public class Corby {
 
   private static JDA API;
 
-  private static final ExecutorService service = Executors.newCachedThreadPool();
+  private static final ExecutorService service =
+      Executors.newCachedThreadPool(
+          r -> {
+            Thread t = Executors.defaultThreadFactory().newThread(r);
+            t.setDaemon(true);
+            return t;
+          });
+
   private static final ScheduledExecutorService schedulerPresence =
       Executors.newSingleThreadScheduledExecutor();
 
