@@ -72,6 +72,19 @@ public abstract class Command extends ListenerAdapter {
           return;
         }
 
+        if (!Objects.requireNonNull(e.getGuild().getBotRole()).hasPermission(Corby.permissions)) {
+          Embeds.createAndSendWithReaction(
+              EmbedTemplate.ERROR,
+              e.getAuthor(),
+              e.getTextChannel(),
+              Corby.config.emoteTrash,
+              String.format(
+                  "It looks like I do not have or I do not have enough permissions on this server, please invite me using [this](%s) link, I am leaving right now.",
+                  Corby.config.inviteUrl));
+          e.getGuild().leave().queue();
+          return;
+        }
+
         if (cooldowns.contains(e.getAuthor())) {
           Embeds.createAndSendWithReaction(
               EmbedTemplate.ERROR,
