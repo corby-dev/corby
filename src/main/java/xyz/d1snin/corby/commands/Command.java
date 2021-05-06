@@ -44,6 +44,8 @@ public abstract class Command extends ListenerAdapter {
     try {
 
       final String invalidPermission = "You must have permissions %s to use this command.";
+      final String invalidBotPermission =
+          "It looks like I do not have or I do not have enough permissions on this server, please invite me using [this](%s) link, I am leaving right now.";
       final String userOnCooldown =
           "You are now on cooldown, please wait a moment before using the command again.";
 
@@ -78,9 +80,7 @@ public abstract class Command extends ListenerAdapter {
               e.getAuthor(),
               e.getTextChannel(),
               Corby.config.emoteTrash,
-              String.format(
-                  "It looks like I do not have or I do not have enough permissions on this server, please invite me using [this](%s) link, I am leaving right now.",
-                  Corby.config.inviteUrl));
+              String.format(invalidBotPermission, Corby.config.inviteUrl));
           e.getGuild().leave().queue();
           return;
         }

@@ -1,4 +1,4 @@
-package xyz.d1snin.corby.commands.administration;
+package xyz.d1snin.corby.commands;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.Corby;
