@@ -23,11 +23,11 @@ public class StealCommand extends Command {
   @Override
   protected void execute(MessageReceivedEvent e, String[] args) {
     MessageChannel channel = e.getChannel();
-    String name = args[1];
-    if (name.length() <= 32 && name.length() >= 2) {
-      if (args.length == 2) {
+    if (args.length == 3) {
+      String name = args[2];
+      if (name.length() <= 32 && name.length() >= 2) {
         try {
-          URL url = new URL(args[0]);
+          URL url = new URL(args[1]);
 
           URLConnection connection = url.openConnection();
 
@@ -43,12 +43,12 @@ public class StealCommand extends Command {
           throw new UncheckedIOException(ioException);
         }
       } else {
-        final String argumentAmountMessage = "Too many or too few arguments!";
-        channel.sendMessage(argumentAmountMessage).queue();
+        final String nameSizeMessage = "Name must be between (inclusive) 2 and 32 characters in length.";
+        channel.sendMessage(nameSizeMessage).queue();
       }
     } else {
-      final String nameSizeMessage = "Name must be between (inclusive) 2 and 32 characters in length.";
-      channel.sendMessage(nameSizeMessage).queue();
+      final String argumentAmountMessage = "Too many or too few arguments!";
+      channel.sendMessage(argumentAmountMessage).queue();
     }
   }
 }
