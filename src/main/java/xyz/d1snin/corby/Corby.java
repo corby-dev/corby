@@ -25,6 +25,7 @@ import xyz.d1snin.corby.commands.fun.CatCommand;
 import xyz.d1snin.corby.commands.fun.StarboardCommand;
 import xyz.d1snin.corby.commands.misc.HelpCommand;
 import xyz.d1snin.corby.commands.misc.PingCommand;
+import xyz.d1snin.corby.commands.misc.StealCommand;
 import xyz.d1snin.corby.commands.settings.PrefixCommand;
 import xyz.d1snin.corby.database.Database;
 import xyz.d1snin.corby.database.DatabasePreparedStatements;
@@ -118,7 +119,8 @@ public class Corby {
         Command.add(new StarboardCommand()),
         Command.add(new HelpCommand()),
         Command.add(new BottomCommand()),
-        Command.add(new CatCommand()));
+        Command.add(new CatCommand()),
+        Command.add(new StealCommand()));
 
     API = jdaBuilder.build();
     API.awaitReady();
