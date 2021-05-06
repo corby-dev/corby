@@ -37,9 +37,6 @@ public class Config {
       String botPrefixDefault,
       String ownerId,
       int defaultCooldownSeconds,
-      String emoteTrash,
-      String emoteStar,
-      String emoteWhiteCheckMark,
       int defaultStarboardStars,
       boolean defaultStarboardIsEnabled,
       String helpPageUrl) {
@@ -48,9 +45,6 @@ public class Config {
     this.botPrefixDefault = botPrefixDefault;
     this.ownerId = ownerId;
     this.defaultCooldownSeconds = defaultCooldownSeconds;
-    this.emoteTrash = emoteTrash;
-    this.emoteStar = emoteStar;
-    this.emoteWhiteCheckMark = emoteWhiteCheckMark;
     this.defaultStarboardStars = defaultStarboardStars;
     this.defaultStarboardIsEnabled = defaultStarboardIsEnabled;
     this.helpPageUrl = helpPageUrl;
@@ -65,7 +59,10 @@ public class Config {
       String botPfpUrl,
       String inviteUrl,
       String id,
-      String nameAsTag) {
+      String nameAsTag,
+      String emoteTrash,
+      String emoteStar,
+      String emoteWhiteCheckMark) {
     this.defaultColor = defaultColor;
     this.errorColor = errorColor;
     this.successColor = successColor;
@@ -75,6 +72,9 @@ public class Config {
     this.inviteUrl = inviteUrl;
     this.id = id;
     this.nameAsTag = nameAsTag;
+    this.emoteStar = emoteStar;
+    this.emoteTrash = emoteTrash;
+    this.emoteWhiteCheckMark = emoteWhiteCheckMark;
   }
 
   public Config() {}

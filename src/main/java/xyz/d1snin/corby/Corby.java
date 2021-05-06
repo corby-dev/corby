@@ -134,7 +134,10 @@ public class Corby {
         API.getSelfUser().getEffectiveAvatarUrl(),
         API.getInviteUrl(permissions),
         API.getSelfUser().getId(),
-        API.getSelfUser().getAsTag());
+        API.getSelfUser().getAsTag(),
+        "\uD83D\uDDD1",
+        "⭐",
+        "✅");
 
     logger = LoggerFactory.getLogger(config.botName);
 
