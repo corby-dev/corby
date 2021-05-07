@@ -11,8 +11,7 @@ package xyz.d1snin.corby.commands;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.Corby;
-import xyz.d1snin.corby.commands.Command;
-import xyz.d1snin.corby.database.managers.GuildSettingsManager;
+import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.utils.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.OtherUtils;
@@ -40,7 +39,7 @@ public class HelpCommand extends Command {
                 "**Server:** "
                     + e.getGuild().getName()
                     + "\n**Prefix for commands on this server:** `"
-                    + GuildSettingsManager.getGuildPrefix(e.getGuild())
+                    + PrefixManager.getPrefix(e.getGuild())
                     + "`"
                     + "\n[Commands list]("
                     + Corby.config.helpPageUrl

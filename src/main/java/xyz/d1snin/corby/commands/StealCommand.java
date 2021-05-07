@@ -13,8 +13,7 @@ import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Icon;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.Corby;
-import xyz.d1snin.corby.commands.Command;
-import xyz.d1snin.corby.database.managers.GuildSettingsManager;
+import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.utils.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
@@ -54,7 +53,7 @@ public class StealCommand extends Command {
           e.getAuthor(),
           e.getTextChannel(),
           Corby.config.emoteTrash,
-          String.format(usage, GuildSettingsManager.getGuildPrefix(e.getGuild())));
+          String.format(usage, PrefixManager.getPrefix(e.getGuild())));
       return;
     }
 

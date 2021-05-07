@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import xyz.d1snin.corby.Corby;
-import xyz.d1snin.corby.database.managers.GuildSettingsManager;
+import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.utils.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.ExceptionUtils;
@@ -145,9 +145,9 @@ public abstract class Command extends ListenerAdapter {
     return Arrays.asList(getCommandArgs(message))
             .get(0)
             .toLowerCase()
-            .equals(GuildSettingsManager.getGuildPrefix(event.getGuild()) + use)
+            .equals(PrefixManager.getPrefix(event.getGuild()) + use)
         && getCommandArgs(message)[0].startsWith(
-            GuildSettingsManager.getGuildPrefix(event.getGuild()));
+            PrefixManager.getPrefix(event.getGuild()));
   }
 
   protected String[] getCommandArgs(Message message) {

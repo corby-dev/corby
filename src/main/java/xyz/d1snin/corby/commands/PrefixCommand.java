@@ -11,7 +11,7 @@ package xyz.d1snin.corby.commands;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.Corby;
-import xyz.d1snin.corby.database.managers.GuildSettingsManager;
+import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.utils.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
@@ -32,7 +32,7 @@ public class PrefixCommand extends Command {
     final String cannotBeMoreThen = "The prefix cannot be more than 5 characters.";
     final String successChanged = "The prefix was successfully changed to `%s`.";
 
-    String currentPrefix = GuildSettingsManager.getGuildPrefix(e.getGuild());
+    String currentPrefix = PrefixManager.getPrefix(e.getGuild());
 
     if (args.length < 2) {
       e.getTextChannel()
@@ -65,7 +65,7 @@ public class PrefixCommand extends Command {
       return;
     }
 
-    GuildSettingsManager.setGuildPrefix(e.getGuild(), newPrefix);
+    PrefixManager.setPrefix(e.getGuild(), newPrefix);
 
     e.getTextChannel()
         .sendMessage(

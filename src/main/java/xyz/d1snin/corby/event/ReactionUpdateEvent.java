@@ -16,8 +16,8 @@ import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactio
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import xyz.d1snin.corby.Corby;
-import xyz.d1snin.corby.database.managers.GuildSettingsManager;
 import xyz.d1snin.corby.annotation.EventListener;
+import xyz.d1snin.corby.database.managers.StarboardManager;
 
 import java.sql.SQLException;
 import java.time.Instant;
@@ -45,10 +45,10 @@ public class ReactionUpdateEvent extends Listener {
     }
 
     if (thisEvent.getReaction().getReactionEmote().getName().equals(Corby.config.emoteStar)) {
-      if (GuildSettingsManager.getGuildStarboardChannel(thisEvent.getGuild()) == null) {
+      if (StarboardManager.getStarboardChannel(thisEvent.getGuild()) == null) {
         return;
       }
-      if (!GuildSettingsManager.getGuildStarboardIsEnabled(thisEvent.getGuild())) {
+      if (!StarboardManager.getStarboardIsEnabled(thisEvent.getGuild())) {
         return;
       }
 
@@ -69,9 +69,9 @@ public class ReactionUpdateEvent extends Listener {
         }
       }
 
-      if (reaction.getCount() == GuildSettingsManager.getGuildStarboardStars(thisEvent.getGuild())
+      if (reaction.getCount() == StarboardManager.getStarboardStars(thisEvent.getGuild())
           && !executed.contains(reaction)) {
-        Objects.requireNonNull(GuildSettingsManager.getGuildStarboardChannel(thisEvent.getGuild()))
+        Objects.requireNonNull(StarboardManager.getStarboardChannel(thisEvent.getGuild()))
             .sendMessage(
                 new EmbedBuilder()
                     .setAuthor(

@@ -11,8 +11,8 @@ package xyz.d1snin.corby.commands;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.Corby;
-import xyz.d1snin.corby.commands.Command;
-import xyz.d1snin.corby.database.managers.GuildSettingsManager;
+import xyz.d1snin.corby.database.managers.PrefixManager;
+import xyz.d1snin.corby.database.managers.StarboardManager;
 import xyz.d1snin.corby.utils.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
@@ -49,13 +49,13 @@ public class StarboardCommand extends Command {
     final String sbStars = "The number of stars for the message has been successfully updated.";
 
     if (args.length < 2) {
-      if (!GuildSettingsManager.getGuildStarboardIsEnabled(e.getGuild())) {
+      if (!StarboardManager.getStarboardIsEnabled(e.getGuild())) {
         Embeds.createAndSendWithReaction(
             EmbedTemplate.ERROR,
             e.getAuthor(),
             e.getTextChannel(),
             Corby.config.emoteTrash,
-            String.format(sbNotEnabled, GuildSettingsManager.getGuildPrefix(e.getGuild())));
+            String.format(sbNotEnabled, PrefixManager.getPrefix(e.getGuild())));
       } else {
         e.getTextChannel()
             .sendMessage(
@@ -64,9 +64,9 @@ public class StarboardCommand extends Command {
                     e.getAuthor(),
                     String.format(
                         sbInfo,
-                        GuildSettingsManager.getGuildStarboardStars(e.getGuild()),
+                        StarboardManager.getStarboardStars(e.getGuild()),
                         Objects.requireNonNull(
-                                GuildSettingsManager.getGuildStarboardChannel(e.getGuild()))
+                                StarboardManager.getStarboardChannel(e.getGuild()))
                             .getAsMention())))
             .queue();
       }
@@ -75,17 +75,17 @@ public class StarboardCommand extends Command {
 
     switch (args[1].toLowerCase()) {
       case "enable":
-        if (GuildSettingsManager.getGuildStarboardChannel(e.getGuild()) == null) {
+        if (StarboardManager.getStarboardChannel(e.getGuild()) == null) {
           Embeds.createAndSendWithReaction(
               EmbedTemplate.ERROR,
               e.getAuthor(),
               e.getTextChannel(),
               Corby.config.emoteTrash,
-              String.format(sbNotConfigured, GuildSettingsManager.getGuildPrefix(e.getGuild())));
+              String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild())));
           return;
         }
 
-        if (GuildSettingsManager.getGuildStarboardIsEnabled(e.getGuild())) {
+        if (StarboardManager.getStarboardIsEnabled(e.getGuild())) {
           Embeds.createAndSendWithReaction(
               EmbedTemplate.ERROR,
               e.getAuthor(),
@@ -95,7 +95,7 @@ public class StarboardCommand extends Command {
           return;
         }
 
-        GuildSettingsManager.setGuildStarboardIsEnabled(e.getGuild(), true);
+        StarboardManager.setStarboardIsEnabled(e.getGuild(), true);
         e.getTextChannel()
             .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), sbEnabled))
             .queue();
@@ -103,7 +103,7 @@ public class StarboardCommand extends Command {
         break;
 
       case "disable":
-        if (!GuildSettingsManager.getGuildStarboardIsEnabled(e.getGuild())) {
+        if (!StarboardManager.getStarboardIsEnabled(e.getGuild())) {
           Embeds.createAndSendWithReaction(
               EmbedTemplate.ERROR,
               e.getAuthor(),
@@ -113,7 +113,7 @@ public class StarboardCommand extends Command {
           return;
         }
 
-        GuildSettingsManager.setGuildStarboardIsEnabled(e.getGuild(), false);
+        StarboardManager.setStarboardIsEnabled(e.getGuild(), false);
         Embeds.createAndSendWithReaction(
             EmbedTemplate.ERROR,
             e.getAuthor(),
@@ -130,12 +130,12 @@ public class StarboardCommand extends Command {
               e.getAuthor(),
               e.getTextChannel(),
               Corby.config.emoteTrash,
-              String.format(sbIncChannel, GuildSettingsManager.getGuildPrefix(e.getGuild())));
+              String.format(sbIncChannel, PrefixManager.getPrefix(e.getGuild())));
           return;
         }
 
-        if (GuildSettingsManager.getGuildStarboardChannel(e.getGuild()) != null
-            && Objects.requireNonNull(GuildSettingsManager.getGuildStarboardChannel(e.getGuild()))
+        if (StarboardManager.getStarboardChannel(e.getGuild()) != null
+            && Objects.requireNonNull(StarboardManager.getStarboardChannel(e.getGuild()))
                     .getIdLong()
                 == e.getMessage().getMentionedChannels().get(0).getIdLong()) {
           Embeds.createAndSendWithReaction(
@@ -147,7 +147,7 @@ public class StarboardCommand extends Command {
           return;
         }
 
-        GuildSettingsManager.setGuildStarboardChannel(
+        StarboardManager.setStarboardChannel(
             e.getGuild(), e.getMessage().getMentionedChannels().get(0));
         Embeds.createAndSendWithReaction(
             EmbedTemplate.ERROR,
@@ -165,7 +165,7 @@ public class StarboardCommand extends Command {
               e.getAuthor(),
               e.getTextChannel(),
               Corby.config.emoteTrash,
-              String.format(sbStarsInc, GuildSettingsManager.getGuildPrefix(e.getGuild())));
+              String.format(sbStarsInc, PrefixManager.getPrefix(e.getGuild())));
           return;
         }
 
@@ -179,7 +179,7 @@ public class StarboardCommand extends Command {
               e.getAuthor(),
               e.getTextChannel(),
               Corby.config.emoteTrash,
-              String.format(sbStarsInc, GuildSettingsManager.getGuildPrefix(e.getGuild())));
+              String.format(sbStarsInc, PrefixManager.getPrefix(e.getGuild())));
           return;
         }
 
@@ -189,31 +189,31 @@ public class StarboardCommand extends Command {
               e.getAuthor(),
               e.getTextChannel(),
               Corby.config.emoteTrash,
-              String.format(sbStarsInc, GuildSettingsManager.getGuildPrefix(e.getGuild())));
+              String.format(sbStarsInc, PrefixManager.getPrefix(e.getGuild())));
           return;
         }
 
-        if (!GuildSettingsManager.getGuildStarboardIsEnabled(e.getGuild())) {
+        if (!StarboardManager.getStarboardIsEnabled(e.getGuild())) {
           Embeds.createAndSendWithReaction(
               EmbedTemplate.ERROR,
               e.getAuthor(),
               e.getTextChannel(),
               Corby.config.emoteTrash,
-              String.format(sbNotEnabled, GuildSettingsManager.getGuildPrefix(e.getGuild())));
+              String.format(sbNotEnabled, PrefixManager.getPrefix(e.getGuild())));
           return;
         }
 
-        if (GuildSettingsManager.getGuildStarboardChannel(e.getGuild()) == null) {
+        if (StarboardManager.getStarboardChannel(e.getGuild()) == null) {
           Embeds.createAndSendWithReaction(
               EmbedTemplate.ERROR,
               e.getAuthor(),
               e.getTextChannel(),
               Corby.config.emoteTrash,
-              String.format(sbNotConfigured, GuildSettingsManager.getGuildPrefix(e.getGuild())));
+              String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild())));
           return;
         }
 
-        GuildSettingsManager.setGuildStarboardStars(e.getGuild(), stars);
+        StarboardManager.setStarboardStars(e.getGuild(), stars);
         e.getTextChannel()
             .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), sbStars))
             .queue();

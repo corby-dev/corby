@@ -11,9 +11,8 @@ package xyz.d1snin.corby.commands;
 import com.github.bottomSoftwareFoundation.bottom.TranslationError;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.Corby;
-import xyz.d1snin.corby.commands.Command;
 import com.github.bottomSoftwareFoundation.bottom.Bottom;
-import xyz.d1snin.corby.database.managers.GuildSettingsManager;
+import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.utils.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
@@ -46,14 +45,14 @@ public class BottomCommand extends Command {
             e.getAuthor(),
             e.getTextChannel(),
             Corby.config.emoteTrash,
-            String.format(usage, GuildSettingsManager.getGuildPrefix(e.getGuild())));
+            String.format(usage, PrefixManager.getPrefix(e.getGuild())));
         return;
       }
 
       final String message =
           e.getMessage()
               .getContentRaw()
-              .substring(GuildSettingsManager.getGuildPrefix(e.getGuild()).length() + 14);
+              .substring(PrefixManager.getPrefix(e.getGuild()).length() + 14);
 
       switch (args[1]) {
         case "encode":
@@ -77,7 +76,7 @@ public class BottomCommand extends Command {
                 Corby.config.emoteTrash,
                 String.format(
                     usageE,
-                    GuildSettingsManager.getGuildPrefix(e.getGuild()),
+                    PrefixManager.getPrefix(e.getGuild()),
                     msgLimit1,
                     msgLimit2));
             return;
@@ -118,7 +117,7 @@ public class BottomCommand extends Command {
               e.getAuthor(),
               e.getTextChannel(),
               Corby.config.emoteTrash,
-              String.format(usage, GuildSettingsManager.getGuildPrefix(e.getGuild())));
+              String.format(usage, PrefixManager.getPrefix(e.getGuild())));
       }
     } catch (TranslationError exception) {
 

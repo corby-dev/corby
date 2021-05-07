@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.annotation.EventListener;
 import xyz.d1snin.corby.commands.Command;
-import xyz.d1snin.corby.database.managers.GuildSettingsManager;
+import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.utils.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
@@ -24,7 +24,7 @@ public class MessageEvent extends Listener {
 
     String arg = thisEvent.getMessage().getContentRaw().split("\\s+")[0];
 
-    if (!arg.startsWith(GuildSettingsManager.getGuildPrefix(thisEvent.getGuild()))) {
+    if (!arg.startsWith(PrefixManager.getPrefix(thisEvent.getGuild()))) {
       return;
     }
 
@@ -32,7 +32,7 @@ public class MessageEvent extends Listener {
 
     if (!Command.getCommandUsages()
             .contains(
-                arg.substring(GuildSettingsManager.getGuildPrefix(thisEvent.getGuild()).length()))
+                arg.substring(PrefixManager.getPrefix(thisEvent.getGuild()).length()))
         && arg.length() > 1) {
       Embeds.createAndSendWithReaction(
           EmbedTemplate.ERROR,
