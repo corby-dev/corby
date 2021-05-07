@@ -2,6 +2,7 @@ package xyz.d1snin.corby.event;
 
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
+import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.utils.ExceptionUtils;
 
 import java.sql.SQLException;
@@ -22,11 +23,15 @@ public abstract class Listener implements EventListener {
                   .getAnnotation(xyz.d1snin.corby.annotation.EventListener.class)
                   .event())
           .contains(thisEvent)) {
-        try {
-          perform(event);
-        } catch (Exception e) {
-          ExceptionUtils.processException(e);
-        }
+        Corby.getService()
+            .execute(
+                () -> {
+                  try {
+                    perform(event);
+                  } catch (Exception e) {
+                    ExceptionUtils.processException(e);
+                  }
+                });
       }
     }
   }

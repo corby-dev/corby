@@ -40,7 +40,6 @@ public class Embeds {
 
   public static void createAndSendWithReaction(
       EmbedTemplate template, User u, TextChannel c, String unicode, String description) {
-    c.sendMessage(create(template, u, description))
-        .queue((message -> message.addReaction(unicode).queue()));
+    c.sendMessage(create(template, u, description)).complete().addReaction(unicode).complete();
   }
 }
