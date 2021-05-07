@@ -43,7 +43,7 @@ public class StealCommand extends Command {
     final String invalidUrl = "Provided URL is invalid.";
     final String success = "The emote `:%s:` has been successfully added!";
     final String failure =
-        "Something went wrong while adding an emote, please try again. Most likely, an emote with the same name already exists.";
+        "Something went wrong while adding an emote, please try again.";
     final String incorrectUrl = "This format is not supported.";
 
     final List<Emote> emotes = e.getMessage().getEmotes();
