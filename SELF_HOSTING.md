@@ -23,9 +23,6 @@ Then fill it in according to the following template:
   "botPrefixDefault": "",
   "ownerId": "",
   "defaultCooldownSeconds": "",
-  "emoteTrash": "",
-  "emoteStar": "",
-  "emoteWhiteCheckMark": "",
   "defaultStarboardStars": "",
   "defaultStarboardIsEnabled": "",
   "helpPageUrl": ""
@@ -36,9 +33,6 @@ Then fill it in according to the following template:
 `bot_prefx_default` - bot prefix\
 `ownerId` - your discord id\
 `default_cooldowm_seconds` - User cannot use more than one command at this time\
-`emoteTrash` - emote of waste bascket (unicode)\
-`emoteStar` - emote of star (unicode)\
-`emoteWhiteCheckMark` - emote of white check mark (unicode)\
 `defaultStarboardStars` - the number of stars required for a message to appear on the starboard\
 `defaultStarboardIsEnabled` - (boolean) default toggle for the starboard on the server\
 `helpPageUrl` - link to the page with information about commands
@@ -49,9 +43,6 @@ Then fill it in according to the following template:
   "botPrefixDefault": "!",
   "ownerId": "111111111111111111",
   "defaultCooldownSeconds": "2",
-  "emoteTrash": "\uD83D\uDDD1",
-  "emoteStar": "⭐",
-  "emoteWhiteCheckMark": "✅",
   "defaultStarboardStars": "3",
   "defaultStarboardIsEnabled": "false",
   "helpPageUrl": "https://d1snin.xyz/corby/"
