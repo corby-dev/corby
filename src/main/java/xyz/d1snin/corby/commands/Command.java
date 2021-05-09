@@ -15,7 +15,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.enums.Category;
-import xyz.d1snin.corby.manager.config.Config;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.ExceptionUtils;
@@ -89,12 +88,13 @@ public abstract class Command extends ListenerAdapter {
 
       if (isCommand(msg, e)) {
         if (!hasPermission(e)) {
-          Embeds.createAndSendWithReaction(
-              EmbedTemplate.ERROR,
-              e.getAuthor(),
-              e.getTextChannel(),
-              Corby.config.emoteTrash,
-              String.format(invalidPermission, getPermissionString()));
+          e.getTextChannel()
+              .sendMessage(
+                  Embeds.create(
+                      EmbedTemplate.ERROR,
+                      e.getAuthor(),
+                      String.format(invalidPermission, getPermissionString())))
+              .queue();
           return;
         }
 
@@ -104,12 +104,13 @@ public abstract class Command extends ListenerAdapter {
         }
 
         if (!Objects.requireNonNull(e.getGuild().getBotRole()).hasPermission(Corby.permissions)) {
-          Embeds.createAndSendWithReaction(
-              EmbedTemplate.ERROR,
-              e.getAuthor(),
-              e.getTextChannel(),
-              Corby.config.emoteTrash,
-              String.format(invalidBotPermission, Corby.config.inviteUrl));
+          e.getTextChannel()
+              .sendMessage(
+                  Embeds.create(
+                      EmbedTemplate.ERROR,
+                      e.getAuthor(),
+                      String.format(invalidBotPermission, Corby.config.inviteUrl)))
+              .queue();
           e.getGuild().leave().queue();
           return;
         }
@@ -160,14 +161,6 @@ public abstract class Command extends ListenerAdapter {
     return msg.getContentRaw().split("\\s+");
   }
 
-  protected String[] getCommandArgsRaw(Message msg) {
-    String[] args = getCommandArgs(msg);
-    String[] result = new String[args.length - 1];
-
-    System.arraycopy(args, 1, result, 0, args.length - 1);
-    return result;
-  }
-
   private boolean isCommand(Message message, MessageReceivedEvent event) throws SQLException {
 
     if (!getCommands().contains(this)) {
@@ -182,12 +175,15 @@ public abstract class Command extends ListenerAdapter {
   }
 
   public static Command add(Command command) {
+
+    final String invalidCommandConfig =
+        "It looks like one of the fields is not initialized in the command (%s), fields alias, description, category and usages should be initialized. This command are ignored.";
+
     if (command.getAlias() == null
         || command.getDescription() == null
         || command.getCategory() == null
         || command.getUsages() == null) {
-      Corby.logger.warn(
-          "It looks like one of the fields is not initialized in the command, fields alias, description, category and usages should be initialized. This command are ignored.");
+      Corby.logger.warn(String.format(invalidCommandConfig, command.getClass().getName()));
     } else {
       commands.add(command);
     }

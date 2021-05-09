@@ -10,7 +10,6 @@ package xyz.d1snin.corby.commands.fun;
 
 import com.github.bottomSoftwareFoundation.bottom.TranslationError;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import xyz.d1snin.corby.Corby;
 import com.github.bottomSoftwareFoundation.bottom.Bottom;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.PrefixManager;
@@ -45,12 +44,13 @@ public class BottomCommand extends Command {
       final String longR = "Sorry, generated result is too long.";
 
       if (args.length < 3) {
-        Embeds.createAndSendWithReaction(
-            EmbedTemplate.ERROR,
-            e.getAuthor(),
-            e.getTextChannel(),
-            Corby.config.emoteTrash,
-            String.format(usage, PrefixManager.getPrefix(e.getGuild())));
+        e.getTextChannel()
+            .sendMessage(
+                Embeds.create(
+                    EmbedTemplate.ERROR,
+                    e.getAuthor(),
+                    String.format(usage, PrefixManager.getPrefix(e.getGuild()))))
+            .queue();
         return;
       }
 
@@ -64,26 +64,21 @@ public class BottomCommand extends Command {
           String encodedMessage = Bottom.encode(message);
 
           if (encodedMessage.length() > edMsgLimit) {
-            Embeds.createAndSendWithReaction(
-                EmbedTemplate.ERROR,
-                e.getAuthor(),
-                e.getTextChannel(),
-                Corby.config.emoteTrash,
-                longR);
+            e.getTextChannel()
+                .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), longR))
+                .queue();
             return;
           }
 
           if (message.length() > msgLimit2 || message.length() < msgLimit1) {
-            Embeds.createAndSendWithReaction(
-                EmbedTemplate.ERROR,
-                e.getAuthor(),
-                e.getTextChannel(),
-                Corby.config.emoteTrash,
-                String.format(
-                    usageE,
-                    PrefixManager.getPrefix(e.getGuild()),
-                    msgLimit1,
-                    msgLimit2));
+            e.getTextChannel()
+                .sendMessage(
+                    Embeds.create(
+                        EmbedTemplate.ERROR,
+                        e.getAuthor(),
+                        String.format(
+                            usageE, PrefixManager.getPrefix(e.getGuild()), msgLimit1, msgLimit2)))
+                .queue();
             return;
           }
 
@@ -99,12 +94,9 @@ public class BottomCommand extends Command {
           String decodedMessage = Bottom.decode(message);
 
           if (decodedMessage.length() > edMsgLimit) {
-            Embeds.createAndSendWithReaction(
-                EmbedTemplate.ERROR,
-                e.getAuthor(),
-                e.getTextChannel(),
-                Corby.config.emoteTrash,
-                longR);
+            e.getTextChannel()
+                .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), longR))
+                .queue();
             return;
           }
 
@@ -117,19 +109,21 @@ public class BottomCommand extends Command {
           break;
 
         default:
-          Embeds.createAndSendWithReaction(
-              EmbedTemplate.ERROR,
-              e.getAuthor(),
-              e.getTextChannel(),
-              Corby.config.emoteTrash,
-              String.format(usage, PrefixManager.getPrefix(e.getGuild())));
+          e.getTextChannel()
+              .sendMessage(
+                  Embeds.create(
+                      EmbedTemplate.ERROR,
+                      e.getAuthor(),
+                      String.format(usage, PrefixManager.getPrefix(e.getGuild()))))
+              .queue();
       }
     } catch (TranslationError exception) {
 
       final String tErr = "You cannot decrypt this message.";
 
-      Embeds.createAndSendWithReaction(
-          EmbedTemplate.ERROR, e.getAuthor(), e.getTextChannel(), Corby.config.emoteTrash, tErr);
+      e.getTextChannel()
+          .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), tErr))
+          .queue();
     }
   }
 }

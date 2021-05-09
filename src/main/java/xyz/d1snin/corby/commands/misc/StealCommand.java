@@ -12,7 +12,6 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Icon;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.enums.Category;
@@ -53,24 +52,22 @@ public class StealCommand extends Command {
     final List<Emote> emotes = e.getMessage().getEmotes();
 
     if (args.length < 3) {
-      Embeds.createAndSendWithReaction(
-          EmbedTemplate.ERROR,
-          e.getAuthor(),
-          e.getTextChannel(),
-          Corby.config.emoteTrash,
-          String.format(usage, PrefixManager.getPrefix(e.getGuild())));
+      e.getTextChannel()
+          .sendMessage(
+              Embeds.create(
+                  EmbedTemplate.ERROR,
+                  e.getAuthor(),
+                  String.format(usage, PrefixManager.getPrefix(e.getGuild()))))
+          .queue();
       return;
     }
 
     final String name = args[2].toLowerCase();
 
     if (name.length() > 32 || name.length() < 1) {
-      Embeds.createAndSendWithReaction(
-          EmbedTemplate.ERROR,
-          e.getAuthor(),
-          e.getTextChannel(),
-          Corby.config.emoteTrash,
-          nameSizeMessage);
+      e.getTextChannel()
+          .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), nameSizeMessage))
+          .queue();
       return;
     }
 
@@ -79,24 +76,18 @@ public class StealCommand extends Command {
     if (emotes.isEmpty()) {
 
       if (!args[1].endsWith(".jpg") && !args[1].endsWith(".png") && !args[1].endsWith(".jpeg")) {
-        Embeds.createAndSendWithReaction(
-            EmbedTemplate.ERROR,
-            e.getAuthor(),
-            e.getTextChannel(),
-            Corby.config.emoteTrash,
-            incorrectUrl);
+        e.getTextChannel()
+            .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), incorrectUrl))
+            .queue();
         return;
       }
 
       try {
         url = new URL(args[1]);
       } catch (MalformedURLException malformedURLException) {
-        Embeds.createAndSendWithReaction(
-            EmbedTemplate.ERROR,
-            e.getAuthor(),
-            e.getTextChannel(),
-            Corby.config.emoteTrash,
-            invalidUrl);
+        e.getTextChannel()
+            .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), invalidUrl))
+            .queue();
         return;
       }
     } else {
@@ -117,19 +108,13 @@ public class StealCommand extends Command {
                               EmbedTemplate.DEFAULT, e.getAuthor(), String.format(success, name)))
                       .queue(),
               fail ->
-                  Embeds.createAndSendWithReaction(
-                      EmbedTemplate.ERROR,
-                      e.getAuthor(),
-                      e.getTextChannel(),
-                      Corby.config.emoteTrash,
-                      failure));
+                  e.getTextChannel()
+                      .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), failure))
+                      .queue());
     } catch (FileNotFoundException exception) {
-      Embeds.createAndSendWithReaction(
-          EmbedTemplate.ERROR,
-          e.getAuthor(),
-          e.getTextChannel(),
-          Corby.config.emoteTrash,
-          invalidUrl);
+      e.getTextChannel()
+          .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), invalidUrl))
+          .queue();
     }
   }
 }

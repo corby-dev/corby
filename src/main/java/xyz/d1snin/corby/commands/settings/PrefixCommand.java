@@ -10,7 +10,6 @@ package xyz.d1snin.corby.commands.settings;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.enums.Category;
@@ -52,22 +51,18 @@ public class PrefixCommand extends Command {
     String newPrefix = args[1];
 
     if (currentPrefix.equals(newPrefix)) {
-      Embeds.createAndSendWithReaction(
-          EmbedTemplate.ERROR,
-          e.getAuthor(),
-          e.getTextChannel(),
-          Corby.config.emoteTrash,
-          String.format(prefixAlready, newPrefix));
+      e.getTextChannel()
+          .sendMessage(
+              Embeds.create(
+                  EmbedTemplate.ERROR, e.getAuthor(), String.format(prefixAlready, newPrefix)))
+          .queue();
       return;
     }
 
     if (newPrefix.length() > 5) {
-      Embeds.createAndSendWithReaction(
-          EmbedTemplate.ERROR,
-          e.getAuthor(),
-          e.getTextChannel(),
-          Corby.config.emoteTrash,
-          cannotBeMoreThen);
+      e.getTextChannel()
+          .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), cannotBeMoreThen))
+          .queue();
       return;
     }
 

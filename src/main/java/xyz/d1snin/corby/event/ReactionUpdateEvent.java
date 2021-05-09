@@ -34,16 +34,6 @@ public class ReactionUpdateEvent extends Listener {
   protected void perform(GenericEvent event) throws SQLException {
     GenericGuildMessageReactionEvent thisEvent = ((GenericGuildMessageReactionEvent) event);
 
-    if (thisEvent.getReaction().getReactionEmote().getName().equals(Corby.config.emoteTrash)
-        && !thisEvent.getReaction().isSelf()
-        && !executed.contains(thisEvent.getReaction())) {
-      if (thisEvent.retrieveMessage().complete().getReactions().get(0).isSelf()) {
-        thisEvent.retrieveMessage().queue((message -> message.delete().queue()));
-        executed.add(thisEvent.getReaction());
-      }
-      return;
-    }
-
     if (thisEvent.getReaction().getReactionEmote().getName().equals(Corby.config.emoteStar)) {
       if (StarboardManager.getStarboardChannel(thisEvent.getGuild()) == null) {
         return;

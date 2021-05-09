@@ -10,7 +10,6 @@ package xyz.d1snin.corby.commands.settings;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.database.managers.StarboardManager;
@@ -64,12 +63,13 @@ public class StarboardCommand extends Command {
 
     if (args.length < 2) {
       if (!StarboardManager.getStarboardIsEnabled(e.getGuild())) {
-        Embeds.createAndSendWithReaction(
-            EmbedTemplate.ERROR,
-            e.getAuthor(),
-            e.getTextChannel(),
-            Corby.config.emoteTrash,
-            String.format(sbNotEnabled, PrefixManager.getPrefix(e.getGuild())));
+        e.getTextChannel()
+            .sendMessage(
+                Embeds.create(
+                    EmbedTemplate.ERROR,
+                    e.getAuthor(),
+                    String.format(sbNotEnabled, PrefixManager.getPrefix(e.getGuild()))))
+            .queue();
       } else {
         e.getTextChannel()
             .sendMessage(
@@ -89,22 +89,20 @@ public class StarboardCommand extends Command {
     switch (args[1].toLowerCase()) {
       case "enable":
         if (StarboardManager.getStarboardChannel(e.getGuild()) == null) {
-          Embeds.createAndSendWithReaction(
-              EmbedTemplate.ERROR,
-              e.getAuthor(),
-              e.getTextChannel(),
-              Corby.config.emoteTrash,
-              String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild())));
+          e.getTextChannel()
+              .sendMessage(
+                  Embeds.create(
+                      EmbedTemplate.ERROR,
+                      e.getAuthor(),
+                      String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild()))))
+              .queue();
           return;
         }
 
         if (StarboardManager.getStarboardIsEnabled(e.getGuild())) {
-          Embeds.createAndSendWithReaction(
-              EmbedTemplate.ERROR,
-              e.getAuthor(),
-              e.getTextChannel(),
-              Corby.config.emoteTrash,
-              sbAlreadyEnabled);
+          e.getTextChannel()
+              .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbAlreadyEnabled))
+              .queue();
           return;
         }
 
@@ -117,33 +115,28 @@ public class StarboardCommand extends Command {
 
       case "disable":
         if (!StarboardManager.getStarboardIsEnabled(e.getGuild())) {
-          Embeds.createAndSendWithReaction(
-              EmbedTemplate.ERROR,
-              e.getAuthor(),
-              e.getTextChannel(),
-              Corby.config.emoteTrash,
-              sbAlreadyDisabled);
+          e.getTextChannel()
+              .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbAlreadyDisabled))
+              .queue();
           return;
         }
 
         StarboardManager.setStarboardIsEnabled(e.getGuild(), false);
-        Embeds.createAndSendWithReaction(
-            EmbedTemplate.ERROR,
-            e.getAuthor(),
-            e.getTextChannel(),
-            Corby.config.emoteTrash,
-            sbDisabled);
+        e.getTextChannel()
+            .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbDisabled))
+            .queue();
 
         break;
 
       case "channel":
         if (e.getMessage().getMentionedChannels().isEmpty()) {
-          Embeds.createAndSendWithReaction(
-              EmbedTemplate.ERROR,
-              e.getAuthor(),
-              e.getTextChannel(),
-              Corby.config.emoteTrash,
-              String.format(sbIncChannel, PrefixManager.getPrefix(e.getGuild())));
+          e.getTextChannel()
+              .sendMessage(
+                  Embeds.create(
+                      EmbedTemplate.ERROR,
+                      e.getAuthor(),
+                      String.format(sbIncChannel, PrefixManager.getPrefix(e.getGuild()))))
+              .queue();
           return;
         }
 
@@ -151,34 +144,34 @@ public class StarboardCommand extends Command {
             && Objects.requireNonNull(StarboardManager.getStarboardChannel(e.getGuild()))
                     .getIdLong()
                 == e.getMessage().getMentionedChannels().get(0).getIdLong()) {
-          Embeds.createAndSendWithReaction(
-              EmbedTemplate.ERROR,
-              e.getAuthor(),
-              e.getTextChannel(),
-              Corby.config.emoteTrash,
-              sbChannelAlreadyInst);
+          e.getTextChannel()
+              .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbChannelAlreadyInst))
+              .queue();
           return;
         }
 
         StarboardManager.setStarboardChannel(
             e.getGuild(), e.getMessage().getMentionedChannels().get(0));
-        Embeds.createAndSendWithReaction(
-            EmbedTemplate.ERROR,
-            e.getAuthor(),
-            e.getTextChannel(),
-            Corby.config.emoteTrash,
-            String.format(
-                sbChannelInstalled, e.getMessage().getMentionedChannels().get(0).getAsMention()));
+        e.getTextChannel()
+            .sendMessage(
+                Embeds.create(
+                    EmbedTemplate.ERROR,
+                    e.getAuthor(),
+                    String.format(
+                        sbChannelInstalled,
+                        e.getMessage().getMentionedChannels().get(0).getAsMention())))
+            .queue();
         break;
 
       case "stars":
         if (args.length < 3) {
-          Embeds.createAndSendWithReaction(
-              EmbedTemplate.ERROR,
-              e.getAuthor(),
-              e.getTextChannel(),
-              Corby.config.emoteTrash,
-              String.format(sbStarsInc, PrefixManager.getPrefix(e.getGuild())));
+          e.getTextChannel()
+              .sendMessage(
+                  Embeds.create(
+                      EmbedTemplate.ERROR,
+                      e.getAuthor(),
+                      String.format(sbStarsInc, PrefixManager.getPrefix(e.getGuild()))))
+              .queue();
           return;
         }
 
@@ -187,42 +180,46 @@ public class StarboardCommand extends Command {
         try {
           stars = Integer.parseInt(args[2]);
         } catch (NumberFormatException exception) {
-          Embeds.createAndSendWithReaction(
-              EmbedTemplate.ERROR,
-              e.getAuthor(),
-              e.getTextChannel(),
-              Corby.config.emoteTrash,
-              String.format(sbStarsInc, PrefixManager.getPrefix(e.getGuild())));
+          e.getTextChannel()
+              .sendMessage(
+                  Embeds.create(
+                      EmbedTemplate.ERROR,
+                      e.getAuthor(),
+                      String.format(sbStarsInc, PrefixManager.getPrefix(e.getGuild()))))
+              .queue();
           return;
         }
 
         if (stars > 100 || stars < 1) {
-          Embeds.createAndSendWithReaction(
-              EmbedTemplate.ERROR,
-              e.getAuthor(),
-              e.getTextChannel(),
-              Corby.config.emoteTrash,
-              String.format(sbStarsInc, PrefixManager.getPrefix(e.getGuild())));
+          e.getTextChannel()
+              .sendMessage(
+                  Embeds.create(
+                      EmbedTemplate.ERROR,
+                      e.getAuthor(),
+                      String.format(sbStarsInc, PrefixManager.getPrefix(e.getGuild()))))
+              .queue();
           return;
         }
 
         if (!StarboardManager.getStarboardIsEnabled(e.getGuild())) {
-          Embeds.createAndSendWithReaction(
-              EmbedTemplate.ERROR,
-              e.getAuthor(),
-              e.getTextChannel(),
-              Corby.config.emoteTrash,
-              String.format(sbNotEnabled, PrefixManager.getPrefix(e.getGuild())));
+          e.getTextChannel()
+              .sendMessage(
+                  Embeds.create(
+                      EmbedTemplate.ERROR,
+                      e.getAuthor(),
+                      String.format(sbNotEnabled, PrefixManager.getPrefix(e.getGuild()))))
+              .queue();
           return;
         }
 
         if (StarboardManager.getStarboardChannel(e.getGuild()) == null) {
-          Embeds.createAndSendWithReaction(
-              EmbedTemplate.ERROR,
-              e.getAuthor(),
-              e.getTextChannel(),
-              Corby.config.emoteTrash,
-              String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild())));
+          e.getTextChannel()
+              .sendMessage(
+                  Embeds.create(
+                      EmbedTemplate.ERROR,
+                      e.getAuthor(),
+                      String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild()))))
+              .queue();
           return;
         }
 

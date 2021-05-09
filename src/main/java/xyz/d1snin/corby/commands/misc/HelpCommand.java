@@ -25,7 +25,7 @@ public class HelpCommand extends Command {
   public HelpCommand() {
     this.alias = "help";
     this.description = "Gives you information about commands.";
-    this.category = Category.MISC;
+//    this.category = Category.MISC;
     this.usages = new String[] {"%help", "%shelp <Command Name>"};
   }
 
@@ -55,12 +55,13 @@ public class HelpCommand extends Command {
             .setColor(Corby.config.defaultColor)
             .build(),
         () ->
-            Embeds.createAndSendWithReaction(
-                EmbedTemplate.ERROR,
-                e.getAuthor(),
-                e.getTextChannel(),
-                Corby.config.emoteTrash,
-                "Unable to send you a message, make sure you accept messages from server members."),
+            e.getTextChannel()
+                .sendMessage(
+                    Embeds.create(
+                        EmbedTemplate.ERROR,
+                        e.getAuthor(),
+                        "Unable to send you a message, make sure you accept messages from server members."))
+                .queue(),
         () -> e.getMessage().addReaction(Corby.config.emoteWhiteCheckMark).queue());
   }
 }
