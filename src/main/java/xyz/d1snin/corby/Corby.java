@@ -143,7 +143,7 @@ public class Corby {
         API.getInviteUrl(permissions),
         API.getSelfUser().getId(),
         API.getSelfUser().getAsTag(),
-        "\uD83D\uDDD1",
+        "🗑️",
         "⭐",
         "✅");
 
