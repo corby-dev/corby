@@ -6,7 +6,7 @@ public enum Category {
   SETTINGS("Settings"),
   ADMIN("Admin");
 
-  private String name;
+  private final String name;
 
   Category(String name) {
     this.name = name;
