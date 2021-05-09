@@ -98,7 +98,8 @@ public abstract class Command extends ListenerAdapter {
           return;
         }
 
-        if ((getCategory() == Category.ADMIN) && !e.getAuthor().getId().equals(Corby.config.ownerId)) {
+        if ((getCategory() == Category.ADMIN)
+            && !e.getAuthor().getId().equals(Corby.config.ownerId)) {
           return;
         }
 
@@ -129,11 +130,7 @@ public abstract class Command extends ListenerAdapter {
     }
   }
 
-  private void onLoad() throws SQLException {
-    if (getAlias() == null || getDescription() == null || getCategory() == null || getUsages() == null) {
-      Corby.logger.error("One of the command fields is not initialized.");
-      Corby.shutdown(Config.ExitCodes.BAD_COMMAND_CONFIG);
-    }
+  private void onLoad() {
     Corby.permissions.addAll(Arrays.asList(getBotPermissions()));
   }
 
@@ -152,7 +149,8 @@ public abstract class Command extends ListenerAdapter {
     StringBuilder sb = new StringBuilder();
 
     for (int i = 0; i < getPermissions().length; i++) {
-      sb.append(getPermissions()[i].getName()).append((i == getPermissions().length - 1) ? "" : ", ");
+      sb.append(getPermissions()[i].getName())
+          .append((i == getPermissions().length - 1) ? "" : ", ");
     }
 
     return sb.toString();
@@ -162,7 +160,20 @@ public abstract class Command extends ListenerAdapter {
     return msg.getContentRaw().split("\\s+");
   }
 
+  protected String[] getCommandArgsRaw(Message msg) {
+    String[] args = getCommandArgs(msg);
+    String[] result = new String[args.length - 1];
+
+    System.arraycopy(args, 1, result, 0, args.length - 1);
+    return result;
+  }
+
   private boolean isCommand(Message message, MessageReceivedEvent event) throws SQLException {
+
+    if (!getCommands().contains(this)) {
+      return false;
+    }
+
     return Arrays.asList(getCommandArgs(message))
             .get(0)
             .toLowerCase()
@@ -170,8 +181,16 @@ public abstract class Command extends ListenerAdapter {
         && getCommandArgs(message)[0].startsWith(PrefixManager.getPrefix(event.getGuild()));
   }
 
-  public static Command add(Command command) throws SQLException {
-    commands.add(command);
+  public static Command add(Command command) {
+    if (command.getAlias() == null
+        || command.getDescription() == null
+        || command.getCategory() == null
+        || command.getUsages() == null) {
+      Corby.logger.warn(
+          "It looks like one of the fields is not initialized in the command, fields alias, description, category and usages should be initialized. This command are ignored.");
+    } else {
+      commands.add(command);
+    }
     command.onLoad();
     return command;
   }

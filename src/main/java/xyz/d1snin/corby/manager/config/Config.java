@@ -81,6 +81,5 @@ public class Config {
 
   public static class ExitCodes {
     public static final int NORMAL_SHUTDOWN_EXIT_CODE = 0;
-    public static final int BAD_COMMAND_CONFIG = 11;
   }
 }
