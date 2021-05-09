@@ -17,8 +17,6 @@ import java.io.IOException;
 public class ConfigManager {
 
   public static Config init() throws IOException {
-    File file = new File("config.json");
-    ObjectMapper om = new ObjectMapper(new JsonFactory());
-    return om.readValue(file, Config.class);
+    return new ObjectMapper(new JsonFactory()).readValue(new File("config.json"), Config.class);
   }
 }

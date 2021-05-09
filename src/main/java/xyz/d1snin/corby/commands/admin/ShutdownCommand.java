@@ -3,7 +3,9 @@ package xyz.d1snin.corby.commands.admin;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
-import xyz.d1snin.corby.utils.EmbedTemplate;
+import xyz.d1snin.corby.enums.Category;
+import xyz.d1snin.corby.manager.config.Config;
+import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
 import java.sql.SQLException;
@@ -11,8 +13,10 @@ import java.sql.SQLException;
 public class ShutdownCommand extends Command {
 
   public ShutdownCommand() {
-    this.admincommand = true;
-    this.use = "terminate";
+    this.alias = "terminate";
+    this.description = "Turns off the bot";
+    this.category = Category.ADMIN;
+    this.usages = new String[] {"%sterminate"};
   }
 
   @Override
@@ -20,6 +24,6 @@ public class ShutdownCommand extends Command {
     e.getTextChannel()
         .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Terminating... Bye!"))
         .complete();
-    Corby.shutdown();
+    Corby.shutdown(Config.ExitCodes.NORMAL_SHUTDOWN_EXIT_CODE);
   }
 }

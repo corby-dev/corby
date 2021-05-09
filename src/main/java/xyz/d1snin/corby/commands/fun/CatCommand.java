@@ -13,7 +13,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.json.simple.parser.ParseException;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
-import xyz.d1snin.corby.utils.EmbedTemplate;
+import xyz.d1snin.corby.enums.Category;
+import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.JSONReader;
 
@@ -23,7 +24,10 @@ import java.net.URL;
 public class CatCommand extends Command {
 
   public CatCommand() {
-    this.use = "cat";
+    this.alias = "cat";
+    this.description = "Gives you a picture of a cat";
+    this.category = Category.FUN;
+    this.usages = new String[] {"%scat"};
   }
 
   @Override
@@ -35,31 +39,30 @@ public class CatCommand extends Command {
         .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Fetching..."))
         .queue(
             message -> {
-                try {
-                    message
-                        .editMessage(
-                            new EmbedBuilder()
-                                .setDescription(
-                                    "**Fact about cats:** "
-                                        + reader.readFromURL(
-                                            "text",
-                                            new URL(
-                                                "https://cat-fact.herokuapp.com/facts/random?animal_type=cat&amount=1"),
-                                            true))
-                                .setColor(Corby.config.defaultColor)
-                                .setImage(
-                                    reader.readFromURL(
-                                        "url",
-                                        new URL("https://api.thecatapi.com/v1/images/search"),
-                                        false))
-                                .setFooter(
-                                    e.getAuthor().getName() + " | ID: " + e.getAuthor().getId(),
-                                    e.getAuthor().getEffectiveAvatarUrl())
-                                .build())
-                        .queue();
-                } catch (IOException | ParseException ioException) {
-                    ioException.printStackTrace();
-                }
+              try {
+                message
+                    .editMessage(
+                        new EmbedBuilder()
+                            .setDescription(
+                                reader.readFromURL(
+                                    "text",
+                                    new URL(
+                                        "https://cat-fact.herokuapp.com/facts/random?animal_type=cat&amount=1"),
+                                    true))
+                            .setColor(Corby.config.defaultColor)
+                            .setImage(
+                                reader.readFromURL(
+                                    "url",
+                                    new URL("https://api.thecatapi.com/v1/images/search"),
+                                    false))
+                            .setFooter(
+                                e.getAuthor().getName() + " | ID: " + e.getAuthor().getId(),
+                                e.getAuthor().getEffectiveAvatarUrl())
+                            .build())
+                    .queue();
+              } catch (IOException | ParseException ioException) {
+                ioException.printStackTrace();
+              }
             });
   }
 }

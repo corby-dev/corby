@@ -14,7 +14,8 @@ import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.database.managers.StarboardManager;
-import xyz.d1snin.corby.utils.EmbedTemplate;
+import xyz.d1snin.corby.enums.Category;
+import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
 import java.sql.SQLException;
@@ -23,7 +24,19 @@ import java.util.Objects;
 public class StarboardCommand extends Command {
 
   public StarboardCommand() {
-    this.use = "starboard";
+    this.alias = "starboard";
+    this.description = "Starboard settings";
+    this.category = Category.SETTINGS;
+    this.usages =
+        new String[] {
+          "%sstarboard channel <#channel>",
+          "%sstarboard stars <Stars Count>",
+          "%sstarboard enable",
+          "%sstarboard disable"
+        };
+
+    this.longDescription =
+        "Starboard is a channel where messages will be sent on which the number of star reactions will be equal to the specified one, so users will be able to mark messages they like.";
     this.permissions = new Permission[] {Permission.ADMINISTRATOR};
     this.botPermissions = new Permission[] {Permission.MESSAGE_ADD_REACTION};
   }
@@ -66,8 +79,7 @@ public class StarboardCommand extends Command {
                     String.format(
                         sbInfo,
                         StarboardManager.getStarboardStars(e.getGuild()),
-                        Objects.requireNonNull(
-                                StarboardManager.getStarboardChannel(e.getGuild()))
+                        Objects.requireNonNull(StarboardManager.getStarboardChannel(e.getGuild()))
                             .getAsMention())))
             .queue();
       }

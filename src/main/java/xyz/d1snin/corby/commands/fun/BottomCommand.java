@@ -14,7 +14,8 @@ import xyz.d1snin.corby.Corby;
 import com.github.bottomSoftwareFoundation.bottom.Bottom;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.PrefixManager;
-import xyz.d1snin.corby.utils.EmbedTemplate;
+import xyz.d1snin.corby.enums.Category;
+import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
 import java.sql.SQLException;
@@ -22,7 +23,10 @@ import java.sql.SQLException;
 public class BottomCommand extends Command {
 
   public BottomCommand() {
-    this.use = "bottom";
+    this.alias = "bottom";
+    this.description = "Encrypts your message using a bottom cipher";
+    this.category = Category.FUN;
+    this.usages = new String[] {"%sbottom encode <Message>", "%sbottom decode <Message>"};
   }
 
   @Override

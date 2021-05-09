@@ -29,7 +29,6 @@ import xyz.d1snin.corby.commands.settings.PrefixCommand;
 import xyz.d1snin.corby.commands.settings.StarboardCommand;
 import xyz.d1snin.corby.database.Database;
 import xyz.d1snin.corby.database.DatabasePreparedStatements;
-import xyz.d1snin.corby.event.MessageEvent;
 import xyz.d1snin.corby.event.ReactionUpdateEvent;
 import xyz.d1snin.corby.event.ServerJoinEvent;
 import xyz.d1snin.corby.manager.config.ConfigFileManager;
@@ -76,14 +75,15 @@ public class Corby {
 
   public static void main(String[] args) {
     try {
-      Thread.currentThread().setName("Worker");
-
       ConfigFileManager.initConfigFile();
+
       logger.info("Starting...");
+
+      permissions.addAll(defaultPermissions);
+
       start();
 
       startUpdatePresence();
-      Command.startCooldownUpdater();
     } catch (Exception e) {
       ExceptionUtils.processException(e);
     }
@@ -111,7 +111,6 @@ public class Corby {
     jdaBuilder.addEventListeners(
         new ReactionUpdateEvent(),
         new ServerJoinEvent(),
-        new MessageEvent(),
         Command.add(new PingCommand()),
         Command.add(new PrefixCommand()),
         Command.add(new ShutdownCommand()),
@@ -184,13 +183,13 @@ public class Corby {
     return presences.get(random.nextInt(presences.size()));
   }
 
-  public static void shutdown() throws SQLException {
+  public static void shutdown(int exitCode) throws SQLException {
     logger.warn("Terminating... Bye!");
     Database.close();
     API.shutdown();
     getService().shutdown();
     schedulerPresence.shutdown();
-    System.exit(Config.ExitCodes.NORMAL_SHUTDOWN_EXIT_CODE);
+    System.exit(exitCode);
   }
 
   public static void restart()

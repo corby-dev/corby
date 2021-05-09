@@ -3,7 +3,8 @@ package xyz.d1snin.corby.commands.admin;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
-import xyz.d1snin.corby.utils.EmbedTemplate;
+import xyz.d1snin.corby.enums.Category;
+import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
 import javax.security.auth.login.LoginException;
@@ -13,8 +14,10 @@ import java.sql.SQLException;
 public class RestartCommand extends Command {
 
   public RestartCommand() {
-    this.admincommand = true;
-    this.use = "reload";
+    this.alias = "reload";
+    this.description = "Reboots the bot";
+    this.category = Category.ADMIN;
+    this.usages = new String[] {"%sreload"};
   }
 
   @Override

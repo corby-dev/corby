@@ -15,7 +15,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.PrefixManager;
-import xyz.d1snin.corby.utils.EmbedTemplate;
+import xyz.d1snin.corby.enums.Category;
+import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
 import java.io.FileNotFoundException;
@@ -30,7 +31,11 @@ import java.util.List;
 public class StealCommand extends Command {
 
   public StealCommand() {
-    this.use = "steal";
+    this.alias = "steal";
+    this.description = "Uploads emoji from a link or other emoji to your server";
+    this.category = Category.MISC;
+    this.usages = new String[] {"%ssteal <URL> <Name>", "%ssteal <Emoji> <Name>"};
+
     this.permissions = new Permission[] {Permission.MANAGE_EMOTES};
     this.botPermissions = new Permission[] {Permission.MANAGE_EMOTES};
   }
@@ -42,8 +47,7 @@ public class StealCommand extends Command {
     final String nameSizeMessage = "Name must be between 1 and 32 characters in length.";
     final String invalidUrl = "Provided URL is invalid.";
     final String success = "The emote `:%s:` has been successfully added!";
-    final String failure =
-        "Something went wrong while adding an emote, please try again.";
+    final String failure = "Something went wrong while adding an emote, please try again.";
     final String incorrectUrl = "This format is not supported.";
 
     final List<Emote> emotes = e.getMessage().getEmotes();

@@ -1,6 +1,7 @@
 package xyz.d1snin.corby.utils;
 
 import xyz.d1snin.corby.Corby;
+import xyz.d1snin.corby.enums.EmbedTemplate;
 
 import java.util.Objects;
 

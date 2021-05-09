@@ -11,6 +11,7 @@ package xyz.d1snin.corby.utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 import xyz.d1snin.corby.Corby;
+import xyz.d1snin.corby.enums.EmbedTemplate;
 
 public class Embeds {
   public static MessageEmbed create(EmbedTemplate template, User u, String description) {

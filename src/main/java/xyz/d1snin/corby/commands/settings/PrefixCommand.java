@@ -13,7 +13,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.PrefixManager;
-import xyz.d1snin.corby.utils.EmbedTemplate;
+import xyz.d1snin.corby.enums.Category;
+import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
 import java.sql.SQLException;
@@ -21,7 +22,11 @@ import java.sql.SQLException;
 public class PrefixCommand extends Command {
 
   public PrefixCommand() {
-    this.use = "prefix";
+    this.alias = "prefix";
+    this.description = "Changes the bot prefix on the server.";
+    this.category = Category.SETTINGS;
+    this.usages = new String[] {"%sprefix", "%sprefix <New Prefix>"};
+
     this.permissions = new Permission[] {Permission.ADMINISTRATOR};
   }
 

@@ -13,7 +13,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.PrefixManager;
-import xyz.d1snin.corby.utils.EmbedTemplate;
+import xyz.d1snin.corby.enums.Category;
+import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.OtherUtils;
 
@@ -22,7 +23,10 @@ import java.sql.SQLException;
 public class HelpCommand extends Command {
 
   public HelpCommand() {
-    this.use = "help";
+    this.alias = "help";
+    this.description = "Gives you information about commands.";
+    this.category = Category.MISC;
+    this.usages = new String[] {"%help", "%shelp <Command Name>"};
   }
 
   @Override

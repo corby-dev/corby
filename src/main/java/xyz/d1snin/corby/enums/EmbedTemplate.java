@@ -6,7 +6,7 @@
  *             of this license document, but changing it is not allowed.
  */
 
-package xyz.d1snin.corby.utils;
+package xyz.d1snin.corby.enums;
 
 public enum EmbedTemplate {
   ERROR,
