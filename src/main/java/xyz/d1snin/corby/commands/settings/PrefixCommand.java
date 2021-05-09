@@ -6,11 +6,12 @@
  *             of this license document, but changing it is not allowed.
  */
 
-package xyz.d1snin.corby.commands;
+package xyz.d1snin.corby.commands.settings;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.Corby;
+import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.utils.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
