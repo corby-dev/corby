@@ -62,7 +62,7 @@ public class StealCommand extends Command {
 
     if (emotes.isEmpty()) {
 
-      if (!args[1].endsWith(".jpg") && !args[1].endsWith(".png") && !args[1].endsWith(".jpeg") && !args[1].endsWith(".gif")) {
+      if (!args[1].endsWith(".jpg") && !args[1].endsWith(".png") && !args[1].endsWith(".jpeg")) {
         e.getTextChannel()
             .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), incorrectUrl))
             .queue();
