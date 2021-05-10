@@ -12,6 +12,8 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
+import org.json.simple.parser.ParseException;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.enums.Category;
@@ -27,10 +29,10 @@ import java.util.*;
 public abstract class Command extends ListenerAdapter {
 
   protected abstract void execute(MessageReceivedEvent e, String[] args)
-      throws SQLException, LoginException, IOException, InterruptedException,
-          ClassNotFoundException;
+          throws SQLException, LoginException, IOException, InterruptedException,
+          ClassNotFoundException, ParseException;
 
-  protected abstract boolean isValidSyntax(String[] args);
+  protected abstract boolean isValidSyntax(MessageReceivedEvent e, String[] args);
 
   private static final List<Command> commands = new ArrayList<>();
 
@@ -39,9 +41,12 @@ public abstract class Command extends ListenerAdapter {
   protected Category category = null;
   protected String[] usages = null;
 
+  protected boolean isPreMessage = false;
   protected String longDescription = null;
   protected Permission[] permissions = new Permission[0];
   protected Permission[] botPermissions = new Permission[0];
+
+  protected Message preMessage = null;
 
   public String getAlias() {
     return alias;
@@ -73,88 +78,99 @@ public abstract class Command extends ListenerAdapter {
 
   private MessageReceivedEvent event = null;
 
-  public void onMessageReceived(MessageReceivedEvent e) {
-    try {
+  public void onMessageReceived(@NotNull MessageReceivedEvent e) {
 
-      event = e;
+    Corby.getService()
+        .execute(
+            () -> {
+              try {
 
-      final String invalidPermission = "You must have permissions %s to use this command.";
-      final String invalidBotPermission =
-          "It looks like I do not have or I do not have enough permissions on this server, please invite me using [this](%s) link, I am leaving right now.";
-      final String invalidSyntax = "**Incorrect Syntax:** `%s`\n\n**Usage:**\n%s";
+                event = e;
 
-      if (!e.getChannelType().isGuild()) {
-        return;
-      }
+                final String invalidPermission =
+                    "You must have permissions %s to use this command.";
+                final String invalidBotPermission =
+                    "It looks like I do not have or I do not have enough permissions on this server, please invite me using [this](%s) link, I am leaving right now.";
+                final String invalidSyntax = "**Incorrect Syntax:** `%s`\n\n**Usage:**\n%s";
 
-      Message msg = e.getMessage();
+                if (!e.getChannelType().isGuild()) {
+                  return;
+                }
 
-      if (e.getAuthor().isBot()) {
-        return;
-      }
+                Message msg = e.getMessage();
 
-      if (isCommand(msg, e)) {
-        if (!hasPermission(e)) {
-          e.getTextChannel()
-              .sendMessage(
-                  Embeds.create(
-                      EmbedTemplate.ERROR,
-                      e.getAuthor(),
-                      String.format(invalidPermission, getPermissionString())))
-              .queue();
-          return;
-        }
+                if (e.getAuthor().isBot()) {
+                  return;
+                }
 
-        if ((getCategory() == Category.ADMIN)
-            && !e.getAuthor().getId().equals(Corby.config.ownerId)) {
-          return;
-        }
+                if (isCommand(msg, e)) {
+                  if (!hasPermission(e)) {
+                    e.getTextChannel()
+                        .sendMessage(
+                            Embeds.create(
+                                EmbedTemplate.ERROR,
+                                e.getAuthor(),
+                                String.format(invalidPermission, getPermissionString())))
+                        .queue();
+                    return;
+                  }
 
-        if (!Objects.requireNonNull(e.getGuild().getBotRole()).hasPermission(Corby.permissions)) {
-          e.getTextChannel()
-              .sendMessage(
-                  Embeds.create(
-                      EmbedTemplate.ERROR,
-                      e.getAuthor(),
-                      String.format(invalidBotPermission, Corby.config.inviteUrl)))
-              .queue();
-          e.getGuild().leave().queue();
-          return;
-        }
+                  if ((getCategory() == Category.ADMIN)
+                      && !e.getAuthor().getId().equals(Corby.config.ownerId)) {
+                    return;
+                  }
 
-        if (!isValidSyntax(getCommandArgs(e.getMessage()))) {
-          StringBuilder sb = new StringBuilder();
-          for (String s : getUsages()) {
-            sb.append("`")
-                .append(String.format(s, PrefixManager.getPrefix(e.getGuild())))
-                .append("`")
-                .append("\n");
-            return;
-          }
+                  if (!Objects.requireNonNull(e.getGuild().getBotRole())
+                      .hasPermission(Corby.permissions)) {
+                    e.getTextChannel()
+                        .sendMessage(
+                            Embeds.create(
+                                EmbedTemplate.ERROR,
+                                e.getAuthor(),
+                                String.format(invalidBotPermission, Corby.config.inviteUrl)))
+                        .queue();
+                    e.getGuild().leave().queue();
+                    return;
+                  }
 
-          e.getTextChannel()
-              .sendMessage(
-                  Embeds.create(
-                      EmbedTemplate.ERROR,
-                      e.getAuthor(),
-                      String.format(invalidSyntax, e.getMessage().getContentRaw(), sb)))
-              .queue();
-        }
+                  if (!isValidSyntax(e, getCommandArgs(e.getMessage()))) {
+                    StringBuilder sb = new StringBuilder();
+                    for (String s : getUsages()) {
+                      sb.append("`")
+                          .append(String.format(s, PrefixManager.getPrefix(e.getGuild())))
+                          .append("`")
+                          .append("\n");
+                    }
 
-        Corby.getService()
-            .execute(
-                () -> {
+                    e.getTextChannel()
+                        .sendMessage(
+                            Embeds.create(
+                                EmbedTemplate.ERROR,
+                                e.getAuthor(),
+                                String.format(invalidSyntax, e.getMessage().getContentRaw(), sb)))
+                        .queue();
+                    return;
+                  }
+
                   try {
+
+                    if (isPreMessage) {
+                      e.getTextChannel()
+                          .sendMessage(
+                              Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Processing..."))
+                          .queue(message -> preMessage = message);
+                    }
+
                     execute(e, getCommandArgs(msg));
                   } catch (Exception exception) {
                     ExceptionUtils.processException(exception);
                   }
-                });
-      }
+                }
 
-    } catch (SQLException exception) {
-      ExceptionUtils.processException(exception);
-    }
+              } catch (SQLException exception) {
+                ExceptionUtils.processException(exception);
+              }
+            });
   }
 
   protected String getMessageContent() {

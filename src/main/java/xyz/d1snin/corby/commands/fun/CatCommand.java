@@ -31,7 +31,7 @@ public class CatCommand extends Command {
   }
 
   @Override
-  protected void execute(MessageReceivedEvent e, String[] args) {
+  protected void execute(MessageReceivedEvent e, String[] args) throws IOException, ParseException {
 
     JSONReader reader = new JSONReader();
 
@@ -43,6 +43,10 @@ public class CatCommand extends Command {
                 message
                     .editMessage(
                         new EmbedBuilder()
+                            .setAuthor(
+                                e.getAuthor().getName() + " | ID: " + e.getAuthor().getId(),
+                                e.getAuthor().getEffectiveAvatarUrl(),
+                                e.getAuthor().getEffectiveAvatarUrl())
                             .setDescription(
                                 reader.readFromURL(
                                     "text",
@@ -56,8 +60,8 @@ public class CatCommand extends Command {
                                     new URL("https://api.thecatapi.com/v1/images/search"),
                                     false))
                             .setFooter(
-                                e.getAuthor().getName() + " | ID: " + e.getAuthor().getId(),
-                                e.getAuthor().getEffectiveAvatarUrl())
+                                Corby.config.botName + " | " + Thread.currentThread().getName(),
+                                Corby.config.botPfpUrl)
                             .build())
                     .queue();
               } catch (IOException | ParseException ioException) {
@@ -67,7 +71,7 @@ public class CatCommand extends Command {
   }
 
   @Override
-  protected boolean isValidSyntax(String[] args) {
+  protected boolean isValidSyntax(MessageReceivedEvent e, String[] args) {
     return args.length <= 1;
   }
 }

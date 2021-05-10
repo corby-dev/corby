@@ -41,8 +41,6 @@ public class StealCommand extends Command {
 
   @Override
   protected void execute(MessageReceivedEvent e, String[] args) throws IOException, SQLException {
-
-    final String usage = "Please use the following syntax: `%ssteal <URL or emote> <name>`";
     final String nameSizeMessage = "Name must be between 1 and 32 characters in length.";
     final String invalidUrl = "Provided URL is invalid.";
     final String success = "The emote `:%s:` has been successfully added!";
@@ -50,17 +48,6 @@ public class StealCommand extends Command {
     final String incorrectUrl = "This format is not supported.";
 
     final List<Emote> emotes = e.getMessage().getEmotes();
-
-    if (args.length < 3) {
-      e.getTextChannel()
-          .sendMessage(
-              Embeds.create(
-                  EmbedTemplate.ERROR,
-                  e.getAuthor(),
-                  String.format(usage, PrefixManager.getPrefix(e.getGuild()))))
-          .queue();
-      return;
-    }
 
     final String name = args[2].toLowerCase();
 
@@ -75,7 +62,7 @@ public class StealCommand extends Command {
 
     if (emotes.isEmpty()) {
 
-      if (!args[1].endsWith(".jpg") && !args[1].endsWith(".png") && !args[1].endsWith(".jpeg")) {
+      if (!args[1].endsWith(".jpg") && !args[1].endsWith(".png") && !args[1].endsWith(".jpeg") && !args[1].endsWith(".gif")) {
         e.getTextChannel()
             .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), incorrectUrl))
             .queue();
@@ -119,7 +106,7 @@ public class StealCommand extends Command {
   }
 
   @Override
-  protected boolean isValidSyntax(String[] args) {
-    return args.length <= 3;
+  protected boolean isValidSyntax(MessageReceivedEvent e, String[] args) {
+    return args.length == 3;
   }
 }

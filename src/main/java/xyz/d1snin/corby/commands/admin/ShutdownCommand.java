@@ -28,7 +28,7 @@ public class ShutdownCommand extends Command {
   }
 
   @Override
-  protected boolean isValidSyntax(String[] args) {
+  protected boolean isValidSyntax(MessageReceivedEvent e, String[] args) {
     return args.length <= 1;
   }
 }

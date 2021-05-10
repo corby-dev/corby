@@ -96,7 +96,7 @@ public class BottomCommand extends Command {
   }
 
   @Override
-  protected boolean isValidSyntax(String[] args) {
+  protected boolean isValidSyntax(MessageReceivedEvent e, String[] args) {
     if (args.length < 3) {
       return false;
     }

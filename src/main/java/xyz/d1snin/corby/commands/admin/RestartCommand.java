@@ -41,10 +41,10 @@ public class RestartCommand extends Command {
   }
 
   @Override
-  protected boolean isValidSyntax(String[] args) {
-    if (args.length > 1 && !args[1].equals("server")) {
+  protected boolean isValidSyntax(MessageReceivedEvent e, String[] args) {
+    if (!(args.length <= 2)) {
       return false;
     }
-    return args.length <= 2;
+    return args.length <= 1 || args[1].equals("server");
   }
 }

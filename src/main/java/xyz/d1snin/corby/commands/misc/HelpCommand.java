@@ -38,19 +38,6 @@ public class HelpCommand extends Command {
   protected void execute(MessageReceivedEvent e, String[] args) throws SQLException {
 
     final String couldNotFindMessage = "Could not find this command: `%s`";
-    final String incorrectSyntax =
-        "Please use the following syntax: `%shelp <Page Number or Command Name>`";
-
-    if (args.length < 2) {
-      e.getTextChannel()
-          .sendMessage(
-              Embeds.create(
-                  EmbedTemplate.ERROR,
-                  e.getAuthor(),
-                  String.format(incorrectSyntax, PrefixManager.getPrefix(e.getGuild()))))
-          .queue();
-      return;
-    }
 
     if (OtherUtils.isNumeric(args[1])) {
 
@@ -105,7 +92,7 @@ public class HelpCommand extends Command {
   }
 
   @Override
-  protected boolean isValidSyntax(String[] args) {
+  protected boolean isValidSyntax(MessageReceivedEvent e, String[] args) {
     return args.length <= 2;
   }
 
@@ -141,9 +128,9 @@ public class HelpCommand extends Command {
           .append(prefix)
           .append(c.getAlias())
           .append("`")
-          .append(" - ")
+          .append(" - *")
           .append(c.getDescription())
-          .append("\n");
+          .append("*\n");
     }
 
     assert category != null;

@@ -16,6 +16,7 @@ import xyz.d1snin.corby.database.managers.StarboardManager;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
+import xyz.d1snin.corby.utils.OtherUtils;
 
 import java.sql.SQLException;
 import java.util.Objects;
@@ -28,8 +29,9 @@ public class StarboardCommand extends Command {
     this.category = Category.SETTINGS;
     this.usages =
         new String[] {
+          "%sstarboard",
           "%sstarboard channel <#channel>",
-          "%sstarboard stars <Stars Count>",
+          "%sstarboard stars <Stars Count 1 - 100>",
           "%sstarboard enable",
           "%sstarboard disable"
         };
@@ -53,12 +55,9 @@ public class StarboardCommand extends Command {
     final String sbEnabled = "Starboard has been successfully enabled on your server!";
     final String sbAlreadyDisabled = "It seems starboard is already disabled on your server.";
     final String sbDisabled = "Starboard has been successfully disabled on your server!";
-    final String sbIncChannel = "Please use the following syntax: `%sstarboard channel <#channel>`";
     final String sbChannelAlreadyInst =
         "It looks like the channel for the starboard is already installed.";
     final String sbChannelInstalled = "Starboard successfully installed on the channel %s";
-    final String sbStarsInc =
-        "Please use the following syntax: `%sstarboard stars <value from 1 to 100>`";
     final String sbStars = "The number of stars for the message has been successfully updated.";
 
     if (args.length < 2) {
@@ -123,23 +122,12 @@ public class StarboardCommand extends Command {
 
         StarboardManager.setStarboardIsEnabled(e.getGuild(), false);
         e.getTextChannel()
-            .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbDisabled))
+            .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), sbDisabled))
             .queue();
 
         break;
 
       case "channel":
-        if (e.getMessage().getMentionedChannels().isEmpty()) {
-          e.getTextChannel()
-              .sendMessage(
-                  Embeds.create(
-                      EmbedTemplate.ERROR,
-                      e.getAuthor(),
-                      String.format(sbIncChannel, PrefixManager.getPrefix(e.getGuild()))))
-              .queue();
-          return;
-        }
-
         if (StarboardManager.getStarboardChannel(e.getGuild()) != null
             && Objects.requireNonNull(StarboardManager.getStarboardChannel(e.getGuild()))
                     .getIdLong()
@@ -164,42 +152,9 @@ public class StarboardCommand extends Command {
         break;
 
       case "stars":
-        if (args.length < 3) {
-          e.getTextChannel()
-              .sendMessage(
-                  Embeds.create(
-                      EmbedTemplate.ERROR,
-                      e.getAuthor(),
-                      String.format(sbStarsInc, PrefixManager.getPrefix(e.getGuild()))))
-              .queue();
-          return;
-        }
-
         int stars;
 
-        try {
-          stars = Integer.parseInt(args[2]);
-        } catch (NumberFormatException exception) {
-          e.getTextChannel()
-              .sendMessage(
-                  Embeds.create(
-                      EmbedTemplate.ERROR,
-                      e.getAuthor(),
-                      String.format(sbStarsInc, PrefixManager.getPrefix(e.getGuild()))))
-              .queue();
-          return;
-        }
-
-        if (stars > 100 || stars < 1) {
-          e.getTextChannel()
-              .sendMessage(
-                  Embeds.create(
-                      EmbedTemplate.ERROR,
-                      e.getAuthor(),
-                      String.format(sbStarsInc, PrefixManager.getPrefix(e.getGuild()))))
-              .queue();
-          return;
-        }
+        stars = Integer.parseInt(args[2]);
 
         if (!StarboardManager.getStarboardIsEnabled(e.getGuild())) {
           e.getTextChannel()
@@ -233,7 +188,31 @@ public class StarboardCommand extends Command {
   }
 
   @Override
-  protected boolean isValidSyntax(String[] args) {
-    return args.length <= 3;
+  protected boolean isValidSyntax(MessageReceivedEvent e, String[] args) {
+    if (args.length > 3) {
+      return false;
+    }
+    if (args.length > 1) {
+      if (!args[1].equals("channel")
+          && !args[1].equals("stars")
+          && !args[1].equals("enable")
+          && !args[1].equals("disable")) {
+        return false;
+      }
+      if (args[1].equals("channel") && e.getMessage().getMentionedChannels().isEmpty()) {
+        return false;
+      }
+      if (args[1].equals("stars") && args.length < 3) {
+        return false;
+      }
+      if (args[1].equals("stars") && !OtherUtils.isNumeric(args[2])) {
+        return false;
+      }
+      if (args[1].equals("stars")) {
+        int stars = Integer.parseInt(args[2]);
+        return stars <= 100 && stars >= 1;
+      }
+    }
+    return true;
   }
 }
