@@ -15,7 +15,6 @@ public class Config {
   public String token;
   public String botPrefixDefault;
   public String ownerId;
-  public int defaultCooldownSeconds;
   public String botName; // ! - These variables are initialized at startup
   public String botPfpUrl; // !
   public String inviteUrl; // !
@@ -27,42 +26,35 @@ public class Config {
   public Color starboardColor; // !
   public String emoteTrash;
   public String emoteStar;
-  public String emoteWhiteCheckMark;
   public int defaultStarboardStars;
   public boolean defaultStarboardIsEnabled;
-  public String helpPageUrl;
 
   public Config(
-      String token,
-      String botPrefixDefault,
-      String ownerId,
-      int defaultCooldownSeconds,
-      int defaultStarboardStars,
-      boolean defaultStarboardIsEnabled,
-      String helpPageUrl) {
+          String token,
+          String botPrefixDefault,
+          String ownerId,
+          int defaultStarboardStars,
+          boolean defaultStarboardIsEnabled) {
 
     this.token = token;
     this.botPrefixDefault = botPrefixDefault;
     this.ownerId = ownerId;
-    this.defaultCooldownSeconds = defaultCooldownSeconds;
     this.defaultStarboardStars = defaultStarboardStars;
     this.defaultStarboardIsEnabled = defaultStarboardIsEnabled;
-    this.helpPageUrl = helpPageUrl;
   }
 
   public void initOther(
-      Color defaultColor,
-      Color errorColor,
-      Color successColor,
-      Color starboardColor,
-      String botName,
-      String botPfpUrl,
-      String inviteUrl,
-      String id,
-      String nameAsTag,
-      String emoteTrash,
-      String emoteStar,
-      String emoteWhiteCheckMark) {
+          Color defaultColor,
+          Color errorColor,
+          Color successColor,
+          Color starboardColor,
+          String botName,
+          String botPfpUrl,
+          String inviteUrl,
+          String id,
+          String nameAsTag,
+          String emoteTrash,
+          String emoteStar) {
     this.defaultColor = defaultColor;
     this.errorColor = errorColor;
     this.successColor = successColor;
@@ -74,7 +66,6 @@ public class Config {
     this.nameAsTag = nameAsTag;
     this.emoteStar = emoteStar;
     this.emoteTrash = emoteTrash;
-    this.emoteWhiteCheckMark = emoteWhiteCheckMark;
   }
 
   public Config() {}

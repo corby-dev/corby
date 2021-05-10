@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
-import org.json.simple.parser.ParseException;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.enums.Category;
@@ -29,8 +28,8 @@ import java.util.*;
 public abstract class Command extends ListenerAdapter {
 
   protected abstract void execute(MessageReceivedEvent e, String[] args)
-          throws SQLException, LoginException, IOException, InterruptedException,
-          ClassNotFoundException, ParseException;
+      throws SQLException, LoginException, IOException, InterruptedException,
+          ClassNotFoundException;
 
   protected abstract boolean isValidSyntax(MessageReceivedEvent e, String[] args);
 
@@ -41,12 +40,9 @@ public abstract class Command extends ListenerAdapter {
   protected Category category = null;
   protected String[] usages = null;
 
-  protected boolean isPreMessage = false;
   protected String longDescription = null;
   protected Permission[] permissions = new Permission[0];
   protected Permission[] botPermissions = new Permission[0];
-
-  protected Message preMessage = null;
 
   public String getAlias() {
     return alias;
@@ -153,14 +149,6 @@ public abstract class Command extends ListenerAdapter {
                   }
 
                   try {
-
-                    if (isPreMessage) {
-                      e.getTextChannel()
-                          .sendMessage(
-                              Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Processing..."))
-                          .queue(message -> preMessage = message);
-                    }
-
                     execute(e, getCommandArgs(msg));
                   } catch (Exception exception) {
                     ExceptionUtils.processException(exception);

@@ -31,7 +31,7 @@ public class CatCommand extends Command {
   }
 
   @Override
-  protected void execute(MessageReceivedEvent e, String[] args) throws IOException, ParseException {
+  protected void execute(MessageReceivedEvent e, String[] args) {
 
     JSONReader reader = new JSONReader();
 

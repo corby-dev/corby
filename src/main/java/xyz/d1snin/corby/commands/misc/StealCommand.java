@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Icon;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.commands.Command;
-import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
@@ -24,7 +23,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.sql.SQLException;
 import java.util.List;
 
 public class StealCommand extends Command {
@@ -40,7 +38,7 @@ public class StealCommand extends Command {
   }
 
   @Override
-  protected void execute(MessageReceivedEvent e, String[] args) throws IOException, SQLException {
+  protected void execute(MessageReceivedEvent e, String[] args) throws IOException {
     final String nameSizeMessage = "Name must be between 1 and 32 characters in length.";
     final String invalidUrl = "Provided URL is invalid.";
     final String success = "The emote `:%s:` has been successfully added!";

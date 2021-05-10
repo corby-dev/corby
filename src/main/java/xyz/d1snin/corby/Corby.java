@@ -144,8 +144,8 @@ public class Corby {
         API.getSelfUser().getId(),
         API.getSelfUser().getAsTag(),
         "🗑️",
-        "⭐",
-        "✅");
+        "⭐"
+    );
 
     logger = LoggerFactory.getLogger(config.botName);
 
