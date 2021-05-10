@@ -22,30 +22,24 @@ Then fill it in according to the following template:
   "token": "",
   "botPrefixDefault": "",
   "ownerId": "",
-  "defaultCooldownSeconds": "",
   "defaultStarboardStars": "",
   "defaultStarboardIsEnabled": "",
-  "helpPageUrl": ""
 }
 ```
 #### Descriptions:
 `token` - your bot token\
 `bot_prefx_default` - bot prefix\
 `ownerId` - your discord id\
-`default_cooldowm_seconds` - User cannot use more than one command at this time\
 `defaultStarboardStars` - the number of stars required for a message to appear on the starboard\
 `defaultStarboardIsEnabled` - (boolean) default toggle for the starboard on the server\
-`helpPageUrl` - link to the page with information about commands
 #### An example of writing config.json
 ```json
 {
   "token": "aaaaaaaaaaaaabbbbbbbbbccccccccccccccccdddddd",
   "botPrefixDefault": "!",
   "ownerId": "111111111111111111",
-  "defaultCooldownSeconds": "2",
   "defaultStarboardStars": "3",
   "defaultStarboardIsEnabled": "false",
-  "helpPageUrl": "https://d1snin.xyz/corby/"
 }
 ```
 
