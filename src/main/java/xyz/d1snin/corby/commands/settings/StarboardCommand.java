@@ -231,4 +231,9 @@ public class StarboardCommand extends Command {
       default:
     }
   }
+
+  @Override
+  protected boolean isValidSyntax(String[] args) {
+    return args.length <= 3;
+  }
 }

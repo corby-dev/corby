@@ -74,4 +74,9 @@ public class PrefixCommand extends Command {
                 EmbedTemplate.DEFAULT, e.getAuthor(), String.format(successChanged, newPrefix)))
         .queue();
   }
+
+  @Override
+  protected boolean isValidSyntax(String[] args) {
+    return args.length <= 2;
+  }
 }

@@ -65,4 +65,9 @@ public class CatCommand extends Command {
               }
             });
   }
+
+  @Override
+  protected boolean isValidSyntax(String[] args) {
+    return args.length <= 1;
+  }
 }

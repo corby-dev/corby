@@ -15,13 +15,12 @@ public class OtherUtils {
             fail -> onFailure.run());
   }
 
-  public static void sendPrivateMessageSafe(
-      User user, MessageEmbed success, Runnable onFailure, Runnable onSuccess) {
-    user.openPrivateChannel()
-        .complete()
-        .sendMessage(success)
-        .queue(
-            response -> onSuccess.run(),
-            fail -> onFailure.run());
+  public static boolean isNumeric(String s) {
+    try {
+      Integer.parseInt(s);
+      return true;
+    } catch (NumberFormatException e) {
+      return false;
+    }
   }
 }
