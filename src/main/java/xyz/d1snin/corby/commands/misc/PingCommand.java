@@ -34,4 +34,9 @@ public class PingCommand extends Command {
                 String.format("Current ping: %dms", Corby.getAPI().getGatewayPing())))
         .queue();
   }
+
+  @Override
+  protected boolean isValidSyntax(String[] args) {
+    return args.length <= 1;
+  }
 }

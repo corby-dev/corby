@@ -17,7 +17,7 @@ public class RestartCommand extends Command {
     this.alias = "reload";
     this.description = "Reboots the bot";
     this.category = Category.ADMIN;
-    this.usages = new String[] {"%sreload"};
+    this.usages = new String[] {"%sreload", "%sreload server"};
   }
 
   @Override
@@ -38,5 +38,13 @@ public class RestartCommand extends Command {
         .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Restarting..."))
         .complete();
     Corby.restart();
+  }
+
+  @Override
+  protected boolean isValidSyntax(String[] args) {
+    if (args.length > 1 && !args[1].equals("server")) {
+      return false;
+    }
+    return args.length <= 2;
   }
 }

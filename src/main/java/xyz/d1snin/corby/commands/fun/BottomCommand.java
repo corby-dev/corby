@@ -25,34 +25,21 @@ public class BottomCommand extends Command {
     this.alias = "bottom";
     this.description = "Encrypts your message using a bottom cipher";
     this.category = Category.FUN;
-    this.usages = new String[] {"%sbottom encode <Message>", "%sbottom decode <Message>"};
+    this.usages =
+        new String[] {
+          "%sbottom encode <Message 2 - 200 characters>",
+          "%sbottom decode <Message 2 - 200 characters>"
+        };
   }
 
   @Override
   protected void execute(MessageReceivedEvent e, String[] args) throws SQLException {
     try {
       final int edMsgLimit = 300;
-      final int msgLimit1 = 2;
-      final int msgLimit2 = 200;
 
       final String result =
           "**Result:**\n\n%s\n\nPowered by [bottom-software-foundation](https://github.com/bottom-software-foundation/bottom-java).";
-      final String usage =
-          "Please use the following syntax: `%sbottom <encode or decode> <your message>`";
-      final String usageE =
-          "Please use the following syntax: `%sbottom encode <your message, %d  - %d characters>`";
       final String longR = "Sorry, generated result is too long.";
-
-      if (args.length < 3) {
-        e.getTextChannel()
-            .sendMessage(
-                Embeds.create(
-                    EmbedTemplate.ERROR,
-                    e.getAuthor(),
-                    String.format(usage, PrefixManager.getPrefix(e.getGuild()))))
-            .queue();
-        return;
-      }
 
       final String message =
           e.getMessage()
@@ -66,18 +53,6 @@ public class BottomCommand extends Command {
           if (encodedMessage.length() > edMsgLimit) {
             e.getTextChannel()
                 .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), longR))
-                .queue();
-            return;
-          }
-
-          if (message.length() > msgLimit2 || message.length() < msgLimit1) {
-            e.getTextChannel()
-                .sendMessage(
-                    Embeds.create(
-                        EmbedTemplate.ERROR,
-                        e.getAuthor(),
-                        String.format(
-                            usageE, PrefixManager.getPrefix(e.getGuild()), msgLimit1, msgLimit2)))
                 .queue();
             return;
           }
@@ -109,13 +84,6 @@ public class BottomCommand extends Command {
           break;
 
         default:
-          e.getTextChannel()
-              .sendMessage(
-                  Embeds.create(
-                      EmbedTemplate.ERROR,
-                      e.getAuthor(),
-                      String.format(usage, PrefixManager.getPrefix(e.getGuild()))))
-              .queue();
       }
     } catch (TranslationError exception) {
 
@@ -125,5 +93,14 @@ public class BottomCommand extends Command {
           .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), tErr))
           .queue();
     }
+  }
+
+  @Override
+  protected boolean isValidSyntax(String[] args) {
+    if (args.length < 3) {
+      return false;
+    }
+
+    return getMessageContent().length() <= 200 && getMessageContent().length() >= 2;
   }
 }

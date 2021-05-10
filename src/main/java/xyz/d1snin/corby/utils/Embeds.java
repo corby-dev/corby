@@ -13,29 +13,34 @@ import net.dv8tion.jda.api.entities.*;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 
+import java.awt.*;
+
 public class Embeds {
   public static MessageEmbed create(EmbedTemplate template, User u, String description) {
+
+    Color color = null;
     switch (template) {
       case ERROR:
-        return new EmbedBuilder()
-            .setColor(Corby.config.errorColor)
-            .setDescription(description)
-            .setFooter(u.getName() + " | ID: " + u.getId(), u.getEffectiveAvatarUrl())
-            .build();
+        color = Corby.config.errorColor;
+        break;
       case DEFAULT:
-        return new EmbedBuilder()
-            .setColor(Corby.config.defaultColor)
-            .setDescription(description)
-            .setFooter(u.getName() + " | ID: " + u.getId(), u.getEffectiveAvatarUrl())
-            .build();
+        color = Corby.config.defaultColor;
+        break;
       case SUCCESS:
-        return new EmbedBuilder()
-            .setColor(Corby.config.successColor)
-            .setDescription(description)
-            .setFooter(u.getName() + " | ID: " + u.getId(), u.getEffectiveAvatarUrl())
-            .build();
+        color = Corby.config.successColor;
+        break;
       default:
     }
-    return create(EmbedTemplate.DEFAULT, u, description);
+
+    return new EmbedBuilder()
+        .setAuthor(
+            u.getName() + " | ID: " + u.getId(),
+            u.getEffectiveAvatarUrl(),
+            u.getEffectiveAvatarUrl())
+        .setColor(color)
+        .setDescription(description)
+        .setFooter(
+            Corby.config.botName + " | " + Thread.currentThread().getName(), Corby.config.botPfpUrl)
+        .build();
   }
 }

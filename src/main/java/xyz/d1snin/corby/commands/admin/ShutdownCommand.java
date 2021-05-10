@@ -26,4 +26,9 @@ public class ShutdownCommand extends Command {
         .complete();
     Corby.shutdown(Config.ExitCodes.NORMAL_SHUTDOWN_EXIT_CODE);
   }
+
+  @Override
+  protected boolean isValidSyntax(String[] args) {
+    return args.length <= 1;
+  }
 }

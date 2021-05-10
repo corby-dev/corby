@@ -117,4 +117,9 @@ public class StealCommand extends Command {
           .queue();
     }
   }
+
+  @Override
+  protected boolean isValidSyntax(String[] args) {
+    return args.length <= 3;
+  }
 }

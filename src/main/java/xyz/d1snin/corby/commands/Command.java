@@ -30,6 +30,8 @@ public abstract class Command extends ListenerAdapter {
       throws SQLException, LoginException, IOException, InterruptedException,
           ClassNotFoundException;
 
+  protected abstract boolean isValidSyntax(String[] args);
+
   private static final List<Command> commands = new ArrayList<>();
 
   protected String alias = null;
@@ -69,12 +71,17 @@ public abstract class Command extends ListenerAdapter {
     return botPermissions;
   }
 
+  private MessageReceivedEvent event = null;
+
   public void onMessageReceived(MessageReceivedEvent e) {
     try {
+
+      event = e;
 
       final String invalidPermission = "You must have permissions %s to use this command.";
       final String invalidBotPermission =
           "It looks like I do not have or I do not have enough permissions on this server, please invite me using [this](%s) link, I am leaving right now.";
+      final String invalidSyntax = "**Incorrect Syntax:** `%s`\n\n**Usage:**\n%s";
 
       if (!e.getChannelType().isGuild()) {
         return;
@@ -115,6 +122,25 @@ public abstract class Command extends ListenerAdapter {
           return;
         }
 
+        if (!isValidSyntax(getCommandArgs(e.getMessage()))) {
+          StringBuilder sb = new StringBuilder();
+          for (String s : getUsages()) {
+            sb.append("`")
+                .append(String.format(s, PrefixManager.getPrefix(e.getGuild())))
+                .append("`")
+                .append("\n");
+            return;
+          }
+
+          e.getTextChannel()
+              .sendMessage(
+                  Embeds.create(
+                      EmbedTemplate.ERROR,
+                      e.getAuthor(),
+                      String.format(invalidSyntax, e.getMessage().getContentRaw(), sb)))
+              .queue();
+        }
+
         Corby.getService()
             .execute(
                 () -> {
@@ -129,6 +155,10 @@ public abstract class Command extends ListenerAdapter {
     } catch (SQLException exception) {
       ExceptionUtils.processException(exception);
     }
+  }
+
+  protected String getMessageContent() {
+    return event.getMessage().getContentRaw();
   }
 
   private void onLoad() {
@@ -172,6 +202,25 @@ public abstract class Command extends ListenerAdapter {
             .toLowerCase()
             .equals(PrefixManager.getPrefix(event.getGuild()) + getAlias())
         && getCommandArgs(message)[0].startsWith(PrefixManager.getPrefix(event.getGuild()));
+  }
+
+  public static List<Command> getCommandsByCategory(Category category) {
+    List<Command> result = new ArrayList<>();
+    for (Command c : getCommands()) {
+      if (c.getCategory() == category) {
+        result.add(c);
+      }
+    }
+    return result;
+  }
+
+  public static Command getCommandByAlias(String alias) {
+    for (Command c : getCommands()) {
+      if (c.getAlias().equals(alias)) {
+        return c;
+      }
+    }
+    return null;
   }
 
   public static Command add(Command command) {
