@@ -11,8 +11,14 @@ package xyz.d1snin.corby.database;
 import xyz.d1snin.corby.Corby;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabasePreparedStatements {
+
+  private static final List<PreparedStatement> preparedStatements = new ArrayList<>();
+
+  private static final Connection connection = Database.getConnection();
 
   public static PreparedStatement psSetGuildPrefixInsert;
   public static PreparedStatement psSetGuildPrefixUpdate;
@@ -29,40 +35,49 @@ public class DatabasePreparedStatements {
   public static PreparedStatement psSetGuildStarboardIsEnabled;
 
   public static void loadAllPreparedStatements() throws SQLException {
-    Connection connection = Database.getConnection();
     psSetGuildPrefixInsert =
-        connection.prepareStatement("INSERT INTO guildprefix (guildid, prefix) VALUES (?, ?);");
+        addPs(
+            connection.prepareStatement(
+                "INSERT INTO guildprefix (guildid, prefix) VALUES (?, ?);"));
     psSetGuildPrefixUpdate =
-        connection.prepareStatement("UPDATE guildprefix SET prefix = ? WHERE guildid = ?;");
+        addPs(connection.prepareStatement("UPDATE guildprefix SET prefix = ? WHERE guildid = ?;"));
     psGetGuildPrefix =
-        connection.prepareStatement("SELECT prefix FROM guildprefix WHERE guildid = ?;");
+        addPs(connection.prepareStatement("SELECT prefix FROM guildprefix WHERE guildid = ?;"));
     psCheckGuildPrefixExists =
-        connection.prepareStatement("SELECT 1 FROM guildprefix WHERE guildid = ?;");
+        addPs(connection.prepareStatement("SELECT 1 FROM guildprefix WHERE guildid = ?;"));
 
     psSetGuildStarboardChannelInsert =
-        connection.prepareStatement(
-            "INSERT INTO starboards (guildid, channelid, stars, isenabled) VALUES (?, ?, ?, ?);");
+        addPs(
+            connection.prepareStatement(
+                "INSERT INTO starboards (guildid, channelid, stars, isenabled) VALUES (?, ?, ?, ?);"));
     psSetGuildStarboardChannelUpdate =
-        connection.prepareStatement("UPDATE starboards SET channelid = ? WHERE guildid = ?;");
+        addPs(
+            connection.prepareStatement("UPDATE starboards SET channelid = ? WHERE guildid = ?;"));
     psGetGuildStarboardChannel =
-        connection.prepareStatement("SELECT channelid FROM starboards WHERE guildid = ?;");
+        addPs(connection.prepareStatement("SELECT channelid FROM starboards WHERE guildid = ?;"));
     psCheckGuildStarboardChannelExists =
-        connection.prepareStatement("SELECT 1 FROM starboards WHERE guildid = ?;");
+        addPs(connection.prepareStatement("SELECT 1 FROM starboards WHERE guildid = ?;"));
     psGetGuildStarboardStars =
-        connection.prepareStatement("SELECT stars FROM starboards WHERE guildid = ?;");
+        addPs(connection.prepareStatement("SELECT stars FROM starboards WHERE guildid = ?;"));
     psSetGuildStarboardStars =
-        connection.prepareStatement("UPDATE starboards SET stars = ? WHERE guildid = ?;");
+        addPs(connection.prepareStatement("UPDATE starboards SET stars = ? WHERE guildid = ?;"));
     psGetGuildStarboardIsEnabled =
-        connection.prepareStatement("SELECT isenabled FROM starboards WHERE guildid = ?;");
+        addPs(connection.prepareStatement("SELECT isenabled FROM starboards WHERE guildid = ?;"));
     psSetGuildStarboardIsEnabled =
-        connection.prepareStatement("UPDATE starboards SET isenabled = ? WHERE guildid = ?;");
+        addPs(
+            connection.prepareStatement("UPDATE starboards SET isenabled = ? WHERE guildid = ?;"));
     Corby.logger.info("All prepared statements was loaded.");
   }
 
   public static void closeAllPreparedStatements() throws SQLException {
-    psSetGuildPrefixInsert.close();
-    psSetGuildPrefixUpdate.close();
-    psGetGuildPrefix.close();
+    for (PreparedStatement statement : preparedStatements) {
+      statement.close();
+    }
     Corby.logger.warn("Successfully closed all prepared statements.");
+  }
+
+  private static PreparedStatement addPs(PreparedStatement statement) {
+    preparedStatements.add(statement);
+    return statement;
   }
 }
