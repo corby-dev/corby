@@ -3,7 +3,7 @@
 [![<ORG_NAME>](https://circleci.com/gh/d1snin/corby.svg?style=svg)](https://circleci.com/gh/d1snin/corby)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-![corby pic](https://raw.githubusercontent.com/d1snin/corby/development/src/main/resources/corby.jpg)
+![corby pic](https://raw.githubusercontent.com/d1snin/corby/development/src/main/resources/corby_banner.JPG)
 
 # Corby:
 
