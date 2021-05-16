@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Icon;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
@@ -37,6 +38,7 @@ import xyz.d1snin.corby.utils.ExceptionUtils;
 
 import javax.security.auth.login.LoginException;
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.*;
@@ -91,8 +93,7 @@ public class Corby {
     }
   }
 
-  public static void start()
-      throws LoginException, InterruptedException, IOException {
+  public static void start() throws LoginException, InterruptedException, IOException {
 
     config = ConfigManager.init();
 
@@ -132,6 +133,12 @@ public class Corby {
             + "   ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝    ╚═╝       "
             + "\n");
 
+    File avatar = new File("src/main/resources/corby.jpg");
+
+    if (avatar.exists()) {
+      getAPI().getSelfUser().getManager().setAvatar(Icon.from(avatar)).queue();
+    }
+
     config.initOther(
         new Color(98, 79, 255),
         new Color(255, 0, 0),
@@ -143,8 +150,7 @@ public class Corby {
         API.getSelfUser().getId(),
         API.getSelfUser().getAsTag(),
         "🗑️",
-        "⭐"
-    );
+        "⭐");
 
     logger = LoggerFactory.getLogger(config.botName);
 
@@ -191,8 +197,7 @@ public class Corby {
     System.exit(exitCode);
   }
 
-  public static void restart()
-      throws LoginException, IOException, InterruptedException {
+  public static void restart() throws LoginException, IOException, InterruptedException {
     logger.warn("Restarting...");
     Database.close();
     API.shutdown();
