@@ -1,0 +1,12 @@
+[Unit]
+Description=Run script at startup after network becomes reachable
+After=network.target
+
+[Service]
+Type=simple
+RemainAfterExit=yes
+ExecStart=/home/d1snin/IdeaProjects/corby/scripts/start.sh
+TimeoutStartSec=0
+
+[Install]
+WantedBy=default.target
