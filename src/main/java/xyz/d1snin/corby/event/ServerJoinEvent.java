@@ -63,6 +63,6 @@ public class ServerJoinEvent extends Listener {
                         + "help`.")
                 .setFooter(Corby.config.botName, Corby.config.botPfpUrl)
                 .build())
-        .queue((message -> message.addReaction(Corby.config.emoteTrash).queue()));
+        .queue();
   }
 }
