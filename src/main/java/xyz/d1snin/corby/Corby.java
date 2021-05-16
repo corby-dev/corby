@@ -59,6 +59,8 @@ public class Corby {
             return t;
           });
 
+  public static final String resources = "src/main/resources/";
+
   private static final ScheduledExecutorService schedulerPresence =
       Executors.newSingleThreadScheduledExecutor();
 
@@ -133,7 +135,7 @@ public class Corby {
             + "   ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝    ╚═╝       "
             + "\n");
 
-    File avatar = new File("src/main/resources/corby.jpg");
+    File avatar = new File(resources + "/corby.jpg");
 
     if (avatar.exists()) {
       getAPI().getSelfUser().getManager().setAvatar(Icon.from(avatar)).queue();
