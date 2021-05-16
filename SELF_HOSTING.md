@@ -42,11 +42,7 @@ Then fill it in according to the following template:
   "defaultStarboardIsEnabled": "false",
 }
 ```
-
-Then install the database for the bot, use [this](https://github.com/d1snin/corby/blob/dev/DATABASE.md) instruction.
+Since I switched to the MongoDB database, I have not yet provided instructions on how to install this database.
 
 ### Bot launch:
-
-You can build the jar using `./gradlew clean build`. Then run jar using `java -jar build/libs/corby-v1.1.jar`
-
-Or you can start the bot simply by typing `./gradlew run`.
+Start the bot simply by typing `./gradlew run`.
