@@ -17,7 +17,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import xyz.d1snin.corby.commands.*;
+import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.commands.admin.RestartCommand;
 import xyz.d1snin.corby.commands.admin.ShutdownCommand;
 import xyz.d1snin.corby.commands.fun.BottomCommand;
@@ -28,21 +28,22 @@ import xyz.d1snin.corby.commands.misc.StealCommand;
 import xyz.d1snin.corby.commands.settings.PrefixCommand;
 import xyz.d1snin.corby.commands.settings.StarboardCommand;
 import xyz.d1snin.corby.database.Database;
-import xyz.d1snin.corby.database.DatabasePreparedStatements;
 import xyz.d1snin.corby.event.ReactionUpdateEvent;
 import xyz.d1snin.corby.event.ServerJoinEvent;
+import xyz.d1snin.corby.manager.config.Config;
 import xyz.d1snin.corby.manager.config.ConfigFileManager;
 import xyz.d1snin.corby.manager.config.ConfigManager;
-import xyz.d1snin.corby.manager.config.Config;
 import xyz.d1snin.corby.utils.ExceptionUtils;
 
 import javax.security.auth.login.LoginException;
 import java.awt.*;
 import java.io.IOException;
-import java.sql.SQLException;
-import java.util.*;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Corby {
 
@@ -66,7 +67,8 @@ public class Corby {
           Permission.MESSAGE_HISTORY,
           Permission.MESSAGE_READ,
           Permission.MESSAGE_WRITE,
-          Permission.VIEW_CHANNEL);
+          Permission.VIEW_CHANNEL,
+          Permission.MANAGE_CHANNEL);
   private static final Random random = new Random();
 
   public static Config config;
@@ -90,15 +92,12 @@ public class Corby {
   }
 
   public static void start()
-      throws LoginException, InterruptedException, IOException, SQLException,
-          ClassNotFoundException {
+      throws LoginException, InterruptedException, IOException {
 
     config = ConfigManager.init();
 
     logger.info("Trying to connect to the database...");
     Database.createConnection();
-    logger.info("Loading prepared database statements...");
-    DatabasePreparedStatements.loadAllPreparedStatements();
 
     JDABuilder jdaBuilder = JDABuilder.createDefault(config.token);
 
@@ -134,7 +133,7 @@ public class Corby {
             + "\n");
 
     config.initOther(
-        new Color(74, 129, 248),
+        new Color(98, 79, 255),
         new Color(255, 0, 0),
         new Color(70, 255, 0),
         new Color(255, 215, 0),
@@ -170,7 +169,7 @@ public class Corby {
 
   private static void startUpdatePresence() {
     schedulerPresence.scheduleWithFixedDelay(
-        () -> API.getPresence().setActivity(Activity.watching("'help | " + getPresence())),
+        () -> API.getPresence().setActivity(Activity.watching(";help | " + getPresence())),
         0,
         7,
         TimeUnit.SECONDS);
@@ -183,7 +182,7 @@ public class Corby {
     return presences.get(random.nextInt(presences.size()));
   }
 
-  public static void shutdown(int exitCode) throws SQLException {
+  public static void shutdown(int exitCode) {
     logger.warn("Terminating... Bye!");
     Database.close();
     API.shutdown();
@@ -193,8 +192,7 @@ public class Corby {
   }
 
   public static void restart()
-      throws SQLException, LoginException, IOException, InterruptedException,
-          ClassNotFoundException {
+      throws LoginException, IOException, InterruptedException {
     logger.warn("Restarting...");
     Database.close();
     API.shutdown();

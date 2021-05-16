@@ -27,34 +27,49 @@ public class Config {
   public String emoteTrash;
   public String emoteStar;
   public int defaultStarboardStars;
-  public boolean defaultStarboardIsEnabled;
+  public boolean defaultStarboardStatus;
+  public String mongoHostname;
+  public int mongoPort;
+  public String mongoDbName;
+  public String mongoUser;
+  public String mongoPassword;
 
   public Config(
-          String token,
-          String botPrefixDefault,
-          String ownerId,
-          int defaultStarboardStars,
-          boolean defaultStarboardIsEnabled) {
+      String token,
+      String botPrefixDefault,
+      String ownerId,
+      int defaultStarboardStars,
+      boolean defaultStarboardStatus,
+      String mongoHostname,
+      int mongoPort,
+      String mongoDbName,
+      String mongoUser,
+      String mongoPassword) {
 
     this.token = token;
     this.botPrefixDefault = botPrefixDefault;
     this.ownerId = ownerId;
     this.defaultStarboardStars = defaultStarboardStars;
-    this.defaultStarboardIsEnabled = defaultStarboardIsEnabled;
+    this.defaultStarboardStatus = defaultStarboardStatus;
+    this.mongoHostname = mongoHostname;
+    this.mongoPort = mongoPort;
+    this.mongoDbName = mongoDbName;
+    this.mongoUser = mongoUser;
+    this.mongoPassword = mongoPassword;
   }
 
   public void initOther(
-          Color defaultColor,
-          Color errorColor,
-          Color successColor,
-          Color starboardColor,
-          String botName,
-          String botPfpUrl,
-          String inviteUrl,
-          String id,
-          String nameAsTag,
-          String emoteTrash,
-          String emoteStar) {
+      Color defaultColor,
+      Color errorColor,
+      Color successColor,
+      Color starboardColor,
+      String botName,
+      String botPfpUrl,
+      String inviteUrl,
+      String id,
+      String nameAsTag,
+      String emoteTrash,
+      String emoteStar) {
     this.defaultColor = defaultColor;
     this.errorColor = errorColor;
     this.successColor = successColor;

@@ -1,87 +1,82 @@
 package xyz.d1snin.corby.database.managers;
 
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBCollection;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import xyz.d1snin.corby.Corby;
-import xyz.d1snin.corby.database.DatabasePreparedStatements;
+import xyz.d1snin.corby.database.Database;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.Objects;
 
 public class StarboardManager {
-  public static synchronized void setStarboardChannel(Guild guild, TextChannel channel)
-      throws SQLException {
-    if (!isDatabaseContainsStarboard(guild)) {
 
-      DatabasePreparedStatements.psSetGuildStarboardChannelInsert.setLong(1, guild.getIdLong());
-      DatabasePreparedStatements.psSetGuildStarboardChannelInsert.setLong(2, channel.getIdLong());
-      DatabasePreparedStatements.psSetGuildStarboardChannelInsert.setInt(
-          3, Corby.config.defaultStarboardStars);
-      DatabasePreparedStatements.psSetGuildStarboardChannelInsert.setString(
-          4, Corby.config.defaultStarboardIsEnabled ? "enabled" : "disabled");
-      DatabasePreparedStatements.psSetGuildStarboardChannelInsert.executeUpdate();
+  private static final DBCollection collection = Database.getDb().getCollection("starboards");
 
+  public static boolean isConfigured(Guild guild) {
+    return isDatabaseContainsStarboard(guild);
+  }
+
+  public static void setChannel(Guild guild, TextChannel channel) {
+    if (isDatabaseContainsStarboard(guild)) {
+      collection.update(
+          new BasicDBObject().append("guild", guild.getId()),
+          createBasicDBObject(guild, channel, getStars(guild), getStatus(guild)));
     } else {
-
-      DatabasePreparedStatements.psSetGuildStarboardChannelUpdate.setLong(1, channel.getIdLong());
-      DatabasePreparedStatements.psSetGuildStarboardChannelUpdate.setLong(2, guild.getIdLong());
-      DatabasePreparedStatements.psSetGuildStarboardChannelUpdate.executeUpdate();
+      collection.insert(
+          createBasicDBObject(
+              guild,
+              channel,
+              Corby.config.defaultStarboardStars,
+              Corby.config.defaultStarboardStatus));
     }
   }
 
-  public static synchronized TextChannel getStarboardChannel(Guild guild) throws SQLException {
-    DatabasePreparedStatements.psGetGuildStarboardChannel.setLong(1, guild.getIdLong());
-    ResultSet rs = DatabasePreparedStatements.psGetGuildStarboardChannel.executeQuery();
-
-    if (!rs.next()) {
-      return null;
-    }
-
-    return (TextChannel) guild.getGuildChannelById(rs.getLong(1));
+  public static TextChannel getChannel(Guild guild) {
+    return (TextChannel)
+        Corby.getAPI()
+            .getGuildChannelById(
+                (String)
+                    collection
+                        .find(new BasicDBObject().append("guild", guild.getId()))
+                        .next()
+                        .get("channel"));
   }
 
-  public static synchronized int getStarboardStars(Guild guild) throws SQLException {
-    DatabasePreparedStatements.psGetGuildStarboardStars.setLong(1, guild.getIdLong());
-    ResultSet rs = DatabasePreparedStatements.psGetGuildStarboardStars.executeQuery();
-
-    if (!rs.next()) {
-      return -1;
-    }
-
-    return rs.getInt(1);
+  public static void setStars(int count, Guild guild) {
+    collection.update(
+        new BasicDBObject().append("guild", guild.getId()),
+        createBasicDBObject(
+            guild, Objects.requireNonNull(getChannel(guild)), count, getStatus(guild)));
   }
 
-  public static synchronized void setStarboardStars(Guild guild, int stars)
-      throws SQLException {
-    DatabasePreparedStatements.psSetGuildStarboardStars.setInt(1, stars);
-    DatabasePreparedStatements.psSetGuildStarboardStars.setLong(2, guild.getIdLong());
-    DatabasePreparedStatements.psSetGuildStarboardStars.executeUpdate();
+  public static int getStars(Guild guild) {
+    return (int)
+        collection.find(new BasicDBObject().append("guild", guild.getId())).next().get("stars");
   }
 
-  public static synchronized void setStarboardIsEnabled(Guild guild, boolean value)
-      throws SQLException {
-    DatabasePreparedStatements.psSetGuildStarboardIsEnabled.setString(
-        1, value ? "enabled" : "disabled");
-    DatabasePreparedStatements.psSetGuildStarboardIsEnabled.setLong(2, guild.getIdLong());
-    DatabasePreparedStatements.psSetGuildStarboardIsEnabled.executeUpdate();
+  public static void setStatus(Guild guild, boolean value) {
+    collection.update(
+        new BasicDBObject().append("guild", guild.getId()),
+        createBasicDBObject(
+            guild, Objects.requireNonNull(getChannel(guild)), getStars(guild), value));
   }
 
-  public static synchronized boolean getStarboardIsEnabled(Guild guild) throws SQLException {
-    DatabasePreparedStatements.psGetGuildStarboardIsEnabled.setLong(1, guild.getIdLong());
-    ResultSet rs = DatabasePreparedStatements.psGetGuildStarboardIsEnabled.executeQuery();
-
-    if (!rs.next()) {
-      return false;
-    }
-
-    return rs.getString(1).equals("enabled");
+  public static boolean getStatus(Guild guild) {
+    return (boolean)
+        collection.find(new BasicDBObject().append("guild", guild.getId())).next().get("status");
   }
 
-  private static synchronized boolean isDatabaseContainsStarboard(Guild guild) throws SQLException {
-    DatabasePreparedStatements.psCheckGuildStarboardChannelExists.setLong(1, guild.getIdLong());
-    try (ResultSet rs =
-        DatabasePreparedStatements.psCheckGuildStarboardChannelExists.executeQuery()) {
-      return rs.next();
-    }
+  private static BasicDBObject createBasicDBObject(
+      Guild guild, TextChannel channel, int stars, boolean status) {
+    return new BasicDBObject()
+        .append("guild", guild.getId())
+        .append("channel", channel.getId())
+        .append("stars", stars)
+        .append("status", status);
+  }
+
+  private static boolean isDatabaseContainsStarboard(Guild guild) {
+    return (collection.count(new BasicDBObject().append("guild", guild.getId())) > 0);
   }
 }

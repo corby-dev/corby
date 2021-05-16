@@ -9,7 +9,8 @@
 package xyz.d1snin.corby.utils;
 
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 

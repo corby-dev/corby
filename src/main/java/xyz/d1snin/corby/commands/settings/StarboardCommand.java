@@ -47,8 +47,7 @@ public class StarboardCommand extends Command {
 
     final String sbInfo =
         "Starboard is enabled on your server!\nRequired number of stars: %d\nChannel for starboard: %s";
-    final String sbNotEnabled =
-        "It seems starboard is not enabled on your server, use `%sstarboard enable` to enable starboard.";
+    final String sbNotEnabled = "It seems starboard is not enabled on your server.";
     final String sbNotConfigured =
         "It seems starboard is not configured on your server, use `%sstarboard channel <#channel>` to configure starboard.";
     final String sbAlreadyEnabled = "It seems starboard is already enabled on your server.";
@@ -56,38 +55,45 @@ public class StarboardCommand extends Command {
     final String sbAlreadyDisabled = "It seems starboard is already disabled on your server.";
     final String sbDisabled = "Starboard has been successfully disabled on your server!";
     final String sbChannelAlreadyInst =
-        "It looks like the channel for the starboard is already installed.";
+        "It looks like the starboard channel is already set to this channel.";
     final String sbChannelInstalled = "Starboard successfully installed on the channel %s";
     final String sbStars = "The number of stars for the message has been successfully updated.";
 
     if (args.length < 2) {
-      if (!StarboardManager.getStarboardIsEnabled(e.getGuild())) {
+      if (!StarboardManager.isConfigured(e.getGuild())) {
         e.getTextChannel()
             .sendMessage(
                 Embeds.create(
                     EmbedTemplate.ERROR,
                     e.getAuthor(),
-                    String.format(sbNotEnabled, PrefixManager.getPrefix(e.getGuild()))))
+                    String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild()))))
             .queue();
-      } else {
-        e.getTextChannel()
-            .sendMessage(
-                Embeds.create(
-                    EmbedTemplate.DEFAULT,
-                    e.getAuthor(),
-                    String.format(
-                        sbInfo,
-                        StarboardManager.getStarboardStars(e.getGuild()),
-                        Objects.requireNonNull(StarboardManager.getStarboardChannel(e.getGuild()))
-                            .getAsMention())))
-            .queue();
+        return;
       }
+      if (!StarboardManager.getStatus(e.getGuild())) {
+        e.getTextChannel()
+            .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbNotEnabled))
+            .queue();
+        return;
+      }
+
+      e.getTextChannel()
+          .sendMessage(
+              Embeds.create(
+                  EmbedTemplate.DEFAULT,
+                  e.getAuthor(),
+                  String.format(
+                      sbInfo,
+                      StarboardManager.getStars(e.getGuild()),
+                      Objects.requireNonNull(StarboardManager.getChannel(e.getGuild()))
+                          .getAsMention())))
+          .queue();
       return;
     }
 
     switch (args[1].toLowerCase()) {
       case "enable":
-        if (StarboardManager.getStarboardChannel(e.getGuild()) == null) {
+        if (!StarboardManager.isConfigured(e.getGuild())) {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
@@ -98,14 +104,14 @@ public class StarboardCommand extends Command {
           return;
         }
 
-        if (StarboardManager.getStarboardIsEnabled(e.getGuild())) {
+        if (StarboardManager.getStatus(e.getGuild())) {
           e.getTextChannel()
               .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbAlreadyEnabled))
               .queue();
           return;
         }
 
-        StarboardManager.setStarboardIsEnabled(e.getGuild(), true);
+        StarboardManager.setStatus(e.getGuild(), true);
         e.getTextChannel()
             .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), sbEnabled))
             .queue();
@@ -113,14 +119,25 @@ public class StarboardCommand extends Command {
         break;
 
       case "disable":
-        if (!StarboardManager.getStarboardIsEnabled(e.getGuild())) {
+        if (!StarboardManager.isConfigured(e.getGuild())) {
+          e.getTextChannel()
+              .sendMessage(
+                  Embeds.create(
+                      EmbedTemplate.ERROR,
+                      e.getAuthor(),
+                      String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild()))))
+              .queue();
+          return;
+        }
+
+        if (!StarboardManager.getStatus(e.getGuild())) {
           e.getTextChannel()
               .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbAlreadyDisabled))
               .queue();
           return;
         }
 
-        StarboardManager.setStarboardIsEnabled(e.getGuild(), false);
+        StarboardManager.setStatus(e.getGuild(), false);
         e.getTextChannel()
             .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), sbDisabled))
             .queue();
@@ -128,22 +145,21 @@ public class StarboardCommand extends Command {
         break;
 
       case "channel":
-        if (StarboardManager.getStarboardChannel(e.getGuild()) != null
-            && Objects.requireNonNull(StarboardManager.getStarboardChannel(e.getGuild()))
-                    .getIdLong()
-                == e.getMessage().getMentionedChannels().get(0).getIdLong()) {
+        if (StarboardManager.isConfigured(e.getGuild())
+            && e.getMessage()
+                .getMentionedChannels()
+                .contains(StarboardManager.getChannel(e.getGuild()))) {
           e.getTextChannel()
               .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbChannelAlreadyInst))
               .queue();
           return;
         }
 
-        StarboardManager.setStarboardChannel(
-            e.getGuild(), e.getMessage().getMentionedChannels().get(0));
+        StarboardManager.setChannel(e.getGuild(), e.getMessage().getMentionedChannels().get(0));
         e.getTextChannel()
             .sendMessage(
                 Embeds.create(
-                    EmbedTemplate.ERROR,
+                    EmbedTemplate.DEFAULT,
                     e.getAuthor(),
                     String.format(
                         sbChannelInstalled,
@@ -156,18 +172,14 @@ public class StarboardCommand extends Command {
 
         stars = Integer.parseInt(args[2]);
 
-        if (!StarboardManager.getStarboardIsEnabled(e.getGuild())) {
+        if (!StarboardManager.getStatus(e.getGuild())) {
           e.getTextChannel()
-              .sendMessage(
-                  Embeds.create(
-                      EmbedTemplate.ERROR,
-                      e.getAuthor(),
-                      String.format(sbNotEnabled, PrefixManager.getPrefix(e.getGuild()))))
+              .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbNotEnabled))
               .queue();
           return;
         }
 
-        if (StarboardManager.getStarboardChannel(e.getGuild()) == null) {
+        if (!StarboardManager.isConfigured(e.getGuild())) {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
@@ -178,7 +190,7 @@ public class StarboardCommand extends Command {
           return;
         }
 
-        StarboardManager.setStarboardStars(e.getGuild(), stars);
+        StarboardManager.setStars(stars, e.getGuild());
         e.getTextChannel()
             .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), sbStars))
             .queue();

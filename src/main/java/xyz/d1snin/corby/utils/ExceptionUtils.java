@@ -15,8 +15,14 @@ public class ExceptionUtils {
             EmbedTemplate.DEFAULT,
             Corby.getAPI().getUserById(Corby.config.ownerId),
             String.format(
-                message, exception.getClass().getName(), exception.getMessage(), exception.getCause(), getStackTrace(exception))),
-        () -> Corby.logger.warn("It looks like you have disabled messages from the bot, please enable them to receive information about errors during runtime."));
+                message,
+                exception.getClass().getName(),
+                exception.getMessage(),
+                exception.getCause(),
+                getStackTrace(exception))),
+        () ->
+            Corby.logger.warn(
+                "It looks like you have disabled messages from the bot, please enable them to receive information about errors during runtime."));
   }
 
   private static String getStackTrace(Exception e) {

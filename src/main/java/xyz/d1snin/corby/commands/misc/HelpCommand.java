@@ -29,7 +29,7 @@ public class HelpCommand extends Command {
     this.alias = "help";
     this.description = "Gives you information about commands.";
     this.category = Category.MISC;
-    this.usages = new String[] {"%shelp <Page Number>", "%shelp <Command Name>"};
+    this.usages = new String[] {"%shelp", "%shelp <Page Number>", "%shelp <Command Name>"};
   }
 
   private static final String incorrectPageMessage = "This page does not exist.";
@@ -38,6 +38,13 @@ public class HelpCommand extends Command {
   protected void execute(MessageReceivedEvent e, String[] args) throws SQLException {
 
     final String couldNotFindMessage = "Could not find this command: `%s`";
+
+    if (args.length < 2) {
+      e.getTextChannel()
+          .sendMessage(Objects.requireNonNull(getEmbedByPage(1, e.getGuild(), e.getAuthor(), e)))
+          .queue();
+      return;
+    }
 
     if (OtherUtils.isNumeric(args[1])) {
 
@@ -66,28 +73,21 @@ public class HelpCommand extends Command {
       return;
     }
 
-    String prefix = PrefixManager.getPrefix(e.getGuild());
-
-    StringBuilder sb = new StringBuilder();
-
-    sb.append("**Category:**")
-        .append("\n")
-        .append(command.getCategory().getName())
-        .append("\n\n")
-        .append("**Description**")
-        .append("\n")
-        .append(command.getDescription())
-        .append(command.getLongDescription() == null ? "" : "\n\n" + command.getLongDescription())
-        .append("\n\n")
-        .append("**Usage:**")
-        .append("\n");
-
-    for (String s : command.getUsages()) {
-      sb.append("`").append(String.format(s, prefix)).append("`").append("\n");
-    }
-
+    String msg =
+        "**Category:**"
+            + "\n"
+            + command.getCategory().getName()
+            + "\n\n"
+            + "**Description**"
+            + "\n"
+            + command.getDescription()
+            + (command.getLongDescription() == null ? "" : "\n\n" + command.getLongDescription())
+            + "\n\n"
+            + "**Usage:**"
+            + "\n"
+            + command.getUsagesString();
     e.getTextChannel()
-        .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), sb.toString()))
+        .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), msg))
         .queue();
   }
 
@@ -96,8 +96,7 @@ public class HelpCommand extends Command {
     return args.length <= 2;
   }
 
-  private static MessageEmbed getEmbedByPage(
-      int page, Guild guild, User user, MessageReceivedEvent e) throws SQLException {
+  private MessageEmbed getEmbedByPage(int page, Guild guild, User user, MessageReceivedEvent e) {
 
     int categories = Category.values().length;
 

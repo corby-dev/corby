@@ -11,6 +11,7 @@ package xyz.d1snin.corby.event;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageReaction;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -18,8 +19,10 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemove
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.annotation.EventListener;
 import xyz.d1snin.corby.database.managers.StarboardManager;
+import xyz.d1snin.corby.enums.EmbedTemplate;
+import xyz.d1snin.corby.utils.Embeds;
+import xyz.d1snin.corby.utils.OtherUtils;
 
-import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Objects;
 import java.util.Set;
@@ -31,14 +34,14 @@ public class ReactionUpdateEvent extends Listener {
   private static final Set<MessageReaction> executed = new CopyOnWriteArraySet<>();
 
   @Override
-  protected void perform(GenericEvent event) throws SQLException {
+  protected void perform(GenericEvent event) {
     GenericGuildMessageReactionEvent thisEvent = ((GenericGuildMessageReactionEvent) event);
 
     if (thisEvent.getReaction().getReactionEmote().getName().equals(Corby.config.emoteStar)) {
-      if (StarboardManager.getStarboardChannel(thisEvent.getGuild()) == null) {
+      if (StarboardManager.getChannel(thisEvent.getGuild()) == null) {
         return;
       }
-      if (!StarboardManager.getStarboardIsEnabled(thisEvent.getGuild())) {
+      if (!StarboardManager.getStatus(thisEvent.getGuild())) {
         return;
       }
 
@@ -59,30 +62,46 @@ public class ReactionUpdateEvent extends Listener {
         }
       }
 
-      if (reaction.getCount() == StarboardManager.getStarboardStars(thisEvent.getGuild())
+      if (reaction.getCount() == StarboardManager.getStars(thisEvent.getGuild())
           && !executed.contains(reaction)) {
-        Objects.requireNonNull(StarboardManager.getStarboardChannel(thisEvent.getGuild()))
-            .sendMessage(
-                new EmbedBuilder()
-                    .setAuthor(
-                        msg.getAuthor().getAsTag(),
-                        msg.getJumpUrl(),
-                        msg.getAuthor().getAvatarUrl())
-                    .setDescription(
-                        "[[context]]("
-                            + msg.getJumpUrl()
-                            + ")"
-                            + "\n\n"
-                            + msg.getContentRaw()
-                            + "\n"
-                            + (msg.getAttachments().isEmpty()
-                                ? ""
-                                : msg.getAttachments().get(0).getUrl()))
-                    .setTimestamp(Instant.now())
-                    .setColor(Corby.config.starboardColor)
-                    .setFooter(Corby.config.botName, Corby.config.botPfpUrl)
-                    .build())
-            .queue();
+        try {
+          StarboardManager.getChannel(thisEvent.getGuild())
+              .sendMessage(
+                  new EmbedBuilder()
+                      .setAuthor(
+                          msg.getAuthor().getAsTag(),
+                          msg.getJumpUrl(),
+                          msg.getAuthor().getAvatarUrl())
+                      .setDescription(
+                          "[[context]]("
+                              + msg.getJumpUrl()
+                              + ")"
+                              + "\n\n"
+                              + msg.getContentRaw()
+                              + "\n"
+                              + (msg.getAttachments().isEmpty()
+                                  ? ""
+                                  : msg.getAttachments().get(0).getUrl()))
+                      .setTimestamp(Instant.now())
+                      .setColor(Corby.config.starboardColor)
+                      .setFooter(Corby.config.botName, Corby.config.botPfpUrl)
+                      .build())
+              .queue();
+        } catch (Exception e) {
+          User owner =
+              Objects.requireNonNull(
+                  Objects.requireNonNull(thisEvent.getGuild().getOwner()).getUser());
+          OtherUtils.sendPrivateMessageSafe(
+              owner,
+              Embeds.create(
+                  EmbedTemplate.ERROR,
+                  owner,
+                  "Hey! You received this message because I cannot send messages to the starboard. Please make sure I have permission."),
+              () -> {
+                /* ignore */
+              });
+          return;
+        }
         executed.add(reaction);
       }
     }

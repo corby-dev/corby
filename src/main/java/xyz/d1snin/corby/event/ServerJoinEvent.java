@@ -46,7 +46,7 @@ public class ServerJoinEvent extends Listener {
                           + "). I will log out of your server now.")
                   .setFooter(Corby.config.botName, Corby.config.botPfpUrl)
                   .build())
-          .queue((message -> message.addReaction(Corby.config.emoteTrash).queue()));
+          .queue();
       thisEvent.getGuild().leave().queue();
       return;
     }
@@ -60,9 +60,7 @@ public class ServerJoinEvent extends Listener {
                         + "\nI can help you with moderation and administration of your server and much more."
                         + "\nYou can find out the full list of commands by simply writing to any chat `"
                         + Corby.config.botPrefixDefault
-                        + "help`, you can change the prefix with the command `"
-                        + Corby.config.botPrefixDefault
-                        + "prefix`")
+                        + "help`.")
                 .setFooter(Corby.config.botName, Corby.config.botPfpUrl)
                 .build())
         .queue((message -> message.addReaction(Corby.config.emoteTrash).queue()));

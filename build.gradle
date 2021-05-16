@@ -28,7 +28,8 @@ dependencies {
     compile 'org.slf4j:slf4j-simple:1.7.30'
     compile 'net.dv8tion:JDA:4.2.0_247'
     compile 'com.googlecode.json-simple:json-simple:1.1.1'
-    compile 'org.xerial:sqlite-jdbc:3.34.0'
+    compile 'org.postgresql:postgresql:42.2.0'
+    compile 'org.mongodb:mongo-java-driver:2.11.2'
     compile 'com.github.bottom-software-foundation:bottom-java:v2.1.0'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
 }

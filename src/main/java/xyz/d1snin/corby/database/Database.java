@@ -8,29 +8,29 @@
 
 package xyz.d1snin.corby.database;
 
+import com.mongodb.DB;
+import com.mongodb.MongoClient;
 import xyz.d1snin.corby.Corby;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.net.UnknownHostException;
 
 public class Database {
 
-  private static Connection connection;
+  private static MongoClient mongo;
+  private static DB db;
 
-  public static void createConnection() throws ClassNotFoundException, SQLException {
-    Class.forName("org.sqlite.JDBC");
-    connection = DriverManager.getConnection("jdbc:sqlite:src/main/resources/corby.db");
-    Corby.logger.info("Successfully connected to the database.");
+  public static void createConnection() throws UnknownHostException {
+    mongo = new MongoClient(Corby.config.mongoHostname, Corby.config.mongoPort);
+    db = mongo.getDB(Corby.config.mongoDbName);
+    db.authenticate(Corby.config.mongoUser, Corby.config.mongoPassword.toCharArray());
   }
 
-  public static void close() throws SQLException {
-    DatabasePreparedStatements.closeAllPreparedStatements();
-    connection.close();
+  public static DB getDb() {
+    return db;
+  }
+
+  public static void close() {
+    mongo.close();
     Corby.logger.warn("Successfully disconnected from the database.");
-  }
-
-  public static Connection getConnection() {
-    return connection;
   }
 }

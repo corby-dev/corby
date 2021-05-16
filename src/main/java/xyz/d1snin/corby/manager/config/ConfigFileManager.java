@@ -23,7 +23,7 @@ public class ConfigFileManager {
               + ", please edit the generated file using the bot token.");
       System.exit(0);
     } else {
-      Corby.logger.info("Founded config.json");
+      Corby.logger.info("Found config.json");
     }
   }
 }

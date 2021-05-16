@@ -23,7 +23,10 @@ import xyz.d1snin.corby.utils.ExceptionUtils;
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 public abstract class Command extends ListenerAdapter {
 
@@ -58,6 +61,14 @@ public abstract class Command extends ListenerAdapter {
 
   public String[] getUsages() {
     return usages;
+  }
+
+  public String getUsagesString() {
+    StringBuilder sb = new StringBuilder();
+    for (String s : getUsages()) {
+      sb.append(String.format(s, PrefixManager.getPrefix(event.getGuild()))).append("\n");
+    }
+    return sb.toString();
   }
 
   public String getLongDescription() {
@@ -175,8 +186,12 @@ public abstract class Command extends ListenerAdapter {
     }
 
     return Objects.requireNonNull(event.getMember())
-        .getPermissions()
-        .containsAll(Arrays.asList(getPermissions()));
+            .getPermissions()
+            .containsAll(Arrays.asList(getPermissions()))
+        || event
+            .getAuthor()
+            .getId()
+            .equals(Corby.config.ownerId); // <- Don't worry, this is only needed to test the bot.
   }
 
   private String getPermissionString() {
