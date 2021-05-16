@@ -20,7 +20,6 @@ import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.OtherUtils;
 
-import java.sql.SQLException;
 import java.util.Objects;
 
 public class HelpCommand extends Command {
@@ -35,7 +34,7 @@ public class HelpCommand extends Command {
   private static final String incorrectPageMessage = "This page does not exist.";
 
   @Override
-  protected void execute(MessageReceivedEvent e, String[] args) throws SQLException {
+  protected void execute(MessageReceivedEvent e, String[] args) {
 
     final String couldNotFindMessage = "Could not find this command: `%s`";
 

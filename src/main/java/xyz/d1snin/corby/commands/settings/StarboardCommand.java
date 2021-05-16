@@ -18,7 +18,6 @@ import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.OtherUtils;
 
-import java.sql.SQLException;
 import java.util.Objects;
 
 public class StarboardCommand extends Command {
@@ -43,7 +42,7 @@ public class StarboardCommand extends Command {
   }
 
   @Override
-  protected void execute(MessageReceivedEvent e, String[] args) throws SQLException {
+  protected void execute(MessageReceivedEvent e, String[] args) {
 
     final String sbInfo =
         "Starboard is enabled on your server!\nRequired number of stars: %d\nChannel for starboard: %s";

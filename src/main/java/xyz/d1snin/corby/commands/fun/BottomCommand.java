@@ -17,8 +17,6 @@ import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
-import java.sql.SQLException;
-
 public class BottomCommand extends Command {
 
   public BottomCommand() {
@@ -33,7 +31,7 @@ public class BottomCommand extends Command {
   }
 
   @Override
-  protected void execute(MessageReceivedEvent e, String[] args) throws SQLException {
+  protected void execute(MessageReceivedEvent e, String[] args) {
     try {
       final int edMsgLimit = 300;
 

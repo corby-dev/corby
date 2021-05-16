@@ -5,12 +5,11 @@ import net.dv8tion.jda.api.hooks.EventListener;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.utils.ExceptionUtils;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 
 public abstract class Listener implements EventListener {
 
-  protected abstract void perform(GenericEvent event) throws SQLException;
+  protected abstract void perform(GenericEvent event);
 
   @Override
   public void onEvent(GenericEvent event) {

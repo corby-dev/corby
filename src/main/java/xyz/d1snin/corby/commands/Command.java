@@ -22,7 +22,6 @@ import xyz.d1snin.corby.utils.ExceptionUtils;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,8 +30,7 @@ import java.util.Objects;
 public abstract class Command extends ListenerAdapter {
 
   protected abstract void execute(MessageReceivedEvent e, String[] args)
-      throws SQLException, LoginException, IOException, InterruptedException,
-          ClassNotFoundException;
+      throws LoginException, IOException, InterruptedException;
 
   protected abstract boolean isValidSyntax(MessageReceivedEvent e, String[] args);
 
@@ -90,85 +88,81 @@ public abstract class Command extends ListenerAdapter {
     Corby.getService()
         .execute(
             () -> {
-              try {
 
-                event = e;
+              event = e;
 
-                final String invalidPermission =
-                    "You must have permissions %s to use this command.";
-                final String invalidBotPermission =
-                    "It looks like I do not have or I do not have enough permissions on this server, please invite me using [this](%s) link, I am leaving right now.";
-                final String invalidSyntax = "**Incorrect Syntax:** `%s`\n\n**Usage:**\n%s";
+              final String invalidPermission =
+                  "You must have permissions %s to use this command.";
+              final String invalidBotPermission =
+                  "It looks like I do not have or I do not have enough permissions on this server, please invite me using [this](%s) link, I am leaving right now.";
+              final String invalidSyntax = "**Incorrect Syntax:** `%s`\n\n**Usage:**\n%s";
 
-                if (!e.getChannelType().isGuild()) {
-                  return;
-                }
-
-                Message msg = e.getMessage();
-
-                if (e.getAuthor().isBot()) {
-                  return;
-                }
-
-                if (isCommand(msg, e)) {
-                  if (!hasPermission(e)) {
-                    e.getTextChannel()
-                        .sendMessage(
-                            Embeds.create(
-                                EmbedTemplate.ERROR,
-                                e.getAuthor(),
-                                String.format(invalidPermission, getPermissionString())))
-                        .queue();
-                    return;
-                  }
-
-                  if ((getCategory() == Category.ADMIN)
-                      && !e.getAuthor().getId().equals(Corby.config.ownerId)) {
-                    return;
-                  }
-
-                  if (!Objects.requireNonNull(e.getGuild().getBotRole())
-                      .hasPermission(Corby.permissions)) {
-                    e.getTextChannel()
-                        .sendMessage(
-                            Embeds.create(
-                                EmbedTemplate.ERROR,
-                                e.getAuthor(),
-                                String.format(invalidBotPermission, Corby.config.inviteUrl)))
-                        .queue();
-                    e.getGuild().leave().queue();
-                    return;
-                  }
-
-                  if (!isValidSyntax(e, getCommandArgs(e.getMessage()))) {
-                    StringBuilder sb = new StringBuilder();
-                    for (String s : getUsages()) {
-                      sb.append("`")
-                          .append(String.format(s, PrefixManager.getPrefix(e.getGuild())))
-                          .append("`")
-                          .append("\n");
-                    }
-
-                    e.getTextChannel()
-                        .sendMessage(
-                            Embeds.create(
-                                EmbedTemplate.ERROR,
-                                e.getAuthor(),
-                                String.format(invalidSyntax, e.getMessage().getContentRaw(), sb)))
-                        .queue();
-                    return;
-                  }
-
-                  try {
-                    execute(e, getCommandArgs(msg));
-                  } catch (Exception exception) {
-                    ExceptionUtils.processException(exception);
-                  }
-                }
-
-              } catch (SQLException exception) {
-                ExceptionUtils.processException(exception);
+              if (!e.getChannelType().isGuild()) {
+                return;
               }
+
+              Message msg = e.getMessage();
+
+              if (e.getAuthor().isBot()) {
+                return;
+              }
+
+              if (isCommand(msg, e)) {
+                if (!hasPermission(e)) {
+                  e.getTextChannel()
+                      .sendMessage(
+                          Embeds.create(
+                              EmbedTemplate.ERROR,
+                              e.getAuthor(),
+                              String.format(invalidPermission, getPermissionString())))
+                      .queue();
+                  return;
+                }
+
+                if ((getCategory() == Category.ADMIN)
+                    && !e.getAuthor().getId().equals(Corby.config.ownerId)) {
+                  return;
+                }
+
+                if (!Objects.requireNonNull(e.getGuild().getBotRole())
+                    .hasPermission(Corby.permissions)) {
+                  e.getTextChannel()
+                      .sendMessage(
+                          Embeds.create(
+                              EmbedTemplate.ERROR,
+                              e.getAuthor(),
+                              String.format(invalidBotPermission, Corby.config.inviteUrl)))
+                      .queue();
+                  e.getGuild().leave().queue();
+                  return;
+                }
+
+                if (!isValidSyntax(e, getCommandArgs(e.getMessage()))) {
+                  StringBuilder sb = new StringBuilder();
+                  for (String s : getUsages()) {
+                    sb.append("`")
+                        .append(String.format(s, PrefixManager.getPrefix(e.getGuild())))
+                        .append("`")
+                        .append("\n");
+                  }
+
+                  e.getTextChannel()
+                      .sendMessage(
+                          Embeds.create(
+                              EmbedTemplate.ERROR,
+                              e.getAuthor(),
+                              String.format(invalidSyntax, e.getMessage().getContentRaw(), sb)))
+                      .queue();
+                  return;
+                }
+
+                try {
+                  execute(e, getCommandArgs(msg));
+                } catch (Exception exception) {
+                  ExceptionUtils.processException(exception);
+                }
+              }
+
             });
   }
 
@@ -210,7 +204,7 @@ public abstract class Command extends ListenerAdapter {
     return msg.getContentRaw().split("\\s+");
   }
 
-  private boolean isCommand(Message message, MessageReceivedEvent event) throws SQLException {
+  private boolean isCommand(Message message, MessageReceivedEvent event) {
 
     if (!getCommands().contains(this)) {
       return false;

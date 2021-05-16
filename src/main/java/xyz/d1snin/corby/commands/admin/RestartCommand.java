@@ -9,7 +9,6 @@ import xyz.d1snin.corby.utils.Embeds;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
-import java.sql.SQLException;
 
 public class RestartCommand extends Command {
 
@@ -22,8 +21,7 @@ public class RestartCommand extends Command {
 
   @Override
   protected void execute(MessageReceivedEvent e, String[] args)
-      throws SQLException, LoginException, IOException, InterruptedException,
-          ClassNotFoundException {
+      throws LoginException, IOException, InterruptedException {
     if (args.length > 1) {
       if (args[1].equals("server")) {
         e.getTextChannel()

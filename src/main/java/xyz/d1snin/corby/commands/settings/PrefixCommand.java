@@ -16,8 +16,6 @@ import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
-import java.sql.SQLException;
-
 public class PrefixCommand extends Command {
 
   public PrefixCommand() {
@@ -30,7 +28,7 @@ public class PrefixCommand extends Command {
   }
 
   @Override
-  protected void execute(MessageReceivedEvent e, String[] args) throws SQLException {
+  protected void execute(MessageReceivedEvent e, String[] args) {
 
     final String currPrefix = "Current prefix is `%s`.";
     final String prefixAlready = "Bot prefix is already `%s`.";
