@@ -1,50 +1,37 @@
 plugins {
     id 'java'
     id 'application'
+    id'com.github.johnrengelman.shadow' version '6.0.0'
 }
 
-sourceCompatibility = 1.8
-
-apply plugin : 'java'
-
-ext {
-    javaMainClass = 'xyz.d1snin.corby.Corby'
-}
-
-application {
-    mainClassName = javaMainClass
-}
-
+apply plugin: 'java'
 group 'xyz.d1snin.corby'
 version 'v1.1'
 
+
+mainClassName = "xyz.d1snin.corby.Corby"
+
+allprojects {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
 repositories {
     mavenCentral()
-    jcenter()
     maven { url "https://jitpack.io" }
+    maven {
+        name 'm2-dv8tion'
+        url 'https://m2.dv8tion.net/releases'
+    }
 }
 
 dependencies {
-    compile 'org.slf4j:slf4j-simple:1.7.30'
-    compile 'net.dv8tion:JDA:4.2.0_247'
-    compile 'com.googlecode.json-simple:json-simple:1.1.1'
-    compile 'org.mongodb:mongo-java-driver:2.11.2'
-    compile 'com.github.bottom-software-foundation:bottom-java:v2.1.0'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
-}
-sourceSets {
-    main.java.srcDir "src/main/java"
+    implementation 'org.slf4j:slf4j-simple:1.7.30'
+    implementation 'net.dv8tion:JDA:4.2.1_264'
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    implementation 'org.mongodb:mongo-java-driver:2.11.2'
+    implementation 'com.github.bottom-software-foundation:bottom-java:v2.1.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
 }
 
-jar {
-    manifest {
-        attributes "Main-Class": "$mainClassName"
-    }
-
-    from {
-        configurations
-                .compile
-                .findAll { !it.name.endsWith('pom') }
-                .collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
+compileJava.options.encoding = 'UTF-8'
