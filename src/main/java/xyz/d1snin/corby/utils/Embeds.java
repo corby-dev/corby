@@ -48,11 +48,12 @@ public class Embeds {
             (emote == null
                     ? ""
                     : guild == null
-                            || Objects.requireNonNull(guild.getBotRole())
+                        ? emote.getAsMention()
+                        : Objects.requireNonNull(guild.getBotRole())
                                 .getPermissions()
                                 .contains(Permission.MESSAGE_EXT_EMOJI)
-                        ? emote.getAsMention()
-                        : "")
+                            ? emote.getAsMention()
+                            : "")
                 + " "
                 + description)
         .setFooter(
