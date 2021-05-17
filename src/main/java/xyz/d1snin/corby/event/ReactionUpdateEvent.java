@@ -96,7 +96,7 @@ public class ReactionUpdateEvent extends Listener {
               Embeds.create(
                   EmbedTemplate.ERROR,
                   owner,
-                  "Hey! You received this message because I cannot send messages to the starboard. Please make sure I have permission."),
+                  "Hey! You received this message because I cannot send messages to the starboard. Please make sure I have permission.", null),
               () -> {
                 /* ignore */
               });
