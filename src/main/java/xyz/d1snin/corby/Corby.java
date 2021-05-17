@@ -40,7 +40,6 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -48,14 +47,6 @@ import java.util.concurrent.TimeUnit;
 public class Corby {
 
   private static JDA API;
-
-  private static final ExecutorService service =
-      Executors.newCachedThreadPool(
-          r -> {
-            Thread t = Executors.defaultThreadFactory().newThread(r);
-            t.setDaemon(true);
-            return t;
-          });
 
   private static final ScheduledExecutorService schedulerPresence =
       Executors.newSingleThreadScheduledExecutor();
@@ -144,7 +135,6 @@ public class Corby {
         API.getInviteUrl(permissions),
         API.getSelfUser().getId(),
         API.getSelfUser().getAsTag(),
-        "🗑️",
         "⭐");
 
     logger = LoggerFactory.getLogger(config.botName);
@@ -200,7 +190,6 @@ public class Corby {
   public static void shutdown(int exitCode) {
     logger.warn("Terminating... Bye!");
     API.shutdown();
-    getService().shutdown();
     schedulerPresence.shutdown();
     System.exit(exitCode);
   }
@@ -213,9 +202,5 @@ public class Corby {
 
   public static JDA getAPI() {
     return API;
-  }
-
-  public static ExecutorService getService() {
-    return service;
   }
 }

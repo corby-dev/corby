@@ -82,87 +82,81 @@ public abstract class Command extends ListenerAdapter {
   private MessageReceivedEvent event = null;
 
   public void onMessageReceived(@NotNull MessageReceivedEvent e) {
+    event = e;
 
-    Corby.getService()
-        .execute(
-            () -> {
-              event = e;
+    final String invalidPermission = "You must have permissions %s to use this command.";
+    final String invalidBotPermission =
+        "It looks like I do not have or I do not have enough permissions on this server, please invite me using [this](%s) link, I am leaving right now.";
+    final String invalidSyntax = "**Incorrect Syntax:** `%s`\n\n**Usage:**\n%s";
 
-              final String invalidPermission = "You must have permissions %s to use this command.";
-              final String invalidBotPermission =
-                  "It looks like I do not have or I do not have enough permissions on this server, please invite me using [this](%s) link, I am leaving right now.";
-              final String invalidSyntax = "**Incorrect Syntax:** `%s`\n\n**Usage:**\n%s";
+    if (!e.getChannelType().isGuild()) {
+      return;
+    }
 
-              if (!e.getChannelType().isGuild()) {
-                return;
-              }
+    Message msg = e.getMessage();
 
-              Message msg = e.getMessage();
+    if (e.getAuthor().isBot()) {
+      return;
+    }
 
-              if (e.getAuthor().isBot()) {
-                return;
-              }
+    if (isCommand(msg, e)) {
+      if (!hasPermission(e)) {
+        e.getTextChannel()
+            .sendMessage(
+                Embeds.create(
+                    EmbedTemplate.ERROR,
+                    e.getAuthor(),
+                    String.format(invalidPermission, getPermissionString()),
+                    e.getGuild()))
+            .queue();
+        return;
+      }
 
-              if (isCommand(msg, e)) {
-                if (!hasPermission(e)) {
-                  e.getTextChannel()
-                      .sendMessage(
-                          Embeds.create(
-                              EmbedTemplate.ERROR,
-                              e.getAuthor(),
-                              String.format(invalidPermission, getPermissionString()),
-                              e.getGuild()))
-                      .queue();
-                  return;
-                }
+      if ((getCategory() == Category.ADMIN)
+          && !e.getAuthor().getId().equals(Corby.config.ownerId)) {
+        return;
+      }
 
-                if ((getCategory() == Category.ADMIN)
-                    && !e.getAuthor().getId().equals(Corby.config.ownerId)) {
-                  return;
-                }
+      if (e.getGuild().getBotRole() == null
+          || !Objects.requireNonNull(e.getGuild().getBotRole()).hasPermission(Corby.permissions)) {
+        e.getTextChannel()
+            .sendMessage(
+                Embeds.create(
+                    EmbedTemplate.ERROR,
+                    e.getAuthor(),
+                    String.format(invalidBotPermission, Corby.config.inviteUrl),
+                    e.getGuild()))
+            .queue();
+        e.getGuild().leave().queue();
+        return;
+      }
 
-                if (e.getGuild().getBotRole() == null
-                    || !Objects.requireNonNull(e.getGuild().getBotRole())
-                        .hasPermission(Corby.permissions)) {
-                  e.getTextChannel()
-                      .sendMessage(
-                          Embeds.create(
-                              EmbedTemplate.ERROR,
-                              e.getAuthor(),
-                              String.format(invalidBotPermission, Corby.config.inviteUrl),
-                              e.getGuild()))
-                      .queue();
-                  e.getGuild().leave().queue();
-                  return;
-                }
+      if (!isValidSyntax(e, getCommandArgs(e.getMessage()))) {
+        StringBuilder sb = new StringBuilder();
+        for (String s : getUsages()) {
+          sb.append("`")
+              .append(String.format(s, PrefixManager.getPrefix(e.getGuild())))
+              .append("`")
+              .append("\n");
+        }
 
-                if (!isValidSyntax(e, getCommandArgs(e.getMessage()))) {
-                  StringBuilder sb = new StringBuilder();
-                  for (String s : getUsages()) {
-                    sb.append("`")
-                        .append(String.format(s, PrefixManager.getPrefix(e.getGuild())))
-                        .append("`")
-                        .append("\n");
-                  }
+        e.getTextChannel()
+            .sendMessage(
+                Embeds.create(
+                    EmbedTemplate.ERROR,
+                    e.getAuthor(),
+                    String.format(invalidSyntax, e.getMessage().getContentRaw(), sb),
+                    e.getGuild()))
+            .queue();
+        return;
+      }
 
-                  e.getTextChannel()
-                      .sendMessage(
-                          Embeds.create(
-                              EmbedTemplate.ERROR,
-                              e.getAuthor(),
-                              String.format(invalidSyntax, e.getMessage().getContentRaw(), sb),
-                              e.getGuild()))
-                      .queue();
-                  return;
-                }
-
-                try {
-                  execute(e, getCommandArgs(msg));
-                } catch (Exception exception) {
-                  ExceptionUtils.processException(exception);
-                }
-              }
-            });
+      try {
+        execute(e, getCommandArgs(msg));
+      } catch (Exception exception) {
+        ExceptionUtils.processException(exception);
+      }
+    }
   }
 
   protected String getMessageContent() {

@@ -24,7 +24,6 @@ public class Config {
   public Color errorColor; // !
   public Color successColor; // !
   public Color starboardColor; // !
-  public String emoteTrash;
   public String emoteStar;
   public int defaultStarboardStars;
   public boolean defaultStarboardStatus;
@@ -74,7 +73,6 @@ public class Config {
       String inviteUrl,
       String id,
       String nameAsTag,
-      String emoteTrash,
       String emoteStar) {
     this.defaultColor = defaultColor;
     this.errorColor = errorColor;
@@ -86,7 +84,6 @@ public class Config {
     this.id = id;
     this.nameAsTag = nameAsTag;
     this.emoteStar = emoteStar;
-    this.emoteTrash = emoteTrash;
   }
 
   public Config() {}
