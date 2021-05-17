@@ -69,7 +69,7 @@ public class PrefixCommand extends Command {
     e.getTextChannel()
         .sendMessage(
             Embeds.create(
-                EmbedTemplate.DEFAULT, e.getAuthor(), String.format(successChanged, newPrefix)))
+                EmbedTemplate.SUCCESS, e.getAuthor(), String.format(successChanged, newPrefix)))
         .queue();
   }
 

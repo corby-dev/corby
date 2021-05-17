@@ -58,7 +58,7 @@ public class BottomCommand extends Command {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
-                      EmbedTemplate.DEFAULT, e.getAuthor(), String.format(result, encodedMessage)))
+                      EmbedTemplate.SUCCESS, e.getAuthor(), String.format(result, encodedMessage)))
               .queue();
 
           break;
@@ -76,7 +76,7 @@ public class BottomCommand extends Command {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
-                      EmbedTemplate.DEFAULT, e.getAuthor(), String.format(result, decodedMessage)))
+                      EmbedTemplate.SUCCESS, e.getAuthor(), String.format(result, decodedMessage)))
               .queue();
 
           break;

@@ -46,17 +46,18 @@ public class StarboardCommand extends Command {
 
     final String sbInfo =
         "Starboard is enabled on your server!\nRequired number of stars: %d\nChannel for starboard: %s";
-    final String sbNotEnabled = "It seems starboard is not enabled on your server.";
+    final String sbNotEnabled = "Starboard is not enabled on your server.";
     final String sbNotConfigured =
-        "It seems starboard is not configured on your server, use `%sstarboard channel <#channel>` to configure starboard.";
-    final String sbAlreadyEnabled = "It seems starboard is already enabled on your server.";
+        "Starboard is not configured on your server, use `%sstarboard channel <#channel>` to configure starboard.";
+    final String sbAlreadyEnabled = "Starboard is already enabled on your server.";
     final String sbEnabled = "Starboard has been successfully enabled on your server!";
-    final String sbAlreadyDisabled = "It seems starboard is already disabled on your server.";
+    final String sbAlreadyDisabled = "Starboard is already disabled on your server.";
     final String sbDisabled = "Starboard has been successfully disabled on your server!";
-    final String sbChannelAlreadyInst =
-        "It looks like the starboard channel is already set to this channel.";
+    final String sbChannelAlreadyInst = "Starboard channel is already set to this channel.";
     final String sbChannelInstalled = "Starboard successfully installed on the channel %s";
     final String sbStars = "The number of stars for the message has been successfully updated.";
+    final String sbStarsAlready =
+        "The number of stars for the message is already set to this value.";
 
     if (args.length < 2) {
       if (!StarboardManager.isConfigured(e.getGuild())) {
@@ -112,7 +113,7 @@ public class StarboardCommand extends Command {
 
         StarboardManager.setStatus(e.getGuild(), true);
         e.getTextChannel()
-            .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), sbEnabled))
+            .sendMessage(Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbEnabled))
             .queue();
 
         break;
@@ -138,7 +139,7 @@ public class StarboardCommand extends Command {
 
         StarboardManager.setStatus(e.getGuild(), false);
         e.getTextChannel()
-            .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), sbDisabled))
+            .sendMessage(Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbDisabled))
             .queue();
 
         break;
@@ -158,7 +159,7 @@ public class StarboardCommand extends Command {
         e.getTextChannel()
             .sendMessage(
                 Embeds.create(
-                    EmbedTemplate.DEFAULT,
+                    EmbedTemplate.SUCCESS,
                     e.getAuthor(),
                     String.format(
                         sbChannelInstalled,
@@ -189,9 +190,16 @@ public class StarboardCommand extends Command {
           return;
         }
 
+        if (StarboardManager.getStars(e.getGuild()) == stars) {
+          e.getTextChannel()
+              .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbStarsAlready))
+              .queue();
+          return;
+        }
+
         StarboardManager.setStars(stars, e.getGuild());
         e.getTextChannel()
-            .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), sbStars))
+            .sendMessage(Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbStars))
             .queue();
 
       default:

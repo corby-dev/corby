@@ -5,13 +5,13 @@ import com.mongodb.DBCollection;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import xyz.d1snin.corby.Corby;
-import xyz.d1snin.corby.database.Database;
+import xyz.d1snin.corby.database.DatabaseManager;
 
 import java.util.Objects;
 
 public class StarboardManager {
 
-  private static final DBCollection collection = Database.getDb().getCollection("starboards");
+  private static final DBCollection collection = DatabaseManager.getDb().getCollection("starboards");
 
   public static boolean isConfigured(Guild guild) {
     return isDatabaseContainsStarboard(guild);

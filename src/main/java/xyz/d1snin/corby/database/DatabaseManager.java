@@ -14,23 +14,18 @@ import xyz.d1snin.corby.Corby;
 
 import java.net.UnknownHostException;
 
-public class Database {
+public class DatabaseManager {
 
-  private static MongoClient mongo;
   private static DB db;
 
   public static void createConnection() throws UnknownHostException {
-    mongo = new MongoClient(Corby.config.mongoHostname, Corby.config.mongoPort);
-    db = mongo.getDB(Corby.config.mongoDbName);
+    db =
+        new MongoClient(Corby.config.mongoHostname, Corby.config.mongoPort)
+            .getDB(Corby.config.mongoDbName);
     db.authenticate(Corby.config.mongoUser, Corby.config.mongoPassword.toCharArray());
   }
 
   public static DB getDb() {
     return db;
-  }
-
-  public static void close() {
-    mongo.close();
-    Corby.logger.warn("Successfully disconnected from the database.");
   }
 }

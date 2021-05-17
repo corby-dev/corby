@@ -20,28 +20,27 @@ public class Embeds {
   public static MessageEmbed create(EmbedTemplate template, User u, String description) {
 
     Color color = null;
+    String emote = null;
     switch (template) {
       case ERROR:
         color = Corby.config.errorColor;
+        emote = Corby.config.emoteError;
         break;
       case DEFAULT:
         color = Corby.config.defaultColor;
         break;
       case SUCCESS:
         color = Corby.config.successColor;
+        emote = Corby.config.emoteSuccess;
         break;
       default:
     }
 
     return new EmbedBuilder()
-        .setAuthor(
-            u.getName() + " | ID: " + u.getId(),
-            u.getEffectiveAvatarUrl(),
-            u.getEffectiveAvatarUrl())
         .setColor(color)
-        .setDescription(description)
+        .setDescription((emote == null ? "" : emote) + " " + description)
         .setFooter(
-            Corby.config.botName + " | " + Thread.currentThread().getName(), Corby.config.botPfpUrl)
+            Corby.config.botName + " | " + Thread.currentThread().getName() + " | " + u.getAsTag(), Corby.config.botPfpUrl)
         .build();
   }
 }

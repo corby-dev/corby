@@ -20,7 +20,6 @@ import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.ExceptionUtils;
 
-import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +29,7 @@ import java.util.Objects;
 public abstract class Command extends ListenerAdapter {
 
   protected abstract void execute(MessageReceivedEvent e, String[] args)
-      throws LoginException, IOException, InterruptedException;
+      throws IOException;
 
   protected abstract boolean isValidSyntax(MessageReceivedEvent e, String[] args);
 

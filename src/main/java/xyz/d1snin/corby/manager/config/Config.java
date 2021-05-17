@@ -33,6 +33,8 @@ public class Config {
   public String mongoDbName;
   public String mongoUser;
   public String mongoPassword;
+  public String emoteSuccess;
+  public String emoteError;
 
   public Config(
       String token,
@@ -44,7 +46,9 @@ public class Config {
       int mongoPort,
       String mongoDbName,
       String mongoUser,
-      String mongoPassword) {
+      String mongoPassword,
+      String emoteSuccess,
+      String emoteError) {
 
     this.token = token;
     this.botPrefixDefault = botPrefixDefault;
@@ -56,6 +60,8 @@ public class Config {
     this.mongoDbName = mongoDbName;
     this.mongoUser = mongoUser;
     this.mongoPassword = mongoPassword;
+    this.emoteSuccess = emoteSuccess;
+    this.emoteError = emoteError;
   }
 
   public void initOther(

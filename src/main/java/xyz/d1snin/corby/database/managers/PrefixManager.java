@@ -4,21 +4,19 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import net.dv8tion.jda.api.entities.Guild;
 import xyz.d1snin.corby.Corby;
-import xyz.d1snin.corby.database.Database;
+import xyz.d1snin.corby.database.DatabaseManager;
 
 public class PrefixManager {
 
-  private static final DBCollection collection = Database.getDb().getCollection("guildprefix");
+  private static final DBCollection collection =
+      DatabaseManager.getDb().getCollection("guildprefix");
 
   public static void setPrefix(Guild guild, String prefix) {
     if (isDatabaseContainsPrefix(guild)) {
-      BasicDBObject newData = new BasicDBObject();
-      newData.put("guild", guild.getId());
-      newData.put("prefix", prefix);
-      collection.update(new BasicDBObject().append("guild", guild.getId()), newData);
+      collection.update(
+          new BasicDBObject().append("guild", guild.getId()), createBasicDBObject(guild, prefix));
     } else {
-      collection.insert(
-          new BasicDBObject().append("guild", guild.getId()).append("prefix", prefix));
+      collection.insert(createBasicDBObject(guild, prefix));
     }
   }
 
@@ -33,5 +31,9 @@ public class PrefixManager {
 
   private static boolean isDatabaseContainsPrefix(Guild guild) {
     return (collection.count(new BasicDBObject().append("guild", guild.getId())) > 0);
+  }
+
+  private static BasicDBObject createBasicDBObject(Guild guild, String prefix) {
+    return new BasicDBObject().append("guild", guild.getId()).append("prefix", prefix);
   }
 }

@@ -20,7 +20,7 @@ public class ShutdownCommand extends Command {
   @Override
   protected void execute(MessageReceivedEvent e, String[] args) {
     e.getTextChannel()
-        .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Terminating... Bye!"))
+        .sendMessage(Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), "Terminating... Bye!"))
         .complete();
     Corby.shutdown(Config.ExitCodes.NORMAL_SHUTDOWN_EXIT_CODE);
   }

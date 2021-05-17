@@ -90,7 +90,7 @@ public class StealCommand extends Command {
                   e.getTextChannel()
                       .sendMessage(
                           Embeds.create(
-                              EmbedTemplate.DEFAULT, e.getAuthor(), String.format(success, name)))
+                              EmbedTemplate.SUCCESS, e.getAuthor(), String.format(success, name)))
                       .queue(),
               fail ->
                   e.getTextChannel()

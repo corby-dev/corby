@@ -7,7 +7,6 @@ import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
-import javax.security.auth.login.LoginException;
 import java.io.IOException;
 
 public class RestartCommand extends Command {
@@ -21,19 +20,19 @@ public class RestartCommand extends Command {
 
   @Override
   protected void execute(MessageReceivedEvent e, String[] args)
-      throws LoginException, IOException, InterruptedException {
+      throws IOException {
     if (args.length > 1) {
       if (args[1].equals("server")) {
         e.getTextChannel()
             .sendMessage(
-                Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Restarting server..."))
+                Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), "Restarting server..."))
             .complete();
         Runtime.getRuntime().exec("systemctl reboot");
       }
       return;
     }
     e.getTextChannel()
-        .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Restarting..."))
+        .sendMessage(Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), "Restarting..."))
         .complete();
     Corby.restart();
   }

@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
-import net.dv8tion.jda.api.entities.Icon;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
@@ -28,7 +27,7 @@ import xyz.d1snin.corby.commands.misc.PingCommand;
 import xyz.d1snin.corby.commands.misc.StealCommand;
 import xyz.d1snin.corby.commands.settings.PrefixCommand;
 import xyz.d1snin.corby.commands.settings.StarboardCommand;
-import xyz.d1snin.corby.database.Database;
+import xyz.d1snin.corby.database.DatabaseManager;
 import xyz.d1snin.corby.event.ReactionUpdateEvent;
 import xyz.d1snin.corby.event.ServerJoinEvent;
 import xyz.d1snin.corby.manager.config.Config;
@@ -38,7 +37,6 @@ import xyz.d1snin.corby.utils.ExceptionUtils;
 
 import javax.security.auth.login.LoginException;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.*;
@@ -59,9 +57,9 @@ public class Corby {
             return t;
           });
 
-  public static final String resources = "src/main/resources/";
-
   private static final ScheduledExecutorService schedulerPresence =
+      Executors.newSingleThreadScheduledExecutor();
+  private static final ScheduledExecutorService schedulerRestarter =
       Executors.newSingleThreadScheduledExecutor();
 
   private static final List<String> presences = new ArrayList<>();
@@ -90,6 +88,7 @@ public class Corby {
       start();
 
       startUpdatePresence();
+      startBotRestarter();
     } catch (Exception e) {
       ExceptionUtils.processException(e);
     }
@@ -100,7 +99,7 @@ public class Corby {
     config = ConfigManager.init();
 
     logger.info("Trying to connect to the database...");
-    Database.createConnection();
+    DatabaseManager.createConnection();
 
     JDABuilder jdaBuilder = JDABuilder.createDefault(config.token);
 
@@ -134,12 +133,6 @@ public class Corby {
             + "  ╚██████╗╚██████╔╝██║  ██║██████╔╝   ██║     \n"
             + "   ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝    ╚═╝       "
             + "\n");
-
-    File avatar = new File(resources + "/corby.jpg");
-
-    if (avatar.exists()) {
-      getAPI().getSelfUser().getManager().setAvatar(Icon.from(avatar)).queue();
-    }
 
     config.initOther(
         new Color(98, 79, 255),
@@ -183,6 +176,20 @@ public class Corby {
         TimeUnit.SECONDS);
   }
 
+  private static void startBotRestarter() {
+    schedulerRestarter.scheduleWithFixedDelay(
+        () -> {
+          try {
+            restart();
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        },
+        12,
+        12,
+        TimeUnit.HOURS);
+  }
+
   private static String getPresence() {
     presences.clear();
     presences.add("Ping: " + API.getGatewayPing());
@@ -192,18 +199,16 @@ public class Corby {
 
   public static void shutdown(int exitCode) {
     logger.warn("Terminating... Bye!");
-    Database.close();
     API.shutdown();
     getService().shutdown();
     schedulerPresence.shutdown();
     System.exit(exitCode);
   }
 
-  public static void restart() throws LoginException, IOException, InterruptedException {
+  public static void restart() throws IOException {
     logger.warn("Restarting...");
-    Database.close();
-    API.shutdown();
-    start();
+    Runtime.getRuntime().exec("zsh scripts/start.sh");
+    shutdown(Config.ExitCodes.NORMAL_SHUTDOWN_EXIT_CODE);
   }
 
   public static JDA getAPI() {
