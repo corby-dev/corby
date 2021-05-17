@@ -52,7 +52,9 @@ public class HelpCommand extends Command {
 
       if (embed == null) {
         e.getTextChannel()
-            .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), incorrectPageMessage))
+            .sendMessage(
+                Embeds.create(
+                    EmbedTemplate.ERROR, e.getAuthor(), incorrectPageMessage, e.getGuild()))
             .queue();
         return;
       }
@@ -67,7 +69,10 @@ public class HelpCommand extends Command {
       e.getTextChannel()
           .sendMessage(
               Embeds.create(
-                  EmbedTemplate.ERROR, e.getAuthor(), String.format(couldNotFindMessage, args[1])))
+                  EmbedTemplate.ERROR,
+                  e.getAuthor(),
+                  String.format(couldNotFindMessage, args[1]),
+                  e.getGuild()))
           .queue();
       return;
     }
@@ -86,7 +91,7 @@ public class HelpCommand extends Command {
             + "\n"
             + command.getUsagesString();
     e.getTextChannel()
-        .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), msg))
+        .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), msg, e.getGuild()))
         .queue();
   }
 
@@ -112,7 +117,8 @@ public class HelpCommand extends Command {
 
     if (category == Category.ADMIN && !user.getId().equals(Corby.config.ownerId)) {
       e.getTextChannel()
-          .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), incorrectPageMessage))
+          .sendMessage(
+              Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), incorrectPageMessage, e.getGuild()))
           .queue();
       return null;
     }
@@ -135,6 +141,7 @@ public class HelpCommand extends Command {
     return Embeds.create(
         EmbedTemplate.DEFAULT,
         user,
-        "**" + category.getName() + " Commands. Page " + page + "/" + categories + ".**\n\n" + sb);
+        "**" + category.getName() + " Commands. Page " + page + "/" + categories + ".**\n\n" + sb,
+        e.getGuild());
   }
 }

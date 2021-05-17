@@ -28,8 +28,7 @@ import java.util.Objects;
 
 public abstract class Command extends ListenerAdapter {
 
-  protected abstract void execute(MessageReceivedEvent e, String[] args)
-      throws IOException;
+  protected abstract void execute(MessageReceivedEvent e, String[] args) throws IOException;
 
   protected abstract boolean isValidSyntax(MessageReceivedEvent e, String[] args);
 
@@ -87,11 +86,9 @@ public abstract class Command extends ListenerAdapter {
     Corby.getService()
         .execute(
             () -> {
-
               event = e;
 
-              final String invalidPermission =
-                  "You must have permissions %s to use this command.";
+              final String invalidPermission = "You must have permissions %s to use this command.";
               final String invalidBotPermission =
                   "It looks like I do not have or I do not have enough permissions on this server, please invite me using [this](%s) link, I am leaving right now.";
               final String invalidSyntax = "**Incorrect Syntax:** `%s`\n\n**Usage:**\n%s";
@@ -113,7 +110,8 @@ public abstract class Command extends ListenerAdapter {
                           Embeds.create(
                               EmbedTemplate.ERROR,
                               e.getAuthor(),
-                              String.format(invalidPermission, getPermissionString())))
+                              String.format(invalidPermission, getPermissionString()),
+                              e.getGuild()))
                       .queue();
                   return;
                 }
@@ -123,14 +121,16 @@ public abstract class Command extends ListenerAdapter {
                   return;
                 }
 
-                if (!Objects.requireNonNull(e.getGuild().getBotRole())
-                    .hasPermission(Corby.permissions)) {
+                if (e.getGuild().getBotRole() == null
+                    || !Objects.requireNonNull(e.getGuild().getBotRole())
+                        .hasPermission(Corby.permissions)) {
                   e.getTextChannel()
                       .sendMessage(
                           Embeds.create(
                               EmbedTemplate.ERROR,
                               e.getAuthor(),
-                              String.format(invalidBotPermission, Corby.config.inviteUrl)))
+                              String.format(invalidBotPermission, Corby.config.inviteUrl),
+                              e.getGuild()))
                       .queue();
                   e.getGuild().leave().queue();
                   return;
@@ -150,7 +150,8 @@ public abstract class Command extends ListenerAdapter {
                           Embeds.create(
                               EmbedTemplate.ERROR,
                               e.getAuthor(),
-                              String.format(invalidSyntax, e.getMessage().getContentRaw(), sb)))
+                              String.format(invalidSyntax, e.getMessage().getContentRaw(), sb),
+                              e.getGuild()))
                       .queue();
                   return;
                 }
@@ -161,7 +162,6 @@ public abstract class Command extends ListenerAdapter {
                   ExceptionUtils.processException(exception);
                 }
               }
-
             });
   }
 

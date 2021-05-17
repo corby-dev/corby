@@ -36,7 +36,8 @@ public class CatCommand extends Command {
     JSONReader reader = new JSONReader();
 
     e.getTextChannel()
-        .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Fetching..."))
+        .sendMessage(
+            Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Fetching...", e.getGuild()))
         .queue(
             message -> {
               try {

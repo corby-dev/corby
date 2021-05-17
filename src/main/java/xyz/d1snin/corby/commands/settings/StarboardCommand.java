@@ -66,13 +66,15 @@ public class StarboardCommand extends Command {
                 Embeds.create(
                     EmbedTemplate.ERROR,
                     e.getAuthor(),
-                    String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild()))))
+                    String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild())),
+                    e.getGuild()))
             .queue();
         return;
       }
       if (!StarboardManager.getStatus(e.getGuild())) {
         e.getTextChannel()
-            .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbNotEnabled))
+            .sendMessage(
+                Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbNotEnabled, e.getGuild()))
             .queue();
         return;
       }
@@ -86,7 +88,8 @@ public class StarboardCommand extends Command {
                       sbInfo,
                       StarboardManager.getStars(e.getGuild()),
                       Objects.requireNonNull(StarboardManager.getChannel(e.getGuild()))
-                          .getAsMention())))
+                          .getAsMention()),
+                  e.getGuild()))
           .queue();
       return;
     }
@@ -99,21 +102,24 @@ public class StarboardCommand extends Command {
                   Embeds.create(
                       EmbedTemplate.ERROR,
                       e.getAuthor(),
-                      String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild()))))
+                      String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild())),
+                      e.getGuild()))
               .queue();
           return;
         }
 
         if (StarboardManager.getStatus(e.getGuild())) {
           e.getTextChannel()
-              .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbAlreadyEnabled))
+              .sendMessage(
+                  Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbAlreadyEnabled, e.getGuild()))
               .queue();
           return;
         }
 
         StarboardManager.setStatus(e.getGuild(), true);
         e.getTextChannel()
-            .sendMessage(Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbEnabled))
+            .sendMessage(
+                Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbEnabled, e.getGuild()))
             .queue();
 
         break;
@@ -125,21 +131,25 @@ public class StarboardCommand extends Command {
                   Embeds.create(
                       EmbedTemplate.ERROR,
                       e.getAuthor(),
-                      String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild()))))
+                      String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild())),
+                      e.getGuild()))
               .queue();
           return;
         }
 
         if (!StarboardManager.getStatus(e.getGuild())) {
           e.getTextChannel()
-              .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbAlreadyDisabled))
+              .sendMessage(
+                  Embeds.create(
+                      EmbedTemplate.ERROR, e.getAuthor(), sbAlreadyDisabled, e.getGuild()))
               .queue();
           return;
         }
 
         StarboardManager.setStatus(e.getGuild(), false);
         e.getTextChannel()
-            .sendMessage(Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbDisabled))
+            .sendMessage(
+                Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbDisabled, e.getGuild()))
             .queue();
 
         break;
@@ -150,7 +160,9 @@ public class StarboardCommand extends Command {
                 .getMentionedChannels()
                 .contains(StarboardManager.getChannel(e.getGuild()))) {
           e.getTextChannel()
-              .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbChannelAlreadyInst))
+              .sendMessage(
+                  Embeds.create(
+                      EmbedTemplate.ERROR, e.getAuthor(), sbChannelAlreadyInst, e.getGuild()))
               .queue();
           return;
         }
@@ -163,7 +175,8 @@ public class StarboardCommand extends Command {
                     e.getAuthor(),
                     String.format(
                         sbChannelInstalled,
-                        e.getMessage().getMentionedChannels().get(0).getAsMention())))
+                        e.getMessage().getMentionedChannels().get(0).getAsMention()),
+                    e.getGuild()))
             .queue();
         break;
 
@@ -174,7 +187,8 @@ public class StarboardCommand extends Command {
 
         if (!StarboardManager.getStatus(e.getGuild())) {
           e.getTextChannel()
-              .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbNotEnabled))
+              .sendMessage(
+                  Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbNotEnabled, e.getGuild()))
               .queue();
           return;
         }
@@ -185,21 +199,23 @@ public class StarboardCommand extends Command {
                   Embeds.create(
                       EmbedTemplate.ERROR,
                       e.getAuthor(),
-                      String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild()))))
+                      String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild())),
+                      e.getGuild()))
               .queue();
           return;
         }
 
         if (StarboardManager.getStars(e.getGuild()) == stars) {
           e.getTextChannel()
-              .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbStarsAlready))
+              .sendMessage(
+                  Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbStarsAlready, e.getGuild()))
               .queue();
           return;
         }
 
         StarboardManager.setStars(stars, e.getGuild());
         e.getTextChannel()
-            .sendMessage(Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbStars))
+            .sendMessage(Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbStars, e.getGuild()))
             .queue();
 
       default:

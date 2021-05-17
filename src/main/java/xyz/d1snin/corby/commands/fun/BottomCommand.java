@@ -8,9 +8,9 @@
 
 package xyz.d1snin.corby.commands.fun;
 
+import com.github.bottomSoftwareFoundation.bottom.Bottom;
 import com.github.bottomSoftwareFoundation.bottom.TranslationError;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import com.github.bottomSoftwareFoundation.bottom.Bottom;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.enums.Category;
@@ -50,7 +50,7 @@ public class BottomCommand extends Command {
 
           if (encodedMessage.length() > edMsgLimit) {
             e.getTextChannel()
-                .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), longR))
+                .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), longR, e.getGuild()))
                 .queue();
             return;
           }
@@ -58,7 +58,10 @@ public class BottomCommand extends Command {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
-                      EmbedTemplate.SUCCESS, e.getAuthor(), String.format(result, encodedMessage)))
+                      EmbedTemplate.SUCCESS,
+                      e.getAuthor(),
+                      String.format(result, encodedMessage),
+                      e.getGuild()))
               .queue();
 
           break;
@@ -68,7 +71,7 @@ public class BottomCommand extends Command {
 
           if (decodedMessage.length() > edMsgLimit) {
             e.getTextChannel()
-                .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), longR))
+                .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), longR, e.getGuild()))
                 .queue();
             return;
           }
@@ -76,7 +79,10 @@ public class BottomCommand extends Command {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
-                      EmbedTemplate.SUCCESS, e.getAuthor(), String.format(result, decodedMessage)))
+                      EmbedTemplate.SUCCESS,
+                      e.getAuthor(),
+                      String.format(result, decodedMessage),
+                      e.getGuild()))
               .queue();
 
           break;
@@ -88,7 +94,7 @@ public class BottomCommand extends Command {
       final String tErr = "You cannot decrypt this message.";
 
       e.getTextChannel()
-          .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), tErr))
+          .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), tErr, e.getGuild()))
           .queue();
     }
   }

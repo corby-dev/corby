@@ -9,38 +9,55 @@
 package xyz.d1snin.corby.utils;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Emote;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 
+import javax.annotation.Nullable;
 import java.awt.*;
+import java.util.Objects;
 
 public class Embeds {
-  public static MessageEmbed create(EmbedTemplate template, User u, String description) {
+  public static MessageEmbed create(
+      EmbedTemplate template, User u, String description, @Nullable Guild guild) {
 
     Color color = null;
-    String emote = null;
+    Emote emote = null;
     switch (template) {
       case ERROR:
         color = Corby.config.errorColor;
-        emote = Corby.config.emoteError;
+        emote = Corby.getAPI().getEmoteById(Corby.config.emoteError);
         break;
       case DEFAULT:
         color = Corby.config.defaultColor;
         break;
       case SUCCESS:
         color = Corby.config.successColor;
-        emote = Corby.config.emoteSuccess;
+        emote = Corby.getAPI().getEmoteById(Corby.config.emoteSuccess);
         break;
       default:
     }
 
     return new EmbedBuilder()
         .setColor(color)
-        .setDescription((emote == null ? "" : emote) + " " + description)
+        .setDescription(
+            (emote == null
+                    ? ""
+                    : guild == null
+                            || Objects.requireNonNull(guild.getBotRole())
+                                .getPermissions()
+                                .contains(Permission.MESSAGE_EXT_EMOJI)
+                        ? emote.getAsMention()
+                        : "")
+                + " "
+                + description)
         .setFooter(
-            Corby.config.botName + " | " + Thread.currentThread().getName() + " | " + u.getAsTag(), Corby.config.botPfpUrl)
+            Corby.config.botName + " | " + Thread.currentThread().getName() + " | " + u.getAsTag(),
+            Corby.config.botPfpUrl)
         .build();
   }
 }

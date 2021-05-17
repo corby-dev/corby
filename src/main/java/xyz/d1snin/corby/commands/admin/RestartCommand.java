@@ -19,20 +19,21 @@ public class RestartCommand extends Command {
   }
 
   @Override
-  protected void execute(MessageReceivedEvent e, String[] args)
-      throws IOException {
+  protected void execute(MessageReceivedEvent e, String[] args) throws IOException {
     if (args.length > 1) {
       if (args[1].equals("server")) {
         e.getTextChannel()
             .sendMessage(
-                Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), "Restarting server..."))
+                Embeds.create(
+                    EmbedTemplate.SUCCESS, e.getAuthor(), "Restarting server...", e.getGuild()))
             .complete();
         Runtime.getRuntime().exec("systemctl reboot");
       }
       return;
     }
     e.getTextChannel()
-        .sendMessage(Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), "Restarting..."))
+        .sendMessage(
+            Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), "Restarting...", e.getGuild()))
         .complete();
     Corby.restart();
   }
