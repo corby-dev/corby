@@ -50,8 +50,6 @@ public class Corby {
 
   private static final ScheduledExecutorService schedulerPresence =
       Executors.newSingleThreadScheduledExecutor();
-  private static final ScheduledExecutorService schedulerRestarter =
-      Executors.newSingleThreadScheduledExecutor();
 
   private static final List<String> presences = new ArrayList<>();
   public static final Set<Permission> permissions = new TreeSet<>();
@@ -79,7 +77,6 @@ public class Corby {
       start();
 
       startUpdatePresence();
-      startBotRestarter();
     } catch (Exception e) {
       ExceptionUtils.processException(e);
     }
@@ -164,20 +161,6 @@ public class Corby {
         0,
         7,
         TimeUnit.SECONDS);
-  }
-
-  private static void startBotRestarter() {
-    schedulerRestarter.scheduleWithFixedDelay(
-        () -> {
-          try {
-            restart();
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
-        },
-        12,
-        12,
-        TimeUnit.HOURS);
   }
 
   private static String getPresence() {
