@@ -10,10 +10,10 @@ public class ExceptionUtils {
 
     final String message = "**An error was handled.**\n```%s: %s\n%s\n%s```";
     OtherUtils.sendPrivateMessageSafe(
-        Objects.requireNonNull(Corby.getAPI().getUserById(Corby.config.ownerId)),
+        Objects.requireNonNull(Corby.getApi().getUserById(Corby.config.ownerId)),
         Embeds.create(
             EmbedTemplate.DEFAULT,
-            Corby.getAPI().getUserById(Corby.config.ownerId),
+            Corby.getApi().getUserById(Corby.config.ownerId),
             String.format(
                 message,
                 exception.getClass().getName(),

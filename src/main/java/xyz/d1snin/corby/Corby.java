@@ -46,7 +46,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Corby {
 
-  private static JDA API;
+  private static JDA api;
 
   private static final ScheduledExecutorService schedulerPresence =
       Executors.newSingleThreadScheduledExecutor();
@@ -110,8 +110,8 @@ public class Corby {
         Command.add(new CatCommand()),
         Command.add(new StealCommand()));
 
-    API = jdaBuilder.build();
-    API.awaitReady();
+    api = jdaBuilder.build();
+    api.awaitReady();
     System.out.println(
         "\n"
             + "   ██████╗ ██████╗ ██████╗ ██████╗ ██╗   ██╗  \n"
@@ -127,11 +127,11 @@ public class Corby {
         new Color(255, 0, 0),
         new Color(70, 255, 0),
         new Color(255, 215, 0),
-        API.getSelfUser().getName(),
-        API.getSelfUser().getEffectiveAvatarUrl(),
-        API.getInviteUrl(permissions),
-        API.getSelfUser().getId(),
-        API.getSelfUser().getAsTag(),
+        api.getSelfUser().getName(),
+        api.getSelfUser().getEffectiveAvatarUrl(),
+        api.getInviteUrl(permissions),
+        api.getSelfUser().getId(),
+        api.getSelfUser().getAsTag(),
         "⭐");
 
     logger = LoggerFactory.getLogger(config.botName);
@@ -151,13 +151,13 @@ public class Corby {
             + config.inviteUrl
             + "\n    "
             + "~ Ping:        "
-            + API.getGatewayPing()
+            + api.getGatewayPing()
             + "\n    ");
   }
 
   private static void startUpdatePresence() {
     schedulerPresence.scheduleWithFixedDelay(
-        () -> API.getPresence().setActivity(Activity.watching(";help | " + getPresence())),
+        () -> api.getPresence().setActivity(Activity.watching(";help | " + getPresence())),
         0,
         7,
         TimeUnit.SECONDS);
@@ -165,14 +165,14 @@ public class Corby {
 
   private static String getPresence() {
     presences.clear();
-    presences.add("Ping: " + API.getGatewayPing());
-    presences.add(API.getGuilds().size() + " Servers!");
+    presences.add("Ping: " + api.getGatewayPing());
+    presences.add(api.getGuilds().size() + " Servers!");
     return presences.get(random.nextInt(presences.size()));
   }
 
   public static void shutdown(int exitCode) {
     logger.warn("Terminating... Bye!");
-    API.shutdown();
+    api.shutdown();
     schedulerPresence.shutdown();
     System.exit(exitCode);
   }
@@ -183,7 +183,7 @@ public class Corby {
     shutdown(Config.ExitCodes.NORMAL_SHUTDOWN_EXIT_CODE);
   }
 
-  public static JDA getAPI() {
-    return API;
+  public static JDA getApi() {
+    return api;
   }
 }

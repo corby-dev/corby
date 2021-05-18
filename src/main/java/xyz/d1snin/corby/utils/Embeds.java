@@ -30,14 +30,14 @@ public class Embeds {
     switch (template) {
       case ERROR:
         color = Corby.config.errorColor;
-        emote = Corby.getAPI().getEmoteById(Corby.config.emoteError);
+        emote = Corby.getApi().getEmoteById(Corby.config.emoteError);
         break;
       case DEFAULT:
         color = Corby.config.defaultColor;
         break;
       case SUCCESS:
         color = Corby.config.successColor;
-        emote = Corby.getAPI().getEmoteById(Corby.config.emoteSuccess);
+        emote = Corby.getApi().getEmoteById(Corby.config.emoteSuccess);
         break;
       default:
     }

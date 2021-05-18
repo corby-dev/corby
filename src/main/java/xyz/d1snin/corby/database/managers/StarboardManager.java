@@ -34,7 +34,7 @@ public class StarboardManager {
 
   public static TextChannel getChannel(Guild guild) {
     return (TextChannel)
-        Corby.getAPI()
+        Corby.getApi()
             .getGuildChannelById(
                 (String)
                     collection
