@@ -27,7 +27,7 @@ repositories {
 
 dependencies {
     implementation 'org.slf4j:slf4j-simple:1.7.30'
-    implementation 'net.dv8tion:JDA:4.2.1_264'
+    implementation 'net.dv8tion:JDA:4.2.1_265'
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     implementation 'org.mongodb:mongo-java-driver:2.11.2'
     implementation 'com.github.bottom-software-foundation:bottom-java:v2.1.0'
