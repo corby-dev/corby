@@ -7,7 +7,6 @@ import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.DatabaseManager;
 
 public class PrefixManager {
-
   private static final DBCollection collection =
       DatabaseManager.getDb().getCollection("guildprefix");
 

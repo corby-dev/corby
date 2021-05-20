@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import xyz.d1snin.corby.Corby;
+import xyz.d1snin.corby.database.managers.CooldownsManager;
 import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
@@ -33,6 +34,7 @@ public abstract class Command extends ListenerAdapter {
   protected String description = null;
   protected Category category = null;
   protected String[] usages = null;
+  protected int cooldown = 0;
   protected String longDescription = null;
   protected Permission[] permissions = new Permission[0];
   protected Permission[] botPermissions = new Permission[0];
@@ -98,6 +100,10 @@ public abstract class Command extends ListenerAdapter {
     return usages;
   }
 
+  public int getCooldown() {
+    return cooldown;
+  }
+
   public String getUsagesString() {
     StringBuilder sb = new StringBuilder();
     for (String s : getUsages()) {
@@ -125,6 +131,8 @@ public abstract class Command extends ListenerAdapter {
     final String invalidBotPermission =
         "It looks like I do not have or I do not have enough permissions on this server, please invite me using [this](%s) link, I am leaving right now.";
     final String invalidSyntax = "**Incorrect Syntax:** `%s`\n\n**Usage:**\n%s";
+    final String cooldown =
+        "You are currently on cooldown, wait **%d seconds** to use the command again.";
 
     if (!e.getChannelType().isGuild()) {
       return;
@@ -191,11 +199,28 @@ public abstract class Command extends ListenerAdapter {
         return;
       }
 
+      int cooldownTime = CooldownsManager.getCooldown(e.getAuthor(), this);
+
+      if (cooldownTime > 0) {
+        e.getTextChannel()
+            .sendMessage(
+                Embeds.create(
+                    EmbedTemplate.ERROR,
+                    e.getAuthor(),
+                    String.format(cooldown, cooldownTime),
+                    e.getGuild(),
+                    null))
+            .queue();
+        return;
+      }
+
       try {
         execute(e, getCommandArgs(msg));
       } catch (Exception exception) {
         ExceptionUtils.processException(exception);
       }
+
+      CooldownsManager.setCooldown(e.getAuthor(), this, getCooldown());
     }
   }
 
