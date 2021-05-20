@@ -23,7 +23,7 @@ public class BitcoinCommand extends Command {
   }
 
   @Override
-  protected void execute(MessageReceivedEvent e, String[] args) throws MalformedURLException {
+  protected void execute(MessageReceivedEvent e, String[] args) {
     e.getTextChannel()
         .sendMessage(
             Embeds.create(

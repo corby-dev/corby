@@ -7,8 +7,6 @@ import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
-import java.io.IOException;
-
 public class UptimeCommand extends Command {
 
   public UptimeCommand() {
@@ -19,7 +17,7 @@ public class UptimeCommand extends Command {
   }
 
   @Override
-  protected void execute(MessageReceivedEvent e, String[] args) throws IOException {
+  protected void execute(MessageReceivedEvent e, String[] args) {
     e.getTextChannel()
         .sendMessage(
             Embeds.create(
