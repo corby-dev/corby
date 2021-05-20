@@ -20,7 +20,7 @@ public class ConfigFileManager {
       Corby.logger.warn(
           "File created: "
               + file.getName()
-              + ", please edit the generated file using the bot token.");
+              + ", please edit the generated file.");
       System.exit(0);
     } else {
       Corby.logger.info("Found config.json");
