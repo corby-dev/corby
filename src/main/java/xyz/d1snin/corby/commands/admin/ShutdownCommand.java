@@ -5,7 +5,7 @@ import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
-import xyz.d1snin.corby.manager.config.Config;
+import xyz.d1snin.corby.model.Config;
 import xyz.d1snin.corby.utils.Embeds;
 
 public class ShutdownCommand extends Command {
@@ -22,7 +22,7 @@ public class ShutdownCommand extends Command {
     e.getTextChannel()
         .sendMessage(
             Embeds.create(
-                EmbedTemplate.SUCCESS, e.getAuthor(), "Terminating... Bye!", e.getGuild()))
+                EmbedTemplate.SUCCESS, e.getAuthor(), "Terminating... Bye!", e.getGuild(), null))
         .complete();
     Corby.shutdown(Config.ExitCodes.NORMAL_SHUTDOWN_EXIT_CODE);
   }

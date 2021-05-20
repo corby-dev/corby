@@ -19,7 +19,9 @@ public class ExceptionUtils {
                 exception.getClass().getName(),
                 exception.getMessage(),
                 exception.getCause(),
-                getStackTrace(exception)), null),
+                getStackTrace(exception)),
+            null,
+            null),
         () ->
             Corby.logger.warn(
                 "You have disabled messages from the bot, please enable them to receive information about errors during runtime."));

@@ -50,7 +50,8 @@ public class BottomCommand extends Command {
 
           if (encodedMessage.length() > edMsgLimit) {
             e.getTextChannel()
-                .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), longR, e.getGuild()))
+                .sendMessage(
+                    Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), longR, e.getGuild(), null))
                 .queue();
             return;
           }
@@ -61,7 +62,8 @@ public class BottomCommand extends Command {
                       EmbedTemplate.SUCCESS,
                       e.getAuthor(),
                       String.format(result, encodedMessage),
-                      e.getGuild()))
+                      e.getGuild(),
+                      null))
               .queue();
 
           break;
@@ -71,7 +73,8 @@ public class BottomCommand extends Command {
 
           if (decodedMessage.length() > edMsgLimit) {
             e.getTextChannel()
-                .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), longR, e.getGuild()))
+                .sendMessage(
+                    Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), longR, e.getGuild(), null))
                 .queue();
             return;
           }
@@ -82,7 +85,8 @@ public class BottomCommand extends Command {
                       EmbedTemplate.SUCCESS,
                       e.getAuthor(),
                       String.format(result, decodedMessage),
-                      e.getGuild()))
+                      e.getGuild(),
+                      null))
               .queue();
 
           break;
@@ -94,7 +98,7 @@ public class BottomCommand extends Command {
       final String tErr = "You cannot decrypt this message.";
 
       e.getTextChannel()
-          .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), tErr, e.getGuild()))
+          .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), tErr, e.getGuild(), null))
           .queue();
     }
   }

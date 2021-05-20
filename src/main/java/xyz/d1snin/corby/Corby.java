@@ -20,19 +20,22 @@ import org.slf4j.LoggerFactory;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.commands.admin.RestartCommand;
 import xyz.d1snin.corby.commands.admin.ShutdownCommand;
+import xyz.d1snin.corby.commands.fun.BitcoinCommand;
 import xyz.d1snin.corby.commands.fun.BottomCommand;
 import xyz.d1snin.corby.commands.fun.CatCommand;
 import xyz.d1snin.corby.commands.misc.HelpCommand;
 import xyz.d1snin.corby.commands.misc.PingCommand;
 import xyz.d1snin.corby.commands.misc.StealCommand;
+import xyz.d1snin.corby.commands.misc.UptimeCommand;
 import xyz.d1snin.corby.commands.settings.PrefixCommand;
 import xyz.d1snin.corby.commands.settings.StarboardCommand;
 import xyz.d1snin.corby.database.DatabaseManager;
 import xyz.d1snin.corby.event.ReactionUpdateEvent;
 import xyz.d1snin.corby.event.ServerJoinEvent;
-import xyz.d1snin.corby.manager.config.Config;
+import xyz.d1snin.corby.manager.LaunchArgumentsManager;
 import xyz.d1snin.corby.manager.config.ConfigFileManager;
 import xyz.d1snin.corby.manager.config.ConfigManager;
+import xyz.d1snin.corby.model.Config;
 import xyz.d1snin.corby.utils.ExceptionUtils;
 import xyz.d1snin.corby.utils.OtherUtils;
 
@@ -49,14 +52,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Corby {
 
-  private static JDA api;
-
-  private static final ScheduledExecutorService schedulerPresence =
-      Executors.newSingleThreadScheduledExecutor();
-
   public static final RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
-
-  private static final List<String> presences = new ArrayList<>();
   public static final Set<Permission> permissions = new TreeSet<>();
   public static final List<Permission> defaultPermissions =
       Arrays.asList(
@@ -65,14 +61,18 @@ public class Corby {
           Permission.MESSAGE_WRITE,
           Permission.VIEW_CHANNEL,
           Permission.MANAGE_CHANNEL);
+  private static final ScheduledExecutorService schedulerPresence =
+      Executors.newScheduledThreadPool(10);
+  private static final List<String> presences = new ArrayList<>();
   private static final Random random = new Random();
-
   public static Config config;
-
   public static Logger logger = LoggerFactory.getLogger("loader");
+  private static JDA api;
 
   public static void main(String[] args) {
     try {
+      LaunchArgumentsManager.init(args);
+
       ConfigFileManager.initConfigFile();
 
       logger.info("Starting...");
@@ -113,7 +113,9 @@ public class Corby {
         Command.add(new HelpCommand()),
         Command.add(new BottomCommand()),
         Command.add(new CatCommand()),
-        Command.add(new StealCommand()));
+        Command.add(new StealCommand()),
+        Command.add(new BitcoinCommand()),
+        Command.add(new UptimeCommand()));
 
     api = jdaBuilder.build();
     api.awaitReady();
@@ -149,7 +151,7 @@ public class Corby {
                 + "    ~ ID:          %s\n"
                 + "    ~ Invite URL:  %s\n"
                 + "    ~ Ping:        %s\n",
-            OtherUtils.formatMillis(rb.getUptime()),
+            getUptime(),
             config.botPfpUrl,
             config.nameAsTag,
             config.id,
@@ -189,5 +191,9 @@ public class Corby {
 
   public static JDA getApi() {
     return api;
+  }
+
+  public static String getUptime() {
+    return OtherUtils.formatMillis(rb.getUptime());
   }
 }

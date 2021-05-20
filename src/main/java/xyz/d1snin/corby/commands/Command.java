@@ -28,20 +28,59 @@ import java.util.Objects;
 
 public abstract class Command extends ListenerAdapter {
 
-  protected abstract void execute(MessageReceivedEvent e, String[] args) throws IOException;
-
-  protected abstract boolean isValidSyntax(MessageReceivedEvent e, String[] args);
-
   private static final List<Command> commands = new ArrayList<>();
-
   protected String alias = null;
   protected String description = null;
   protected Category category = null;
   protected String[] usages = null;
-
   protected String longDescription = null;
   protected Permission[] permissions = new Permission[0];
   protected Permission[] botPermissions = new Permission[0];
+  private MessageReceivedEvent event = null;
+
+  public static List<Command> getCommandsByCategory(Category category) {
+    List<Command> result = new ArrayList<>();
+    for (Command c : getCommands()) {
+      if (c.getCategory() == category) {
+        result.add(c);
+      }
+    }
+    return result;
+  }
+
+  public static Command getCommandByAlias(String alias) {
+    for (Command c : getCommands()) {
+      if (c.getAlias().equals(alias)) {
+        return c;
+      }
+    }
+    return null;
+  }
+
+  public static Command add(Command command) {
+
+    final String invalidCommandConfig =
+        "It looks like one of the fields is not initialized in the command (%s), fields alias, description, category and usages should be initialized. This command are ignored.";
+
+    if (command.getAlias() == null
+        || command.getDescription() == null
+        || command.getCategory() == null
+        || command.getUsages() == null) {
+      Corby.logger.warn(String.format(invalidCommandConfig, command.getClass().getName()));
+    } else {
+      commands.add(command);
+    }
+    command.onLoad();
+    return command;
+  }
+
+  public static List<Command> getCommands() {
+    return commands;
+  }
+
+  protected abstract void execute(MessageReceivedEvent e, String[] args) throws IOException;
+
+  protected abstract boolean isValidSyntax(MessageReceivedEvent e, String[] args);
 
   public String getAlias() {
     return alias;
@@ -79,8 +118,6 @@ public abstract class Command extends ListenerAdapter {
     return botPermissions;
   }
 
-  private MessageReceivedEvent event = null;
-
   public void onMessageReceived(@NotNull MessageReceivedEvent e) {
     event = e;
 
@@ -107,7 +144,8 @@ public abstract class Command extends ListenerAdapter {
                     EmbedTemplate.ERROR,
                     e.getAuthor(),
                     String.format(invalidPermission, getPermissionString()),
-                    e.getGuild()))
+                    e.getGuild(),
+                    null))
             .queue();
         return;
       }
@@ -125,7 +163,8 @@ public abstract class Command extends ListenerAdapter {
                     EmbedTemplate.ERROR,
                     e.getAuthor(),
                     String.format(invalidBotPermission, Corby.config.inviteUrl),
-                    e.getGuild()))
+                    e.getGuild(),
+                    null))
             .queue();
         e.getGuild().leave().queue();
         return;
@@ -146,7 +185,8 @@ public abstract class Command extends ListenerAdapter {
                     EmbedTemplate.ERROR,
                     e.getAuthor(),
                     String.format(invalidSyntax, e.getMessage().getContentRaw(), sb),
-                    e.getGuild()))
+                    e.getGuild(),
+                    null))
             .queue();
         return;
       }
@@ -208,45 +248,5 @@ public abstract class Command extends ListenerAdapter {
             .toLowerCase()
             .equals(PrefixManager.getPrefix(event.getGuild()) + getAlias())
         && getCommandArgs(message)[0].startsWith(PrefixManager.getPrefix(event.getGuild()));
-  }
-
-  public static List<Command> getCommandsByCategory(Category category) {
-    List<Command> result = new ArrayList<>();
-    for (Command c : getCommands()) {
-      if (c.getCategory() == category) {
-        result.add(c);
-      }
-    }
-    return result;
-  }
-
-  public static Command getCommandByAlias(String alias) {
-    for (Command c : getCommands()) {
-      if (c.getAlias().equals(alias)) {
-        return c;
-      }
-    }
-    return null;
-  }
-
-  public static Command add(Command command) {
-
-    final String invalidCommandConfig =
-        "It looks like one of the fields is not initialized in the command (%s), fields alias, description, category and usages should be initialized. This command are ignored.";
-
-    if (command.getAlias() == null
-        || command.getDescription() == null
-        || command.getCategory() == null
-        || command.getUsages() == null) {
-      Corby.logger.warn(String.format(invalidCommandConfig, command.getClass().getName()));
-    } else {
-      commands.add(command);
-    }
-    command.onLoad();
-    return command;
-  }
-
-  public static List<Command> getCommands() {
-    return commands;
   }
 }

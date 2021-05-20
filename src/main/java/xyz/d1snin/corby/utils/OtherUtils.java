@@ -33,4 +33,9 @@ public class OtherUtils {
         TimeUnit.MILLISECONDS.toMinutes(ms) % TimeUnit.HOURS.toMinutes(1),
         TimeUnit.MILLISECONDS.toSeconds(ms) % TimeUnit.MINUTES.toSeconds(1));
   }
+
+  public static boolean isImage(String url) {
+    String lowered = url.toLowerCase();
+    return (lowered.endsWith(".jpg") || lowered.endsWith(".png") || lowered.endsWith(".jpeg"));
+  }
 }

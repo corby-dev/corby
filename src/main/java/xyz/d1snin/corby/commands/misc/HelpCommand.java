@@ -24,14 +24,14 @@ import java.util.Objects;
 
 public class HelpCommand extends Command {
 
+  private static final String incorrectPageMessage = "This page does not exist.";
+
   public HelpCommand() {
     this.alias = "help";
     this.description = "Gives you information about commands.";
     this.category = Category.MISC;
     this.usages = new String[] {"%shelp", "%shelp <Page Number>", "%shelp <Command Name>"};
   }
-
-  private static final String incorrectPageMessage = "This page does not exist.";
 
   @Override
   protected void execute(MessageReceivedEvent e, String[] args) {
@@ -54,7 +54,7 @@ public class HelpCommand extends Command {
         e.getTextChannel()
             .sendMessage(
                 Embeds.create(
-                    EmbedTemplate.ERROR, e.getAuthor(), incorrectPageMessage, e.getGuild()))
+                    EmbedTemplate.ERROR, e.getAuthor(), incorrectPageMessage, e.getGuild(), null))
             .queue();
         return;
       }
@@ -72,7 +72,8 @@ public class HelpCommand extends Command {
                   EmbedTemplate.ERROR,
                   e.getAuthor(),
                   String.format(couldNotFindMessage, args[1]),
-                  e.getGuild()))
+                  e.getGuild(),
+                  null))
           .queue();
       return;
     }
@@ -91,7 +92,7 @@ public class HelpCommand extends Command {
             + "\n"
             + command.getUsagesString();
     e.getTextChannel()
-        .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), msg, e.getGuild()))
+        .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), msg, e.getGuild(), null))
         .queue();
   }
 
@@ -118,7 +119,8 @@ public class HelpCommand extends Command {
     if (category == Category.ADMIN && !user.getId().equals(Corby.config.ownerId)) {
       e.getTextChannel()
           .sendMessage(
-              Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), incorrectPageMessage, e.getGuild()))
+              Embeds.create(
+                  EmbedTemplate.ERROR, e.getAuthor(), incorrectPageMessage, e.getGuild(), null))
           .queue();
       return null;
     }
@@ -142,6 +144,7 @@ public class HelpCommand extends Command {
         EmbedTemplate.DEFAULT,
         user,
         "**" + category.getName() + " Commands. Page " + page + "/" + categories + ".**\n\n" + sb,
-        e.getGuild());
+        e.getGuild(),
+        null);
   }
 }

@@ -11,7 +11,8 @@ import java.util.Objects;
 
 public class StarboardManager {
 
-  private static final DBCollection collection = DatabaseManager.getDb().getCollection("starboards");
+  private static final DBCollection collection =
+      DatabaseManager.getDb().getCollection("starboards");
 
   public static boolean isConfigured(Guild guild) {
     return isDatabaseContainsStarboard(guild);

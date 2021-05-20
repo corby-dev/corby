@@ -23,7 +23,11 @@ import java.util.Objects;
 
 public class Embeds {
   public static MessageEmbed create(
-      EmbedTemplate template, User u, String description, @Nullable Guild guild) {
+      EmbedTemplate template,
+      User u,
+      String description,
+      @Nullable Guild guild,
+      @Nullable String imageUrl) {
 
     Color color = null;
     Emote emote = null;
@@ -42,23 +46,33 @@ public class Embeds {
       default:
     }
 
-    return new EmbedBuilder()
-        .setColor(color)
-        .setDescription(
-            (emote == null
-                    ? ""
-                    : guild == null
-                        ? emote.getAsMention()
-                        : Objects.requireNonNull(guild.getBotRole())
-                                .getPermissions()
-                                .contains(Permission.MESSAGE_EXT_EMOJI)
+    EmbedBuilder builder =
+        new EmbedBuilder()
+            .setColor(color)
+            .setDescription(
+                (emote == null
+                        ? ""
+                        : guild == null
                             ? emote.getAsMention()
-                            : "")
-                + " "
-                + description)
-        .setFooter(
-            Corby.config.botName + " | " + Thread.currentThread().getName() + " | " + u.getAsTag(),
-            Corby.config.botPfpUrl)
-        .build();
+                            : Objects.requireNonNull(guild.getBotRole())
+                                    .getPermissions()
+                                    .contains(Permission.MESSAGE_EXT_EMOJI)
+                                ? emote.getAsMention()
+                                : "")
+                    + " "
+                    + description)
+            .setFooter(
+                Corby.config.botName
+                    + " | "
+                    + Thread.currentThread().getName()
+                    + " | "
+                    + u.getAsTag(),
+                Corby.config.botPfpUrl);
+
+    if (imageUrl != null) {
+      builder.setImage(imageUrl);
+    }
+
+    return builder.build();
   }
 }

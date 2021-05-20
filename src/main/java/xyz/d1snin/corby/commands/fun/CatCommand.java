@@ -8,17 +8,16 @@
 
 package xyz.d1snin.corby.commands.fun;
 
-import net.dv8tion.jda.api.EmbedBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import jdk.nashorn.api.scripting.URLReader;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import org.json.simple.parser.ParseException;
-import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
-import xyz.d1snin.corby.utils.JSONReader;
 
-import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class CatCommand extends Command {
@@ -32,41 +31,23 @@ public class CatCommand extends Command {
 
   @Override
   protected void execute(MessageReceivedEvent e, String[] args) {
-
-    JSONReader reader = new JSONReader();
-
     e.getTextChannel()
         .sendMessage(
-            Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Fetching...", e.getGuild()))
+            Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Fetching...", e.getGuild(), null))
         .queue(
             message -> {
               try {
                 message
                     .editMessage(
-                        new EmbedBuilder()
-                            .setAuthor(
-                                e.getAuthor().getName() + " | ID: " + e.getAuthor().getId(),
-                                e.getAuthor().getEffectiveAvatarUrl(),
-                                e.getAuthor().getEffectiveAvatarUrl())
-                            .setDescription(
-                                reader.readFromURL(
-                                    "text",
-                                    new URL(
-                                        "https://cat-fact.herokuapp.com/facts/random?animal_type=cat&amount=1"),
-                                    true))
-                            .setColor(Corby.config.defaultColor)
-                            .setImage(
-                                reader.readFromURL(
-                                    "url",
-                                    new URL("https://api.thecatapi.com/v1/images/search"),
-                                    false))
-                            .setFooter(
-                                Corby.config.botName + " | " + Thread.currentThread().getName(),
-                                Corby.config.botPfpUrl)
-                            .build())
+                        Embeds.create(
+                            EmbedTemplate.DEFAULT,
+                            e.getAuthor(),
+                            getFact(),
+                            e.getGuild(),
+                            getPicture()))
                     .queue();
-              } catch (IOException | ParseException ioException) {
-                ioException.printStackTrace();
+              } catch (MalformedURLException malformedURLException) {
+                malformedURLException.printStackTrace();
               }
             });
   }
@@ -74,5 +55,29 @@ public class CatCommand extends Command {
   @Override
   protected boolean isValidSyntax(MessageReceivedEvent e, String[] args) {
     return args.length <= 1;
+  }
+
+  private String getFact() throws MalformedURLException {
+    while (true) {
+      JsonElement root =
+          JsonParser.parseReader(
+              new URLReader(
+                  new URL("https://cat-fact.herokuapp.com/facts/random?animal_type=cat&amount=1")));
+      JsonElement verifiedElement =
+          root.getAsJsonObject().get("status").getAsJsonObject().get("verified");
+      if (!verifiedElement.isJsonNull() && verifiedElement.getAsBoolean()) {
+        return root.getAsJsonObject().get("text").getAsString();
+      }
+    }
+  }
+
+  private String getPicture() throws MalformedURLException {
+    return JsonParser.parseReader(
+            new URLReader(new URL("https://api.thecatapi.com/v1/images/search")))
+        .getAsJsonArray()
+        .get(0)
+        .getAsJsonObject()
+        .get("url")
+        .getAsString();
   }
 }

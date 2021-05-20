@@ -8,13 +8,15 @@
 
 package xyz.d1snin.corby.event;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.GuildChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.annotation.EventListener;
+import xyz.d1snin.corby.database.managers.PrefixManager;
+import xyz.d1snin.corby.enums.EmbedTemplate;
+import xyz.d1snin.corby.utils.Embeds;
 
 import java.util.List;
 import java.util.Objects;
@@ -38,14 +40,14 @@ public class ServerJoinEvent extends Listener {
         .containsAll(Corby.permissions)) {
       ((TextChannel) channel)
           .sendMessage(
-              new EmbedBuilder()
-                  .setColor(Corby.config.defaultColor)
-                  .setDescription(
-                      "It looks like you added me to your server without required rights, this is necessary for the bot to work correctly, please invite me using this [link]("
-                          + Corby.config.inviteUrl
-                          + "). I will log out of your server now.")
-                  .setFooter(Corby.config.botName, Corby.config.botPfpUrl)
-                  .build())
+              Embeds.create(
+                  EmbedTemplate.DEFAULT,
+                  Corby.getApi().getSelfUser(),
+                  String.format(
+                      "It looks like you added me to your server without required permissions, this is necessary for the bot to work correctly, please invite me using this [link](%s). I will log out of your server now.",
+                      Corby.config.inviteUrl),
+                  null,
+                  null))
           .queue();
       thisEvent.getGuild().leave().queue();
       return;
@@ -53,16 +55,14 @@ public class ServerJoinEvent extends Listener {
 
     ((TextChannel) channel)
         .sendMessage(
-            new EmbedBuilder()
-                .setColor(Corby.config.defaultColor)
-                .setDescription(
-                    "Thank you for inviting me to your server!"
-                        + "\nI can help you with moderation and administration of your server and much more."
-                        + "\nYou can find out the full list of commands by simply writing to any chat `"
-                        + Corby.config.botPrefixDefault
-                        + "help`.")
-                .setFooter(Corby.config.botName, Corby.config.botPfpUrl)
-                .build())
+            Embeds.create(
+                EmbedTemplate.DEFAULT,
+                Corby.getApi().getSelfUser(),
+                String.format(
+                    "Thank you for inviting me to your server!\nI can help you with moderation and administration of your server and much more. \nYou can find out the full list of commands by simply writing to any chat `%shelp`.",
+                    PrefixManager.getPrefix(thisEvent.getGuild())),
+                null,
+                null))
         .queue();
   }
 }

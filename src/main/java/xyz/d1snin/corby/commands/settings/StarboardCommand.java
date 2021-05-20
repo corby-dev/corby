@@ -67,14 +67,15 @@ public class StarboardCommand extends Command {
                     EmbedTemplate.ERROR,
                     e.getAuthor(),
                     String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild())),
-                    e.getGuild()))
+                    e.getGuild(),
+                    null))
             .queue();
         return;
       }
       if (!StarboardManager.getStatus(e.getGuild())) {
         e.getTextChannel()
             .sendMessage(
-                Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbNotEnabled, e.getGuild()))
+                Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbNotEnabled, e.getGuild(), null))
             .queue();
         return;
       }
@@ -89,7 +90,8 @@ public class StarboardCommand extends Command {
                       StarboardManager.getStars(e.getGuild()),
                       Objects.requireNonNull(StarboardManager.getChannel(e.getGuild()))
                           .getAsMention()),
-                  e.getGuild()))
+                  e.getGuild(),
+                  null))
           .queue();
       return;
     }
@@ -103,7 +105,8 @@ public class StarboardCommand extends Command {
                       EmbedTemplate.ERROR,
                       e.getAuthor(),
                       String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild())),
-                      e.getGuild()))
+                      e.getGuild(),
+                      null))
               .queue();
           return;
         }
@@ -111,7 +114,8 @@ public class StarboardCommand extends Command {
         if (StarboardManager.getStatus(e.getGuild())) {
           e.getTextChannel()
               .sendMessage(
-                  Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbAlreadyEnabled, e.getGuild()))
+                  Embeds.create(
+                      EmbedTemplate.ERROR, e.getAuthor(), sbAlreadyEnabled, e.getGuild(), null))
               .queue();
           return;
         }
@@ -119,7 +123,7 @@ public class StarboardCommand extends Command {
         StarboardManager.setStatus(e.getGuild(), true);
         e.getTextChannel()
             .sendMessage(
-                Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbEnabled, e.getGuild()))
+                Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbEnabled, e.getGuild(), null))
             .queue();
 
         break;
@@ -132,7 +136,8 @@ public class StarboardCommand extends Command {
                       EmbedTemplate.ERROR,
                       e.getAuthor(),
                       String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild())),
-                      e.getGuild()))
+                      e.getGuild(),
+                      null))
               .queue();
           return;
         }
@@ -141,7 +146,7 @@ public class StarboardCommand extends Command {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
-                      EmbedTemplate.ERROR, e.getAuthor(), sbAlreadyDisabled, e.getGuild()))
+                      EmbedTemplate.ERROR, e.getAuthor(), sbAlreadyDisabled, e.getGuild(), null))
               .queue();
           return;
         }
@@ -149,7 +154,7 @@ public class StarboardCommand extends Command {
         StarboardManager.setStatus(e.getGuild(), false);
         e.getTextChannel()
             .sendMessage(
-                Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbDisabled, e.getGuild()))
+                Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbDisabled, e.getGuild(), null))
             .queue();
 
         break;
@@ -162,7 +167,7 @@ public class StarboardCommand extends Command {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
-                      EmbedTemplate.ERROR, e.getAuthor(), sbChannelAlreadyInst, e.getGuild()))
+                      EmbedTemplate.ERROR, e.getAuthor(), sbChannelAlreadyInst, e.getGuild(), null))
               .queue();
           return;
         }
@@ -176,7 +181,8 @@ public class StarboardCommand extends Command {
                     String.format(
                         sbChannelInstalled,
                         e.getMessage().getMentionedChannels().get(0).getAsMention()),
-                    e.getGuild()))
+                    e.getGuild(),
+                    null))
             .queue();
         break;
 
@@ -188,7 +194,8 @@ public class StarboardCommand extends Command {
         if (!StarboardManager.getStatus(e.getGuild())) {
           e.getTextChannel()
               .sendMessage(
-                  Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbNotEnabled, e.getGuild()))
+                  Embeds.create(
+                      EmbedTemplate.ERROR, e.getAuthor(), sbNotEnabled, e.getGuild(), null))
               .queue();
           return;
         }
@@ -200,7 +207,8 @@ public class StarboardCommand extends Command {
                       EmbedTemplate.ERROR,
                       e.getAuthor(),
                       String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild())),
-                      e.getGuild()))
+                      e.getGuild(),
+                      null))
               .queue();
           return;
         }
@@ -208,14 +216,16 @@ public class StarboardCommand extends Command {
         if (StarboardManager.getStars(e.getGuild()) == stars) {
           e.getTextChannel()
               .sendMessage(
-                  Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbStarsAlready, e.getGuild()))
+                  Embeds.create(
+                      EmbedTemplate.ERROR, e.getAuthor(), sbStarsAlready, e.getGuild(), null))
               .queue();
           return;
         }
 
         StarboardManager.setStars(stars, e.getGuild());
         e.getTextChannel()
-            .sendMessage(Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbStars, e.getGuild()))
+            .sendMessage(
+                Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbStars, e.getGuild(), null))
             .queue();
 
       default:

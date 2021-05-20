@@ -25,7 +25,11 @@ public class RestartCommand extends Command {
         e.getTextChannel()
             .sendMessage(
                 Embeds.create(
-                    EmbedTemplate.SUCCESS, e.getAuthor(), "Restarting server...", e.getGuild()))
+                    EmbedTemplate.SUCCESS,
+                    e.getAuthor(),
+                    "Restarting server...",
+                    e.getGuild(),
+                    null))
             .complete();
         Runtime.getRuntime().exec("systemctl reboot");
       }
@@ -33,7 +37,8 @@ public class RestartCommand extends Command {
     }
     e.getTextChannel()
         .sendMessage(
-            Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), "Restarting...", e.getGuild()))
+            Embeds.create(
+                EmbedTemplate.SUCCESS, e.getAuthor(), "Restarting...", e.getGuild(), null))
         .complete();
     Corby.restart();
   }

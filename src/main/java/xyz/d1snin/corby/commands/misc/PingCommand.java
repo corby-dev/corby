@@ -32,7 +32,8 @@ public class PingCommand extends Command {
                 EmbedTemplate.DEFAULT,
                 e.getAuthor(),
                 String.format("Current ping: %dms", Corby.getApi().getGatewayPing()),
-                e.getGuild()))
+                e.getGuild(),
+                null))
         .queue();
   }
 

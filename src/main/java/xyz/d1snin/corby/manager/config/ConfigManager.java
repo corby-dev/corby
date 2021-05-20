@@ -8,14 +8,14 @@
 
 package xyz.d1snin.corby.manager.config;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import xyz.d1snin.corby.model.Config;
 
-import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 
 public class ConfigManager {
   public static Config init() throws IOException {
-    return new ObjectMapper(new JsonFactory()).readValue(new File("config.json"), Config.class);
+    return new Gson().fromJson(new FileReader("config.json"), Config.class);
   }
 }

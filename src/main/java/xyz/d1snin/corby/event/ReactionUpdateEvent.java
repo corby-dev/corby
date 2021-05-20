@@ -65,28 +65,26 @@ public class ReactionUpdateEvent extends Listener {
       if (reaction.getCount() == StarboardManager.getStars(thisEvent.getGuild())
           && !executed.contains(reaction)) {
         try {
-          StarboardManager.getChannel(thisEvent.getGuild())
-              .sendMessage(
-                  new EmbedBuilder()
-                      .setAuthor(
-                          msg.getAuthor().getAsTag(),
-                          msg.getJumpUrl(),
-                          msg.getAuthor().getAvatarUrl())
-                      .setDescription(
-                          "[[context]]("
-                              + msg.getJumpUrl()
-                              + ")"
-                              + "\n\n"
-                              + msg.getContentRaw()
-                              + "\n"
-                              + (msg.getAttachments().isEmpty()
-                                  ? ""
-                                  : msg.getAttachments().get(0).getUrl()))
-                      .setTimestamp(Instant.now())
-                      .setColor(Corby.config.starboardColor)
-                      .setFooter(Corby.config.botName, Corby.config.botPfpUrl)
-                      .build())
-              .queue();
+          Message.Attachment attachment =
+              msg.getAttachments().isEmpty() ? null : msg.getAttachments().get(0);
+
+          EmbedBuilder builder =
+              new EmbedBuilder()
+                  .setAuthor(
+                      msg.getAuthor().getAsTag(), msg.getJumpUrl(), msg.getAuthor().getAvatarUrl())
+                  .setDescription(
+                      String.format("[[context]](%s)\n\n%s", msg.getJumpUrl(), msg.getContentRaw())
+                          + (attachment == null
+                              ? ""
+                              : attachment.isImage() ? "" : attachment.getProxyUrl()))
+                  .setTimestamp(Instant.now())
+                  .setColor(Corby.config.starboardColor)
+                  .setFooter(Corby.config.botName, Corby.config.botPfpUrl);
+
+          if (attachment != null && attachment.isImage()) {
+            builder.setImage(attachment.getProxyUrl());
+          }
+          StarboardManager.getChannel(thisEvent.getGuild()).sendMessage(builder.build()).queue();
         } catch (Exception e) {
           User owner =
               Objects.requireNonNull(
@@ -94,9 +92,11 @@ public class ReactionUpdateEvent extends Listener {
           OtherUtils.sendPrivateMessageSafe(
               owner,
               Embeds.create(
-                  EmbedTemplate.ERROR,
+                  EmbedTemplate.DEFAULT,
                   owner,
-                  "Hey! You received this message because I cannot send messages to the starboard. Please make sure I have permission.", null),
+                  "Hey! You received this message because I cannot send messages to the starboard. Please make sure I have permission.",
+                  null,
+                  null),
               () -> {
                 /* ignore */
               });

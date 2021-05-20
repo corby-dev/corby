@@ -6,7 +6,7 @@
  *             of this license document, but changing it is not allowed.
  */
 
-package xyz.d1snin.corby.manager.config;
+package xyz.d1snin.corby.model;
 
 import java.awt.*;
 
@@ -63,6 +63,8 @@ public class Config {
     this.emoteError = emoteError;
   }
 
+  public Config() {}
+
   public void initOther(
       Color defaultColor,
       Color errorColor,
@@ -85,8 +87,6 @@ public class Config {
     this.nameAsTag = nameAsTag;
     this.emoteStar = emoteStar;
   }
-
-  public Config() {}
 
   public static class ExitCodes {
     public static final int NORMAL_SHUTDOWN_EXIT_CODE = 0;
