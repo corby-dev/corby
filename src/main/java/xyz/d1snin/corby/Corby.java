@@ -34,10 +34,13 @@ import xyz.d1snin.corby.manager.config.Config;
 import xyz.d1snin.corby.manager.config.ConfigFileManager;
 import xyz.d1snin.corby.manager.config.ConfigManager;
 import xyz.d1snin.corby.utils.ExceptionUtils;
+import xyz.d1snin.corby.utils.OtherUtils;
 
 import javax.security.auth.login.LoginException;
 import java.awt.*;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -50,6 +53,8 @@ public class Corby {
 
   private static final ScheduledExecutorService schedulerPresence =
       Executors.newSingleThreadScheduledExecutor();
+
+  public static final RuntimeMXBean rb = ManagementFactory.getRuntimeMXBean();
 
   private static final List<String> presences = new ArrayList<>();
   public static final Set<Permission> permissions = new TreeSet<>();
@@ -137,27 +142,26 @@ public class Corby {
     logger = LoggerFactory.getLogger(config.botName);
 
     logger.info(
-        "Bot has started up!\n    "
-            + "~ PFP:         "
-            + config.botPfpUrl
-            + "\n    "
-            + "~ Name:        "
-            + config.nameAsTag
-            + "\n    "
-            + "~ ID:          "
-            + config.id
-            + "\n    "
-            + "~ Invite URL:  "
-            + config.inviteUrl
-            + "\n    "
-            + "~ Ping:        "
-            + api.getGatewayPing()
-            + "\n    ");
+        String.format(
+            "Bot has started up in %s!\n"
+                + "    ~ PFP:         %s\n"
+                + "    ~ Name:        %s\n"
+                + "    ~ ID:          %s\n"
+                + "    ~ Invite URL:  %s\n"
+                + "    ~ Ping:        %s\n",
+            OtherUtils.formatMillis(rb.getUptime()),
+            config.botPfpUrl,
+            config.nameAsTag,
+            config.id,
+            config.inviteUrl,
+            api.getGatewayPing()));
   }
 
   private static void startUpdatePresence() {
     schedulerPresence.scheduleWithFixedDelay(
-        () -> api.getPresence().setActivity(Activity.watching(";help | " + getPresence())),
+        () ->
+            api.getPresence()
+                .setActivity(Activity.watching(String.format(";help | %s", getPresence()))),
         0,
         7,
         TimeUnit.SECONDS);
@@ -165,8 +169,8 @@ public class Corby {
 
   private static String getPresence() {
     presences.clear();
-    presences.add("Ping: " + api.getGatewayPing());
-    presences.add(api.getGuilds().size() + " Servers!");
+    presences.add(String.format("Ping: %d", api.getGatewayPing()));
+    presences.add(String.format("%d Servers!", api.getGuilds().size()));
     return presences.get(random.nextInt(presences.size()));
   }
 

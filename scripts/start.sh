@@ -1,2 +1,2 @@
-git pull
+git pull origin dev
 ./gradlew run
