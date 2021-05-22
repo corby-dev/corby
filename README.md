@@ -1,4 +1,4 @@
-[![CodeFactor](https://www.codefactor.io/repository/github/d1snin/corby/badge)](https://www.codefactor.io/repository/github/d1snin/corby)
+[![CodeFactor](https://www.codefactor.io/repository/github/d1snin-dev/corby/badge)](https://www.codefactor.io/repository/github/d1snin/corby)
 [![<ORG_NAME>](https://circleci.com/gh/d1snin-dev/corby.svg?style=svg)](https://circleci.com/gh/d1snin-dev/corby)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
