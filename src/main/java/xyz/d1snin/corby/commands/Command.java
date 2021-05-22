@@ -8,16 +8,19 @@
 
 package xyz.d1snin.corby.commands;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import xyz.d1snin.corby.Corby;
-import xyz.d1snin.corby.database.managers.CooldownsManager;
 import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
+import xyz.d1snin.corby.manager.CooldownsManager;
+import xyz.d1snin.corby.model.Cooldown;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.ExceptionUtils;
 
@@ -30,14 +33,14 @@ import java.util.Objects;
 public abstract class Command extends ListenerAdapter {
 
   private static final List<Command> commands = new ArrayList<>();
-  protected String alias = null;
-  protected String description = null;
-  protected Category category = null;
-  protected String[] usages = null;
-  protected int cooldown = 0;
-  protected String longDescription = null;
-  protected Permission[] permissions = new Permission[0];
-  protected Permission[] botPermissions = new Permission[0];
+  @Getter protected String alias = null;
+  @Getter protected String description = null;
+  @Getter protected Category category = null;
+  @Getter protected String[] usages = null;
+  @Getter @Setter protected int cooldown = 0;
+  @Getter protected String longDescription = null;
+  @Getter protected Permission[] permissions = new Permission[0];
+  @Getter protected Permission[] botPermissions = new Permission[0];
   private MessageReceivedEvent event = null;
 
   public static List<Command> getCommandsByCategory(Category category) {
@@ -68,11 +71,14 @@ public abstract class Command extends ListenerAdapter {
         || command.getDescription() == null
         || command.getCategory() == null
         || command.getUsages() == null) {
-      Corby.logger.warn(String.format(invalidCommandConfig, command.getClass().getName()));
+      Corby.log.warn(String.format(invalidCommandConfig, command.getClass().getName()));
     } else {
       commands.add(command);
     }
-    command.onLoad();
+    Corby.permissions.addAll(Arrays.asList(command.getBotPermissions()));
+
+    command.setCooldown(
+        command.getCooldown() == 0 ? Corby.config.getDefaultCooldown() : command.getCooldown());
     return command;
   }
 
@@ -84,44 +90,12 @@ public abstract class Command extends ListenerAdapter {
 
   protected abstract boolean isValidSyntax(MessageReceivedEvent e, String[] args);
 
-  public String getAlias() {
-    return alias;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public Category getCategory() {
-    return category;
-  }
-
-  public String[] getUsages() {
-    return usages;
-  }
-
-  public int getCooldown() {
-    return cooldown;
-  }
-
   public String getUsagesString() {
     StringBuilder sb = new StringBuilder();
     for (String s : getUsages()) {
       sb.append(String.format(s, PrefixManager.getPrefix(event.getGuild()))).append("\n");
     }
     return sb.toString();
-  }
-
-  public String getLongDescription() {
-    return longDescription;
-  }
-
-  public Permission[] getPermissions() {
-    return permissions;
-  }
-
-  public Permission[] getBotPermissions() {
-    return botPermissions;
   }
 
   public void onMessageReceived(@NotNull MessageReceivedEvent e) {
@@ -159,7 +133,7 @@ public abstract class Command extends ListenerAdapter {
       }
 
       if ((getCategory() == Category.ADMIN)
-          && !e.getAuthor().getId().equals(Corby.config.ownerId)) {
+          && !e.getAuthor().getId().equals(Corby.config.getOwnerId())) {
         return;
       }
 
@@ -170,7 +144,7 @@ public abstract class Command extends ListenerAdapter {
                 Embeds.create(
                     EmbedTemplate.ERROR,
                     e.getAuthor(),
-                    String.format(invalidBotPermission, Corby.config.inviteUrl),
+                    String.format(invalidBotPermission, Corby.config.getInviteUrl()),
                     e.getGuild(),
                     null))
             .queue();
@@ -220,16 +194,12 @@ public abstract class Command extends ListenerAdapter {
         ExceptionUtils.processException(exception);
       }
 
-      CooldownsManager.setCooldown(e.getAuthor(), this, getCooldown());
+      CooldownsManager.setCooldown(new Cooldown(e.getAuthor(), this.getCooldown(), this));
     }
   }
 
   protected String getMessageContent() {
     return event.getMessage().getContentRaw();
-  }
-
-  private void onLoad() {
-    Corby.permissions.addAll(Arrays.asList(getBotPermissions()));
   }
 
   private boolean hasPermission(MessageReceivedEvent event) {
@@ -243,7 +213,8 @@ public abstract class Command extends ListenerAdapter {
         || event
             .getAuthor()
             .getId()
-            .equals(Corby.config.ownerId); // <- Don't worry, this is only needed to test the bot.
+            .equals(
+                Corby.config.getOwnerId()); // <- Don't worry, this is only needed to test the bot.
   }
 
   private String getPermissionString() {

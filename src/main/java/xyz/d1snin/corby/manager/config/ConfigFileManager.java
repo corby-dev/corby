@@ -17,10 +17,10 @@ public class ConfigFileManager {
   public static void initConfigFile() throws IOException {
     File file = new File("config.json");
     if (file.createNewFile()) {
-      Corby.logger.warn("File created: " + file.getName() + ", please edit the generated file.");
+      Corby.log.warn("File created: " + file.getName() + ", please edit the generated file.");
       System.exit(0);
     } else {
-      Corby.logger.info("Found config.json");
+      Corby.log.info("Found config.json");
     }
   }
 }

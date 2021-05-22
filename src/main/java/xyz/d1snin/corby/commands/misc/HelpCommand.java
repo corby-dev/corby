@@ -116,7 +116,7 @@ public class HelpCommand extends Command {
       }
     }
 
-    if (category == Category.ADMIN && !user.getId().equals(Corby.config.ownerId)) {
+    if (category == Category.ADMIN && !user.getId().equals(Corby.config.getOwnerId())) {
       e.getTextChannel()
           .sendMessage(
               Embeds.create(

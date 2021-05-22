@@ -45,7 +45,7 @@ public class ServerJoinEvent extends Listener {
                   Corby.getApi().getSelfUser(),
                   String.format(
                       "It looks like you added me to your server without required permissions, this is necessary for the bot to work correctly, please invite me using this [link](%s). I will log out of your server now.",
-                      Corby.config.inviteUrl),
+                      Corby.config.getInviteUrl()),
                   null,
                   null))
           .queue();

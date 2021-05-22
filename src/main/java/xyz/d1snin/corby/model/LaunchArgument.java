@@ -1,23 +1,16 @@
 package xyz.d1snin.corby.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public class LaunchArgument {
 
   private final String name;
-  private boolean value = false;
+  private final Runnable onArgument;
 
-  public LaunchArgument(String name) {
-    this.name = "-" + name;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public boolean getValue() {
-    return value;
-  }
-
-  public void setValue(boolean value) {
-    this.value = value;
+  public void execute() {
+    onArgument.run();
   }
 }

@@ -20,9 +20,9 @@ public class DatabaseManager {
 
   public static void createConnection() throws UnknownHostException {
     db =
-        new MongoClient(Corby.config.mongoHostname, Corby.config.mongoPort)
-            .getDB(Corby.config.mongoDbName);
-    db.authenticate(Corby.config.mongoUser, Corby.config.mongoPassword.toCharArray());
+        new MongoClient(Corby.config.getMongoHostname(), Corby.config.getMongoPort())
+            .getDB(Corby.config.getMongoDbName());
+    db.authenticate(Corby.config.getMongoUser(), Corby.config.getMongoPassword().toCharArray());
   }
 
   public static DB getDb() {

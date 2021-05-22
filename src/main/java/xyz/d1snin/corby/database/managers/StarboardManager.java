@@ -28,8 +28,8 @@ public class StarboardManager {
           createBasicDBObject(
               guild,
               channel,
-              Corby.config.defaultStarboardStars,
-              Corby.config.defaultStarboardStatus));
+              Corby.config.getDefaultStarboardStars(),
+              Corby.config.isDefaultStarboardStatus()));
     }
   }
 

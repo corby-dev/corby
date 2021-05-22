@@ -30,13 +30,14 @@ import xyz.d1snin.corby.commands.misc.UptimeCommand;
 import xyz.d1snin.corby.commands.settings.PrefixCommand;
 import xyz.d1snin.corby.commands.settings.StarboardCommand;
 import xyz.d1snin.corby.database.DatabaseManager;
-import xyz.d1snin.corby.database.managers.CooldownsManager;
 import xyz.d1snin.corby.event.ReactionUpdateEvent;
 import xyz.d1snin.corby.event.ServerJoinEvent;
+import xyz.d1snin.corby.manager.CooldownsManager;
 import xyz.d1snin.corby.manager.LaunchArgumentsManager;
 import xyz.d1snin.corby.manager.config.ConfigFileManager;
 import xyz.d1snin.corby.manager.config.ConfigManager;
 import xyz.d1snin.corby.model.Config;
+import xyz.d1snin.corby.model.LaunchArgument;
 import xyz.d1snin.corby.utils.ExceptionUtils;
 import xyz.d1snin.corby.utils.OtherUtils;
 
@@ -67,16 +68,16 @@ public class Corby {
   private static final List<String> presences = new ArrayList<>();
   private static final Random random = new Random();
   public static Config config;
-  public static Logger logger = LoggerFactory.getLogger("loader");
+  public static Logger log = LoggerFactory.getLogger("loader");
   private static JDA api;
 
   public static void main(String[] args) {
     try {
-      LaunchArgumentsManager.init(args);
+      LaunchArgumentsManager.init(args, new LaunchArgument("pog", () -> System.out.println("pog")));
 
       ConfigFileManager.initConfigFile();
 
-      logger.info("Starting...");
+      log.info("Starting...");
 
       permissions.addAll(defaultPermissions);
 
@@ -90,13 +91,12 @@ public class Corby {
   }
 
   public static void start() throws LoginException, InterruptedException, IOException {
-
     config = ConfigManager.init();
 
-    logger.info("Trying to connect to the database...");
+    log.info("Trying to connect to the database...");
     DatabaseManager.createConnection();
 
-    JDABuilder jdaBuilder = JDABuilder.createDefault(config.token);
+    JDABuilder jdaBuilder = JDABuilder.createDefault(config.getToken());
 
     jdaBuilder.enableIntents(GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGE_REACTIONS);
     jdaBuilder.enableCache(
@@ -143,9 +143,9 @@ public class Corby {
         api.getSelfUser().getAsTag(),
         "⭐");
 
-    logger = LoggerFactory.getLogger(config.botName);
+    log = LoggerFactory.getLogger(config.getBotName());
 
-    logger.info(
+    log.info(
         String.format(
             "Bot has started up in %s!\n"
                 + "    ~ PFP:         %s\n"
@@ -154,10 +154,10 @@ public class Corby {
                 + "    ~ Invite URL:  %s\n"
                 + "    ~ Ping:        %s\n",
             getUptime(),
-            config.botPfpUrl,
-            config.nameAsTag,
-            config.id,
-            config.inviteUrl,
+            config.getBotPfpUrl(),
+            config.getNameAsTag(),
+            config.getId(),
+            config.getInviteUrl(),
             api.getGatewayPing()));
   }
 
@@ -179,16 +179,16 @@ public class Corby {
   }
 
   public static void shutdown(int exitCode) {
-    logger.warn("Terminating... Bye!");
+    log.warn("Terminating... Bye!");
     api.shutdown();
     schedulerPresence.shutdown();
     System.exit(exitCode);
   }
 
   public static void restart() throws IOException {
-    logger.warn("Restarting...");
+    log.warn("Restarting...");
     Runtime.getRuntime().exec("zsh scripts/start.sh");
-    shutdown(Config.ExitCodes.NORMAL_SHUTDOWN_EXIT_CODE);
+    shutdown(Config.NORMAL_SHUTDOWN_EXIT_CODE);
   }
 
   public static JDA getApi() {

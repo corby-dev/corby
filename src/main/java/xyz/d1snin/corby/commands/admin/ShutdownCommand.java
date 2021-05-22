@@ -24,7 +24,7 @@ public class ShutdownCommand extends Command {
             Embeds.create(
                 EmbedTemplate.SUCCESS, e.getAuthor(), "Terminating... Bye!", e.getGuild(), null))
         .complete();
-    Corby.shutdown(Config.ExitCodes.NORMAL_SHUTDOWN_EXIT_CODE);
+    Corby.shutdown(Config.NORMAL_SHUTDOWN_EXIT_CODE);
   }
 
   @Override

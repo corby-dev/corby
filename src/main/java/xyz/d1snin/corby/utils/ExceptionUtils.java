@@ -10,10 +10,10 @@ public class ExceptionUtils {
 
     final String message = "**An error was handled.**\n```%s: %s\n%s\n%s```";
     OtherUtils.sendPrivateMessageSafe(
-        Objects.requireNonNull(Corby.getApi().getUserById(Corby.config.ownerId)),
+        Objects.requireNonNull(Corby.getApi().getUserById(Corby.config.getOwnerId())),
         Embeds.create(
             EmbedTemplate.DEFAULT,
-            Corby.getApi().getUserById(Corby.config.ownerId),
+            Corby.getApi().getUserById(Corby.config.getOwnerId()),
             String.format(
                 message,
                 exception.getClass().getName(),
@@ -23,7 +23,7 @@ public class ExceptionUtils {
             null,
             null),
         () ->
-            Corby.logger.warn(
+            Corby.log.warn(
                 "You have disabled messages from the bot, please enable them to receive information about errors during runtime."));
   }
 

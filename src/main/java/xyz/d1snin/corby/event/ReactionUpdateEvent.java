@@ -37,7 +37,7 @@ public class ReactionUpdateEvent extends Listener {
   protected void perform(GenericEvent event) {
     GenericGuildMessageReactionEvent thisEvent = ((GenericGuildMessageReactionEvent) event);
 
-    if (thisEvent.getReaction().getReactionEmote().getName().equals(Corby.config.emoteStar)) {
+    if (thisEvent.getReaction().getReactionEmote().getName().equals(Corby.config.getEmoteStar())) {
       if (StarboardManager.getChannel(thisEvent.getGuild()) == null) {
         return;
       }
@@ -47,7 +47,7 @@ public class ReactionUpdateEvent extends Listener {
 
       Message msg = thisEvent.retrieveMessage().complete();
 
-      if (msg.getAuthor().getId().equals(Corby.config.id)) {
+      if (msg.getAuthor().getId().equals(Corby.config.getId())) {
         return;
       }
       if (msg.getReactions().isEmpty()) {
@@ -57,7 +57,7 @@ public class ReactionUpdateEvent extends Listener {
       MessageReaction reaction = msg.getReactions().get(0);
 
       for (MessageReaction r : msg.getReactions()) {
-        if (r.getReactionEmote().getName().equals(Corby.config.emoteStar)) {
+        if (r.getReactionEmote().getName().equals(Corby.config.getEmoteStar())) {
           reaction = r;
         }
       }
@@ -78,8 +78,8 @@ public class ReactionUpdateEvent extends Listener {
                               ? ""
                               : attachment.isImage() ? "" : attachment.getProxyUrl()))
                   .setTimestamp(Instant.now())
-                  .setColor(Corby.config.starboardColor)
-                  .setFooter(Corby.config.botName, Corby.config.botPfpUrl);
+                  .setColor(Corby.config.getStarboardColor())
+                  .setFooter(Corby.config.getBotName(), Corby.config.getBotPfpUrl());
 
           if (attachment != null && attachment.isImage()) {
             builder.setImage(attachment.getProxyUrl());

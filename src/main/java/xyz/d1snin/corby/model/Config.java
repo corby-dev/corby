@@ -8,32 +8,36 @@
 
 package xyz.d1snin.corby.model;
 
+import lombok.Getter;
+
 import java.awt.*;
 
+@Getter()
 public class Config {
-
-  public String token;
-  public String botPrefixDefault;
-  public String ownerId;
-  public String botName; // ! - These variables are initialized at startup
-  public String botPfpUrl; // !
-  public String inviteUrl; // !
-  public String id; // !
-  public String nameAsTag; // !
-  public Color defaultColor; // !
-  public Color errorColor; // !
-  public Color successColor; // !
-  public Color starboardColor; // !
-  public String emoteStar;
-  public int defaultStarboardStars;
-  public boolean defaultStarboardStatus;
-  public String mongoHostname;
-  public int mongoPort;
-  public String mongoDbName;
-  public String mongoUser;
-  public String mongoPassword;
-  public String emoteSuccess;
-  public String emoteError;
+  public static final int NORMAL_SHUTDOWN_EXIT_CODE = 0;
+  private String token;
+  private String botPrefixDefault;
+  private String ownerId;
+  private String botName;
+  private String botPfpUrl;
+  private String inviteUrl;
+  private String id;
+  private String nameAsTag;
+  private Color defaultColor;
+  private Color errorColor;
+  private Color successColor;
+  private Color starboardColor;
+  private String emoteStar;
+  private int defaultStarboardStars;
+  private boolean defaultStarboardStatus;
+  private int defaultCooldown;
+  private String mongoHostname;
+  private int mongoPort;
+  private String mongoDbName;
+  private String mongoUser;
+  private String mongoPassword;
+  private String emoteSuccess;
+  private String emoteError;
 
   public Config(
       String token,
@@ -41,6 +45,7 @@ public class Config {
       String ownerId,
       int defaultStarboardStars,
       boolean defaultStarboardStatus,
+      int defaultCooldown,
       String mongoHostname,
       int mongoPort,
       String mongoDbName,
@@ -54,6 +59,7 @@ public class Config {
     this.ownerId = ownerId;
     this.defaultStarboardStars = defaultStarboardStars;
     this.defaultStarboardStatus = defaultStarboardStatus;
+    this.defaultCooldown = defaultCooldown;
     this.mongoHostname = mongoHostname;
     this.mongoPort = mongoPort;
     this.mongoDbName = mongoDbName;
@@ -86,9 +92,5 @@ public class Config {
     this.id = id;
     this.nameAsTag = nameAsTag;
     this.emoteStar = emoteStar;
-  }
-
-  public static class ExitCodes {
-    public static final int NORMAL_SHUTDOWN_EXIT_CODE = 0;
   }
 }

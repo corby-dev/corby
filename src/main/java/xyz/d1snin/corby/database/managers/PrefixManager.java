@@ -21,7 +21,7 @@ public class PrefixManager {
 
   public static String getPrefix(Guild guild) {
     if (!isDatabaseContainsPrefix(guild)) {
-      return Corby.config.botPrefixDefault;
+      return Corby.config.getBotPrefixDefault();
     } else {
       return (String)
           collection.find(new BasicDBObject().append("guild", guild.getId())).next().get("prefix");

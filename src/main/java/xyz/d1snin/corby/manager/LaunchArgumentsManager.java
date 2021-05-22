@@ -10,11 +10,9 @@ public class LaunchArgumentsManager {
 
   private static final List<LaunchArgument> arguments = new ArrayList<>();
 
-  public static void addArguments(LaunchArgument... argument) {
+  public static void init(String[] args, LaunchArgument... argument) {
     arguments.addAll(Arrays.asList(argument));
-  }
 
-  public static void init(String[] args) {
     for (String s : args) {
       LaunchArgument arg = getArgumentByName(s);
 
@@ -22,18 +20,13 @@ public class LaunchArgumentsManager {
         throw new RuntimeException(String.format("Could not resolve this argument: %s", s));
       }
 
-      arg.setValue(true);
+      arg.execute();
     }
-  }
-
-  public static boolean getValueByArgName(String name) {
-    LaunchArgument argument = getArgumentByName(name);
-    return argument != null && argument.getValue();
   }
 
   private static LaunchArgument getArgumentByName(String name) {
     for (LaunchArgument argument : arguments) {
-      if (argument.getName().equals("-" + name)) {
+      if (("-" + argument.getName()).equals(name)) {
         return argument;
       }
     }
