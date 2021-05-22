@@ -30,7 +30,7 @@ public class HelpCommand extends Command {
     this.alias = "help";
     this.description = "Gives you information about commands.";
     this.category = Category.MISC;
-    this.usages = new String[] {"%shelp", "%shelp <Page Number>", "%shelp <Command Name>"};
+    this.usages = new String[] {"alias", "<Page Number>", "<Command Name>"};
   }
 
   @Override

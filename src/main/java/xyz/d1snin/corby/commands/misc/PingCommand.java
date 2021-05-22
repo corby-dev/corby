@@ -21,7 +21,6 @@ public class PingCommand extends Command {
     this.alias = "ping";
     this.description = "Provides the current ping of the bot";
     this.category = Category.MISC;
-    this.usages = new String[] {"%sping"};
   }
 
   @Override

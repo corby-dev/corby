@@ -13,7 +13,6 @@ public class UptimeCommand extends Command {
     this.alias = "uptime";
     this.description = "Get the bot's uptime";
     this.category = Category.MISC;
-    this.usages = new String[] {"%suptime"};
   }
 
   @Override

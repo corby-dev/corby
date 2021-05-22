@@ -1,8 +1,10 @@
 package xyz.d1snin.corby.commands.fun;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonIOException;
 import com.google.gson.JsonParser;
 import jdk.nashorn.api.scripting.URLReader;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.enums.Category;
@@ -16,9 +18,9 @@ public class UrbanCommand extends Command {
 
   public UrbanCommand() {
     this.alias = "urban";
-    this.description = "defines a word from *urbandictionary.com*.";
+    this.description = "Defines a word from *urbandictionary.com*.";
     this.category = Category.FUN;
-    this.usages = new String[] {"%surban <Word>"};
+    this.usages = new String[] {"<Word>"};
   }
 
   @Override
@@ -29,7 +31,14 @@ public class UrbanCommand extends Command {
                 EmbedTemplate.DEFAULT, e.getAuthor(), "Looking at the data...", e.getGuild(), null))
         .queue(
             message -> {
-              JsonArray array = null;
+              JsonArray array;
+              MessageEmbed errorMessage =
+                  Embeds.create(
+                      EmbedTemplate.ERROR,
+                      e.getAuthor(),
+                      "Could not find this word.",
+                      e.getGuild(),
+                      null);
               try {
                 array =
                     JsonParser.parseReader(
@@ -41,21 +50,14 @@ public class UrbanCommand extends Command {
                         .getAsJsonObject()
                         .get("list")
                         .getAsJsonArray();
-              } catch (MalformedURLException malformedURLException) {
-                malformedURLException.printStackTrace();
+              } catch (MalformedURLException | JsonIOException exception) {
+                message.editMessage(errorMessage).queue();
+                return;
               }
 
               assert array != null;
               if (array.size() == 0) {
-                message
-                    .editMessage(
-                        Embeds.create(
-                            EmbedTemplate.ERROR,
-                            e.getAuthor(),
-                            "Could not find this word.",
-                            e.getGuild(),
-                            null))
-                    .queue();
+                message.editMessage(errorMessage).queue();
                 return;
               }
 

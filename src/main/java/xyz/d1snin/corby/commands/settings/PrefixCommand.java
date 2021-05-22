@@ -22,7 +22,7 @@ public class PrefixCommand extends Command {
     this.alias = "prefix";
     this.description = "Changes the bot prefix on the server.";
     this.category = Category.SETTINGS;
-    this.usages = new String[] {"%sprefix", "%sprefix <New Prefix>"};
+    this.usages = new String[] {"alias", "<New Prefix>"};
 
     this.permissions = new Permission[] {Permission.ADMINISTRATOR};
   }

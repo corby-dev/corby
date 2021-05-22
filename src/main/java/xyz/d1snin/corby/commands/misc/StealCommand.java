@@ -32,7 +32,7 @@ public class StealCommand extends Command {
     this.alias = "steal";
     this.description = "Uploads emoji from a link or other emoji to your server";
     this.category = Category.MISC;
-    this.usages = new String[] {"%ssteal <URL> <Name>", "%ssteal <Emoji> <Name>"};
+    this.usages = new String[] {"<URL> <Name>", "<Emoji> <Name>"};
 
     this.permissions = new Permission[] {Permission.MANAGE_EMOTES};
     this.botPermissions = new Permission[] {Permission.MANAGE_EMOTES};

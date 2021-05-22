@@ -19,7 +19,7 @@ public class BitcoinCommand extends Command {
     this.alias = "bitcoin";
     this.description = "Gets information about the price of bitcoin.";
     this.category = Category.FUN;
-    this.usages = new String[] {"%sbitcoin", "%sbitcoin <Your Fiat Currency (Example: USD, RUB)>"};
+    this.usages = new String[] {"alias", "<Your Fiat Currency (Example: USD, RUB)>"};
   }
 
   @Override

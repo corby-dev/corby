@@ -27,13 +27,7 @@ public class StarboardCommand extends Command {
     this.description = "Starboard settings";
     this.category = Category.SETTINGS;
     this.usages =
-        new String[] {
-          "%sstarboard",
-          "%sstarboard channel <#channel>",
-          "%sstarboard stars <Stars Count 1 - 100>",
-          "%sstarboard enable",
-          "%sstarboard disable"
-        };
+        new String[] {"alias", "channel <#channel>", "stars <Stars Count 1 - 100>", "enable", "disable"};
 
     this.longDescription =
         "Starboard is a channel where messages will be sent on which the number of star reactions will be equal to the specified one, so users will be able to mark messages they like.";

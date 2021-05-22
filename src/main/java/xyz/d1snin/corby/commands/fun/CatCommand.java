@@ -26,7 +26,6 @@ public class CatCommand extends Command {
     this.alias = "cat";
     this.description = "Gives you a picture of a cat";
     this.category = Category.FUN;
-    this.usages = new String[] {"%scat"};
   }
 
   @Override

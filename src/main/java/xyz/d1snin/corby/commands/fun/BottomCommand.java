@@ -24,10 +24,7 @@ public class BottomCommand extends Command {
     this.description = "Encrypts your message using a bottom cipher";
     this.category = Category.FUN;
     this.usages =
-        new String[] {
-          "%sbottom encode <Message 2 - 200 characters>",
-          "%sbottom decode <Message 2 - 200 characters>"
-        };
+        new String[] {"encode <Message 2 - 200 characters>", "decode <Message 2 - 200 characters>"};
   }
 
   @Override
