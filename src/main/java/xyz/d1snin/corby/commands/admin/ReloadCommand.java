@@ -9,13 +9,13 @@ import xyz.d1snin.corby.utils.Embeds;
 
 import java.io.IOException;
 
-public class RestartCommand extends Command {
+public class ReloadCommand extends Command {
 
-  public RestartCommand() {
+  public ReloadCommand() {
     this.alias = "reload";
     this.description = "Reboots the bot";
     this.category = Category.ADMIN;
-    this.usages = new String[] {"%sreload", "%sreload server"};
+    this.usages = new String[] {"server"};
   }
 
   @Override

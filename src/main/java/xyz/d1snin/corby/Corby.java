@@ -18,11 +18,12 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.d1snin.corby.commands.Command;
-import xyz.d1snin.corby.commands.admin.RestartCommand;
-import xyz.d1snin.corby.commands.admin.ShutdownCommand;
+import xyz.d1snin.corby.commands.admin.ReloadCommand;
+import xyz.d1snin.corby.commands.admin.TerminateCommand;
 import xyz.d1snin.corby.commands.fun.BitcoinCommand;
 import xyz.d1snin.corby.commands.fun.BottomCommand;
 import xyz.d1snin.corby.commands.fun.CatCommand;
+import xyz.d1snin.corby.commands.fun.UrbanCommand;
 import xyz.d1snin.corby.commands.misc.HelpCommand;
 import xyz.d1snin.corby.commands.misc.PingCommand;
 import xyz.d1snin.corby.commands.misc.StealCommand;
@@ -109,15 +110,16 @@ public class Corby {
         new ServerJoinEvent(),
         Command.add(new PingCommand()),
         Command.add(new PrefixCommand()),
-        Command.add(new ShutdownCommand()),
-        Command.add(new RestartCommand()),
+        Command.add(new TerminateCommand()),
+        Command.add(new ReloadCommand()),
         Command.add(new StarboardCommand()),
         Command.add(new HelpCommand()),
         Command.add(new BottomCommand()),
         Command.add(new CatCommand()),
         Command.add(new StealCommand()),
         Command.add(new BitcoinCommand()),
-        Command.add(new UptimeCommand()));
+        Command.add(new UptimeCommand()),
+        Command.add(new UrbanCommand()));
 
     api = jdaBuilder.build();
     api.awaitReady();

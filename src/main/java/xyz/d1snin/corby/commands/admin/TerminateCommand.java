@@ -8,13 +8,12 @@ import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.model.Config;
 import xyz.d1snin.corby.utils.Embeds;
 
-public class ShutdownCommand extends Command {
+public class TerminateCommand extends Command {
 
-  public ShutdownCommand() {
+  public TerminateCommand() {
     this.alias = "terminate";
     this.description = "Turns off the bot";
     this.category = Category.ADMIN;
-    this.usages = new String[] {"%sterminate"};
   }
 
   @Override

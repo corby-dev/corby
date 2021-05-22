@@ -69,8 +69,7 @@ public abstract class Command extends ListenerAdapter {
 
     if (command.getAlias() == null
         || command.getDescription() == null
-        || command.getCategory() == null
-        || command.getUsages() == null) {
+        || command.getCategory() == null) {
       Corby.log.warn(String.format(invalidCommandConfig, command.getClass().getName()));
     } else {
       commands.add(command);
@@ -92,8 +91,26 @@ public abstract class Command extends ListenerAdapter {
 
   public String getUsagesString() {
     StringBuilder sb = new StringBuilder();
+    String defaultUsage =
+        String.format("`%s" + getAlias() + "`", PrefixManager.getPrefix(event.getGuild()));
+
+    if (getUsages() == null || getUsages().length < 1) {
+      return defaultUsage;
+    }
+
+    if (Arrays.asList(getUsages()).contains("alias")) {
+      sb.append(defaultUsage).append("\n");
+    }
+
     for (String s : getUsages()) {
-      sb.append(String.format(s, PrefixManager.getPrefix(event.getGuild()))).append("\n");
+      if (s.equals("alias")) {
+        continue;
+      }
+
+      sb.append(
+              String.format(
+                  "`%s" + getAlias() + " " + s + "`", PrefixManager.getPrefix(event.getGuild())))
+          .append("\n");
     }
     return sb.toString();
   }
@@ -153,20 +170,12 @@ public abstract class Command extends ListenerAdapter {
       }
 
       if (!isValidSyntax(e, getCommandArgs(e.getMessage()))) {
-        StringBuilder sb = new StringBuilder();
-        for (String s : getUsages()) {
-          sb.append("`")
-              .append(String.format(s, PrefixManager.getPrefix(e.getGuild())))
-              .append("`")
-              .append("\n");
-        }
-
         e.getTextChannel()
             .sendMessage(
                 Embeds.create(
                     EmbedTemplate.ERROR,
                     e.getAuthor(),
-                    String.format(invalidSyntax, e.getMessage().getContentRaw(), sb),
+                    String.format(invalidSyntax, e.getMessage().getContentRaw(), getUsagesString()),
                     e.getGuild(),
                     null))
             .queue();
