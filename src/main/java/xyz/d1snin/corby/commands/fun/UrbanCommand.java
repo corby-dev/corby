@@ -91,6 +91,6 @@ public class UrbanCommand extends Command {
 
   @Override
   protected boolean isValidSyntax(MessageReceivedEvent e, String[] args) {
-    return args.length > 1;
+    return args.length == 2;
   }
 }
