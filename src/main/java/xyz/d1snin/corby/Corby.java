@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.commands.admin.ReloadCommand;
 import xyz.d1snin.corby.commands.admin.TerminateCommand;
-import xyz.d1snin.corby.commands.fun.BitcoinCommand;
+import xyz.d1snin.corby.commands.fun.CoinCommand;
 import xyz.d1snin.corby.commands.fun.BottomCommand;
 import xyz.d1snin.corby.commands.fun.CatCommand;
 import xyz.d1snin.corby.commands.fun.UrbanCommand;
@@ -117,7 +117,7 @@ public class Corby {
         Command.add(new BottomCommand()),
         Command.add(new CatCommand()),
         Command.add(new StealCommand()),
-        Command.add(new BitcoinCommand()),
+        Command.add(new CoinCommand()),
         Command.add(new UptimeCommand()),
         Command.add(new UrbanCommand()));
 

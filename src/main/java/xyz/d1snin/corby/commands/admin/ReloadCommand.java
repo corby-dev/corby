@@ -15,26 +15,10 @@ public class ReloadCommand extends Command {
     this.alias = "reload";
     this.description = "Reboots the bot";
     this.category = Category.ADMIN;
-    this.usages = new String[] {"server"};
   }
 
   @Override
   protected void execute(MessageReceivedEvent e, String[] args) throws IOException {
-    if (args.length > 1) {
-      if (args[1].equals("server")) {
-        e.getTextChannel()
-            .sendMessage(
-                Embeds.create(
-                    EmbedTemplate.SUCCESS,
-                    e.getAuthor(),
-                    "Restarting server...",
-                    e.getGuild(),
-                    null))
-            .complete();
-        Runtime.getRuntime().exec("systemctl reboot");
-      }
-      return;
-    }
     e.getTextChannel()
         .sendMessage(
             Embeds.create(
@@ -45,9 +29,6 @@ public class ReloadCommand extends Command {
 
   @Override
   protected boolean isValidSyntax(MessageReceivedEvent e, String[] args) {
-    if (!(args.length <= 2)) {
-      return false;
-    }
-    return args.length <= 1 || args[1].equals("server");
+    return args.length < 2;
   }
 }

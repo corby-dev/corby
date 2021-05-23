@@ -243,15 +243,12 @@ public abstract class Command extends ListenerAdapter {
   }
 
   private boolean isCommand(Message message, MessageReceivedEvent event) {
-
     if (!getCommands().contains(this)) {
       return false;
     }
-
-    return Arrays.asList(getCommandArgs(message))
-            .get(0)
-            .toLowerCase()
-            .equals(PrefixManager.getPrefix(event.getGuild()) + getAlias())
-        && getCommandArgs(message)[0].startsWith(PrefixManager.getPrefix(event.getGuild()));
+    String prefix = PrefixManager.getPrefix(event.getGuild());
+    String[] args = getCommandArgs(message);
+    return Arrays.asList(args).get(0).toLowerCase().equals(prefix + getAlias())
+        && args[0].startsWith(prefix);
   }
 }
