@@ -6,13 +6,13 @@
  *             of this license document, but changing it is not allowed.
  */
 
-package xyz.d1snin.corby.commands.fun;
+package xyz.d1snin.corby.commands.misc;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import jdk.nashorn.api.scripting.URLReader;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import xyz.d1snin.corby.commands.Command;
+import xyz.d1snin.corby.Command;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
@@ -32,7 +32,8 @@ public class CatCommand extends Command {
   protected void execute(MessageReceivedEvent e, String[] args) {
     e.getTextChannel()
         .sendMessage(
-            Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Fetching...", e.getGuild(), null))
+            Embeds.create(
+                EmbedTemplate.DEFAULT, e.getAuthor(), "Fetching...", e.getGuild(), null, null))
         .queue(
             message -> {
               try {
@@ -43,7 +44,8 @@ public class CatCommand extends Command {
                             e.getAuthor(),
                             getFact(),
                             e.getGuild(),
-                            getPicture()))
+                            getPicture(),
+                            null))
                     .queue();
               } catch (MalformedURLException malformedURLException) {
                 malformedURLException.printStackTrace();

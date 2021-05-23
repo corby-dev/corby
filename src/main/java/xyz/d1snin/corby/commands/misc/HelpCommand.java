@@ -12,8 +12,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import xyz.d1snin.corby.Command;
 import xyz.d1snin.corby.Corby;
-import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
@@ -54,7 +54,12 @@ public class HelpCommand extends Command {
         e.getTextChannel()
             .sendMessage(
                 Embeds.create(
-                    EmbedTemplate.ERROR, e.getAuthor(), incorrectPageMessage, e.getGuild(), null))
+                    EmbedTemplate.ERROR,
+                    e.getAuthor(),
+                    incorrectPageMessage,
+                    e.getGuild(),
+                    null,
+                    null))
             .queue();
         return;
       }
@@ -73,6 +78,7 @@ public class HelpCommand extends Command {
                   e.getAuthor(),
                   String.format(couldNotFindMessage, args[1]),
                   e.getGuild(),
+                  null,
                   null))
           .queue();
       return;
@@ -92,7 +98,8 @@ public class HelpCommand extends Command {
             + "\n"
             + command.getUsagesString();
     e.getTextChannel()
-        .sendMessage(Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), msg, e.getGuild(), null))
+        .sendMessage(
+            Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), msg, e.getGuild(), null, null))
         .queue();
   }
 
@@ -120,7 +127,12 @@ public class HelpCommand extends Command {
       e.getTextChannel()
           .sendMessage(
               Embeds.create(
-                  EmbedTemplate.ERROR, e.getAuthor(), incorrectPageMessage, e.getGuild(), null))
+                  EmbedTemplate.ERROR,
+                  e.getAuthor(),
+                  incorrectPageMessage,
+                  e.getGuild(),
+                  null,
+                  null))
           .queue();
       return null;
     }
@@ -145,6 +157,7 @@ public class HelpCommand extends Command {
         user,
         "**" + category.getName() + " Commands. Page " + page + "/" + categories + ".**\n\n" + sb,
         e.getGuild(),
+        null,
         null);
   }
 }

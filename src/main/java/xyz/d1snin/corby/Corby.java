@@ -17,17 +17,12 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.commands.admin.ReloadCommand;
 import xyz.d1snin.corby.commands.admin.TerminateCommand;
-import xyz.d1snin.corby.commands.fun.CoinCommand;
 import xyz.d1snin.corby.commands.fun.BottomCommand;
-import xyz.d1snin.corby.commands.fun.CatCommand;
+import xyz.d1snin.corby.commands.fun.CoinCommand;
 import xyz.d1snin.corby.commands.fun.UrbanCommand;
-import xyz.d1snin.corby.commands.misc.HelpCommand;
-import xyz.d1snin.corby.commands.misc.PingCommand;
-import xyz.d1snin.corby.commands.misc.StealCommand;
-import xyz.d1snin.corby.commands.misc.UptimeCommand;
+import xyz.d1snin.corby.commands.misc.*;
 import xyz.d1snin.corby.commands.settings.PrefixCommand;
 import xyz.d1snin.corby.commands.settings.StarboardCommand;
 import xyz.d1snin.corby.database.DatabaseManager;
@@ -39,7 +34,6 @@ import xyz.d1snin.corby.manager.config.ConfigFileManager;
 import xyz.d1snin.corby.manager.config.ConfigManager;
 import xyz.d1snin.corby.model.Config;
 import xyz.d1snin.corby.model.LaunchArgument;
-import xyz.d1snin.corby.utils.ExceptionUtils;
 import xyz.d1snin.corby.utils.OtherUtils;
 
 import javax.security.auth.login.LoginException;
@@ -87,7 +81,7 @@ public class Corby {
       startUpdatePresence();
       CooldownsManager.startUpdating();
     } catch (Exception e) {
-      ExceptionUtils.processException(e);
+      e.printStackTrace();
     }
   }
 

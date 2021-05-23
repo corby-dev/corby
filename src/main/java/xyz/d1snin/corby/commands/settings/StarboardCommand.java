@@ -10,7 +10,7 @@ package xyz.d1snin.corby.commands.settings;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import xyz.d1snin.corby.commands.Command;
+import xyz.d1snin.corby.Command;
 import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.database.managers.StarboardManager;
 import xyz.d1snin.corby.enums.Category;
@@ -27,7 +27,9 @@ public class StarboardCommand extends Command {
     this.description = "Starboard settings";
     this.category = Category.SETTINGS;
     this.usages =
-        new String[] {"alias", "channel <#channel>", "stars <Stars Count 1 - 100>", "enable", "disable"};
+        new String[] {
+          "alias", "channel <#channel>", "stars <Stars Count 1 - 100>", "enable", "disable"
+        };
 
     this.longDescription =
         "Starboard is a channel where messages will be sent on which the number of star reactions will be equal to the specified one, so users will be able to mark messages they like.";
@@ -62,6 +64,7 @@ public class StarboardCommand extends Command {
                     e.getAuthor(),
                     String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild())),
                     e.getGuild(),
+                    null,
                     null))
             .queue();
         return;
@@ -69,7 +72,8 @@ public class StarboardCommand extends Command {
       if (!StarboardManager.getStatus(e.getGuild())) {
         e.getTextChannel()
             .sendMessage(
-                Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbNotEnabled, e.getGuild(), null))
+                Embeds.create(
+                    EmbedTemplate.ERROR, e.getAuthor(), sbNotEnabled, e.getGuild(), null, null))
             .queue();
         return;
       }
@@ -85,6 +89,7 @@ public class StarboardCommand extends Command {
                       Objects.requireNonNull(StarboardManager.getChannel(e.getGuild()))
                           .getAsMention()),
                   e.getGuild(),
+                  null,
                   null))
           .queue();
       return;
@@ -100,6 +105,7 @@ public class StarboardCommand extends Command {
                       e.getAuthor(),
                       String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild())),
                       e.getGuild(),
+                      null,
                       null))
               .queue();
           return;
@@ -109,7 +115,12 @@ public class StarboardCommand extends Command {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
-                      EmbedTemplate.ERROR, e.getAuthor(), sbAlreadyEnabled, e.getGuild(), null))
+                      EmbedTemplate.ERROR,
+                      e.getAuthor(),
+                      sbAlreadyEnabled,
+                      e.getGuild(),
+                      null,
+                      null))
               .queue();
           return;
         }
@@ -117,7 +128,8 @@ public class StarboardCommand extends Command {
         StarboardManager.setStatus(e.getGuild(), true);
         e.getTextChannel()
             .sendMessage(
-                Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbEnabled, e.getGuild(), null))
+                Embeds.create(
+                    EmbedTemplate.SUCCESS, e.getAuthor(), sbEnabled, e.getGuild(), null, null))
             .queue();
 
         break;
@@ -131,6 +143,7 @@ public class StarboardCommand extends Command {
                       e.getAuthor(),
                       String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild())),
                       e.getGuild(),
+                      null,
                       null))
               .queue();
           return;
@@ -140,7 +153,12 @@ public class StarboardCommand extends Command {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
-                      EmbedTemplate.ERROR, e.getAuthor(), sbAlreadyDisabled, e.getGuild(), null))
+                      EmbedTemplate.ERROR,
+                      e.getAuthor(),
+                      sbAlreadyDisabled,
+                      e.getGuild(),
+                      null,
+                      null))
               .queue();
           return;
         }
@@ -148,7 +166,8 @@ public class StarboardCommand extends Command {
         StarboardManager.setStatus(e.getGuild(), false);
         e.getTextChannel()
             .sendMessage(
-                Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbDisabled, e.getGuild(), null))
+                Embeds.create(
+                    EmbedTemplate.SUCCESS, e.getAuthor(), sbDisabled, e.getGuild(), null, null))
             .queue();
 
         break;
@@ -161,7 +180,12 @@ public class StarboardCommand extends Command {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
-                      EmbedTemplate.ERROR, e.getAuthor(), sbChannelAlreadyInst, e.getGuild(), null))
+                      EmbedTemplate.ERROR,
+                      e.getAuthor(),
+                      sbChannelAlreadyInst,
+                      e.getGuild(),
+                      null,
+                      null))
               .queue();
           return;
         }
@@ -176,6 +200,7 @@ public class StarboardCommand extends Command {
                         sbChannelInstalled,
                         e.getMessage().getMentionedChannels().get(0).getAsMention()),
                     e.getGuild(),
+                    null,
                     null))
             .queue();
         break;
@@ -189,7 +214,7 @@ public class StarboardCommand extends Command {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
-                      EmbedTemplate.ERROR, e.getAuthor(), sbNotEnabled, e.getGuild(), null))
+                      EmbedTemplate.ERROR, e.getAuthor(), sbNotEnabled, e.getGuild(), null, null))
               .queue();
           return;
         }
@@ -202,6 +227,7 @@ public class StarboardCommand extends Command {
                       e.getAuthor(),
                       String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild())),
                       e.getGuild(),
+                      null,
                       null))
               .queue();
           return;
@@ -211,7 +237,7 @@ public class StarboardCommand extends Command {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
-                      EmbedTemplate.ERROR, e.getAuthor(), sbStarsAlready, e.getGuild(), null))
+                      EmbedTemplate.ERROR, e.getAuthor(), sbStarsAlready, e.getGuild(), null, null))
               .queue();
           return;
         }
@@ -219,7 +245,8 @@ public class StarboardCommand extends Command {
         StarboardManager.setStars(stars, e.getGuild());
         e.getTextChannel()
             .sendMessage(
-                Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbStars, e.getGuild(), null))
+                Embeds.create(
+                    EmbedTemplate.SUCCESS, e.getAuthor(), sbStars, e.getGuild(), null, null))
             .queue();
 
       default:

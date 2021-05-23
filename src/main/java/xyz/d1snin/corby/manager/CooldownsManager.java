@@ -1,7 +1,7 @@
 package xyz.d1snin.corby.manager;
 
 import net.dv8tion.jda.api.entities.User;
-import xyz.d1snin.corby.commands.Command;
+import xyz.d1snin.corby.Command;
 import xyz.d1snin.corby.model.Cooldown;
 
 import java.util.List;

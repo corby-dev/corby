@@ -2,8 +2,6 @@ package xyz.d1snin.corby.utils;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import xyz.d1snin.corby.enums.EmbedTemplate;
 
 import java.util.concurrent.TimeUnit;
 

@@ -6,7 +6,7 @@
  *             of this license document, but changing it is not allowed.
  */
 
-package xyz.d1snin.corby.commands;
+package xyz.d1snin.corby;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +15,6 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
-import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
@@ -144,6 +143,7 @@ public abstract class Command extends ListenerAdapter {
                     e.getAuthor(),
                     String.format(invalidPermission, getPermissionString()),
                     e.getGuild(),
+                    null,
                     null))
             .queue();
         return;
@@ -163,6 +163,7 @@ public abstract class Command extends ListenerAdapter {
                     e.getAuthor(),
                     String.format(invalidBotPermission, Corby.config.getInviteUrl()),
                     e.getGuild(),
+                    null,
                     null))
             .queue();
         e.getGuild().leave().queue();
@@ -177,6 +178,7 @@ public abstract class Command extends ListenerAdapter {
                     e.getAuthor(),
                     String.format(invalidSyntax, e.getMessage().getContentRaw(), getUsagesString()),
                     e.getGuild(),
+                    null,
                     null))
             .queue();
         return;
@@ -192,6 +194,7 @@ public abstract class Command extends ListenerAdapter {
                     e.getAuthor(),
                     String.format(cooldown, cooldownTime),
                     e.getGuild(),
+                    null,
                     null))
             .queue();
         return;

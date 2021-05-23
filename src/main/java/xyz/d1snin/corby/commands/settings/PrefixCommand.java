@@ -10,7 +10,7 @@ package xyz.d1snin.corby.commands.settings;
 
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import xyz.d1snin.corby.commands.Command;
+import xyz.d1snin.corby.Command;
 import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
@@ -45,6 +45,7 @@ public class PrefixCommand extends Command {
                   e.getAuthor(),
                   String.format(currPrefix, currentPrefix),
                   e.getGuild(),
+                  null,
                   null))
           .queue();
       return;
@@ -60,6 +61,7 @@ public class PrefixCommand extends Command {
                   e.getAuthor(),
                   String.format(prefixAlready, newPrefix),
                   e.getGuild(),
+                  null,
                   null))
           .queue();
       return;
@@ -69,7 +71,7 @@ public class PrefixCommand extends Command {
       e.getTextChannel()
           .sendMessage(
               Embeds.create(
-                  EmbedTemplate.ERROR, e.getAuthor(), cannotBeMoreThen, e.getGuild(), null))
+                  EmbedTemplate.ERROR, e.getAuthor(), cannotBeMoreThen, e.getGuild(), null, null))
           .queue();
       return;
     }
@@ -83,6 +85,7 @@ public class PrefixCommand extends Command {
                 e.getAuthor(),
                 String.format(successChanged, newPrefix),
                 e.getGuild(),
+                null,
                 null))
         .queue();
   }

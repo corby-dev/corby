@@ -6,7 +6,7 @@ import com.google.gson.JsonParser;
 import jdk.nashorn.api.scripting.URLReader;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import xyz.d1snin.corby.commands.Command;
+import xyz.d1snin.corby.Command;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
@@ -24,11 +24,16 @@ public class UrbanCommand extends Command {
   }
 
   @Override
-  protected void execute(MessageReceivedEvent e, String[] args) throws MalformedURLException {
+  protected void execute(MessageReceivedEvent e, String[] args) {
     e.getTextChannel()
         .sendMessage(
             Embeds.create(
-                EmbedTemplate.DEFAULT, e.getAuthor(), "Looking at the data...", e.getGuild(), null))
+                EmbedTemplate.DEFAULT,
+                e.getAuthor(),
+                "Looking at the data...",
+                e.getGuild(),
+                null,
+                null))
         .queue(
             message -> {
               JsonArray array;
@@ -38,6 +43,7 @@ public class UrbanCommand extends Command {
                       e.getAuthor(),
                       "Could not find this word.",
                       e.getGuild(),
+                      null,
                       null);
               try {
                 array =
@@ -77,6 +83,7 @@ public class UrbanCommand extends Command {
                           e.getAuthor(),
                           String.format("**Definition:** %s", definition),
                           e.getGuild(),
+                          null,
                           null))
                   .queue();
             });

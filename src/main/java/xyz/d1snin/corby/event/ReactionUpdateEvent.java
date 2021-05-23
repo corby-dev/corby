@@ -96,6 +96,7 @@ public class ReactionUpdateEvent extends Listener {
                   owner,
                   "Hey! You received this message because I cannot send messages to the starboard. Please make sure I have permission.",
                   null,
+                  null,
                   null),
               () -> {
                 /* ignore */

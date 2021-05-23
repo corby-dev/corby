@@ -1,8 +1,8 @@
 package xyz.d1snin.corby.commands.admin;
 
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import xyz.d1snin.corby.Command;
 import xyz.d1snin.corby.Corby;
-import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.model.Config;
@@ -21,7 +21,12 @@ public class TerminateCommand extends Command {
     e.getTextChannel()
         .sendMessage(
             Embeds.create(
-                EmbedTemplate.SUCCESS, e.getAuthor(), "Terminating... Bye!", e.getGuild(), null))
+                EmbedTemplate.SUCCESS,
+                e.getAuthor(),
+                "Terminating... Bye!",
+                e.getGuild(),
+                null,
+                null))
         .complete();
     Corby.shutdown(Config.NORMAL_SHUTDOWN_EXIT_CODE);
   }

@@ -21,6 +21,7 @@ public class ExceptionUtils {
                 exception.getCause(),
                 getStackTrace(exception)),
             null,
+            null,
             null),
         () ->
             Corby.log.warn(

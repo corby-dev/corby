@@ -27,7 +27,8 @@ public class Embeds {
       User u,
       String description,
       @Nullable Guild guild,
-      @Nullable String imageUrl) {
+      @Nullable String imageUrl,
+      @Nullable String thumbnailUrl) {
 
     Color color = null;
     Emote emote = null;
@@ -61,18 +62,24 @@ public class Embeds {
                                 : "")
                     + " "
                     + description)
-            .setFooter(
-                Corby.config.getBotName()
-                    + " | "
-                    + Thread.currentThread().getName()
-                    + " | "
-                    + u.getAsTag(),
-                Corby.config.getBotPfpUrl());
+            .setFooter(getDefaultFooter(u), Corby.config.getBotPfpUrl());
 
     if (imageUrl != null) {
       builder.setImage(imageUrl);
     }
 
+    if (thumbnailUrl != null) {
+      builder.setThumbnail(thumbnailUrl);
+    }
+
     return builder.build();
+  }
+
+  public static String getDefaultFooter(User u) {
+    return Corby.config.getBotName()
+        + " | "
+        + Thread.currentThread().getName()
+        + " | "
+        + u.getAsTag();
   }
 }
