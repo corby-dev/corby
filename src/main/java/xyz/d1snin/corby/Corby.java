@@ -17,7 +17,6 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import xyz.d1snin.corby.commands.admin.ReloadCommand;
 import xyz.d1snin.corby.commands.admin.TerminateCommand;
 import xyz.d1snin.corby.commands.fun.BottomCommand;
 import xyz.d1snin.corby.commands.fun.CoinCommand;
@@ -115,7 +114,6 @@ public class Corby {
         Command.add(new PingCommand()),
         Command.add(new PrefixCommand()),
         Command.add(new TerminateCommand()),
-        Command.add(new ReloadCommand()),
         Command.add(new StarboardCommand()),
         Command.add(new HelpCommand()),
         Command.add(new BottomCommand()),
@@ -186,15 +184,9 @@ public class Corby {
 
   public static void shutdown(int exitCode) {
     log.warn("Terminating... Bye!");
-    api.shutdown();
+    api.shutdownNow();
     schedulerPresence.shutdown();
     System.exit(exitCode);
-  }
-
-  public static void restart() throws IOException {
-    log.warn("Restarting...");
-    Runtime.getRuntime().exec("zsh scripts/start.sh");
-    shutdown(Config.NORMAL_SHUTDOWN_EXIT_CODE);
   }
 
   public static JDA getApi() {
