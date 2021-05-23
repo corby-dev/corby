@@ -16,6 +16,7 @@ import java.awt.*;
 public class Config {
   public static final int NORMAL_SHUTDOWN_EXIT_CODE = 0;
   private String token;
+  private String testBotToken;
   private String botPrefixDefault;
   private String ownerId;
   private String botName;
@@ -41,6 +42,7 @@ public class Config {
 
   public Config(
       String token,
+      String testBotToken,
       String botPrefixDefault,
       String ownerId,
       int defaultStarboardStars,
@@ -55,6 +57,7 @@ public class Config {
       String emoteError) {
 
     this.token = token;
+    this.testBotToken = testBotToken;
     this.botPrefixDefault = botPrefixDefault;
     this.ownerId = ownerId;
     this.defaultStarboardStars = defaultStarboardStars;

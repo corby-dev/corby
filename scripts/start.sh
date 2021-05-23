@@ -1,2 +1,9 @@
+#!/bin/bash
 git pull origin dev
-./gradlew run
+
+if [ -n "$1" ]; then
+  ./gradlew run --args="$*"
+else
+  echo "No parameters found. "
+  ./gradlew run
+fi

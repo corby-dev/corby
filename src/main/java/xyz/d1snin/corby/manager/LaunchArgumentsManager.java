@@ -1,5 +1,6 @@
 package xyz.d1snin.corby.manager;
 
+import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.model.LaunchArgument;
 
 import java.util.ArrayList;
@@ -13,6 +14,11 @@ public class LaunchArgumentsManager {
   public static void init(String[] args, LaunchArgument... argument) {
     arguments.addAll(Arrays.asList(argument));
 
+    if (args.length < 1) {
+      Corby.log.info("No arguments provided.");
+      return;
+    }
+
     for (String s : args) {
       LaunchArgument arg = getArgumentByName(s);
 
@@ -20,6 +26,7 @@ public class LaunchArgumentsManager {
         throw new RuntimeException(String.format("Could not resolve this argument: %s", s));
       }
 
+      Corby.log.info(String.format("Argument detected: %s", arg.getName()));
       arg.execute();
     }
   }

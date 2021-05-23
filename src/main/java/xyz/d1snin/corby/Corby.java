@@ -66,9 +66,18 @@ public class Corby {
   public static Logger log = LoggerFactory.getLogger("loader");
   private static JDA api;
 
+  private static boolean testMode = false;
+
   public static void main(String[] args) {
     try {
-      LaunchArgumentsManager.init(args, new LaunchArgument("pog", () -> System.out.println("pog")));
+      LaunchArgumentsManager.init(
+          args,
+          new LaunchArgument(
+              "test",
+              () -> {
+                testMode = true;
+                log.warn("Start using the bot token for testing...");
+              }));
 
       ConfigFileManager.initConfigFile();
 
@@ -91,7 +100,8 @@ public class Corby {
     log.info("Trying to connect to the database...");
     DatabaseManager.createConnection();
 
-    JDABuilder jdaBuilder = JDABuilder.createDefault(config.getToken());
+    JDABuilder jdaBuilder =
+        JDABuilder.createDefault(testMode ? config.getTestBotToken() : config.getToken());
 
     jdaBuilder.enableIntents(GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGE_REACTIONS);
     jdaBuilder.enableCache(
