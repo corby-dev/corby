@@ -242,6 +242,17 @@ public abstract class Command extends ListenerAdapter {
     return sb.toString();
   }
 
+  protected String getArgsString(int fromIndex, Message msg) {
+    StringBuilder sb = new StringBuilder();
+    String[] args = getCommandArgs(msg);
+
+    for (int i = fromIndex; i < args.length; i++) {
+      sb.append(args[i]).append(" ");
+    }
+
+    return sb.toString();
+  }
+
   private String[] getCommandArgs(Message msg) {
     return msg.getContentRaw().split("\\s+");
   }

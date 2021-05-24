@@ -20,7 +20,7 @@ public class UrbanCommand extends Command {
     this.alias = "urban";
     this.description = "Defines a word from *urbandictionary.com*.";
     this.category = Category.FUN;
-    this.usages = new String[] {"<Word>"};
+    this.usages = new String[] {"<Phrase>"};
   }
 
   @Override
@@ -52,7 +52,8 @@ public class UrbanCommand extends Command {
                                 new URL(
                                     String.format(
                                         "https://api.urbandictionary.com/v0/define?term=%s",
-                                        args[1]))))
+                                        getArgsString(1, e.getMessage())
+                                            .replaceAll("\\s+", "%20")))))
                         .getAsJsonObject()
                         .get("list")
                         .getAsJsonArray();
@@ -78,19 +79,29 @@ public class UrbanCommand extends Command {
 
               message
                   .editMessage(
-                      Embeds.create(
-                          EmbedTemplate.SUCCESS,
-                          e.getAuthor(),
-                          String.format("**Definition:** %s", definition),
-                          e.getGuild(),
-                          null,
-                          null))
+                      definition.length() > 2000
+                          ? Embeds.create(
+                              EmbedTemplate.ERROR,
+                              e.getAuthor(),
+                              String.format(
+                                  "It seems the definition is too big, you can see it [here](%s).",
+                                  array.get(0).getAsJsonObject().get("permalink").getAsString()),
+                              e.getGuild(),
+                              null,
+                              null)
+                          : Embeds.create(
+                              EmbedTemplate.SUCCESS,
+                              e.getAuthor(),
+                              String.format("**Definition:** %s", definition),
+                              e.getGuild(),
+                              null,
+                              null))
                   .queue();
             });
   }
 
   @Override
   protected boolean isValidSyntax(MessageReceivedEvent e, String[] args) {
-    return args.length == 2;
+    return args.length > 1;
   }
 }
