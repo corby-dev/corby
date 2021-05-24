@@ -6,7 +6,7 @@
  *             of this license document, but changing it is not allowed.
  */
 
-package xyz.d1snin.corby;
+package xyz.d1snin.corby.commands;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
+import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.managers.PrefixManager;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
