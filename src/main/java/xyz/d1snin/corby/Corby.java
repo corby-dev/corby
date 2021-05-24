@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.commands.admin.TerminateCommand;
 import xyz.d1snin.corby.commands.fun.BottomCommand;
 import xyz.d1snin.corby.commands.fun.CoinCommand;
