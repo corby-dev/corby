@@ -32,7 +32,6 @@ public class Config {
   private int defaultStarboardStars;
   private boolean defaultStarboardStatus;
   private int defaultCooldown;
-  private String mongoPassword;
   private String emoteSuccess;
   private String emoteError;
 
@@ -44,7 +43,6 @@ public class Config {
       int defaultStarboardStars,
       boolean defaultStarboardStatus,
       int defaultCooldown,
-      String mongoPassword,
       String emoteSuccess,
       String emoteError) {
 
@@ -55,7 +53,6 @@ public class Config {
     this.defaultStarboardStars = defaultStarboardStars;
     this.defaultStarboardStatus = defaultStarboardStatus;
     this.defaultCooldown = defaultCooldown;
-    this.mongoPassword = mongoPassword;
     this.emoteSuccess = emoteSuccess;
     this.emoteError = emoteError;
   }
