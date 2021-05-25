@@ -32,10 +32,6 @@ public class Config {
   private int defaultStarboardStars;
   private boolean defaultStarboardStatus;
   private int defaultCooldown;
-  private String mongoHostname;
-  private int mongoPort;
-  private String mongoDbName;
-  private String mongoUser;
   private String mongoPassword;
   private String emoteSuccess;
   private String emoteError;
@@ -48,10 +44,6 @@ public class Config {
       int defaultStarboardStars,
       boolean defaultStarboardStatus,
       int defaultCooldown,
-      String mongoHostname,
-      int mongoPort,
-      String mongoDbName,
-      String mongoUser,
       String mongoPassword,
       String emoteSuccess,
       String emoteError) {
@@ -63,10 +55,6 @@ public class Config {
     this.defaultStarboardStars = defaultStarboardStars;
     this.defaultStarboardStatus = defaultStarboardStatus;
     this.defaultCooldown = defaultCooldown;
-    this.mongoHostname = mongoHostname;
-    this.mongoPort = mongoPort;
-    this.mongoDbName = mongoDbName;
-    this.mongoUser = mongoUser;
     this.mongoPassword = mongoPassword;
     this.emoteSuccess = emoteSuccess;
     this.emoteError = emoteError;

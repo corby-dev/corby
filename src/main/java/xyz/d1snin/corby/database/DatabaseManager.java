@@ -10,7 +10,6 @@ package xyz.d1snin.corby.database;
 
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
-import xyz.d1snin.corby.Corby;
 
 import java.net.UnknownHostException;
 
@@ -19,10 +18,7 @@ public class DatabaseManager {
   private static DB db;
 
   public static void createConnection() throws UnknownHostException {
-    db =
-        new MongoClient(Corby.config.getMongoHostname(), Corby.config.getMongoPort())
-            .getDB(Corby.config.getMongoDbName());
-    db.authenticate(Corby.config.getMongoUser(), Corby.config.getMongoPassword().toCharArray());
+    db = new MongoClient("localhost", 27017).getDB("corby");
   }
 
   public static DB getDb() {
