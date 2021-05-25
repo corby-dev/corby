@@ -2,7 +2,7 @@
 name: Command
 about: New command for the bot
 title: "[COMMAND] "
-labels: ''
+labels: command
 assignees: d1snin
 
 ---
