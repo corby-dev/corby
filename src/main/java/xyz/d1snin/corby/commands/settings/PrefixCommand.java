@@ -11,9 +11,10 @@ package xyz.d1snin.corby.commands.settings;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.commands.Command;
-import xyz.d1snin.corby.database.managers.PrefixManager;
+import xyz.d1snin.corby.database.managers.MongoPrefixManager;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
+import xyz.d1snin.corby.model.Prefix;
 import xyz.d1snin.corby.utils.Embeds;
 
 public class PrefixCommand extends Command {
@@ -35,7 +36,8 @@ public class PrefixCommand extends Command {
     final String cannotBeMoreThen = "The prefix cannot be more than 5 characters.";
     final String successChanged = "The prefix was successfully changed to `%s`.";
 
-    String currentPrefix = PrefixManager.getPrefix(e.getGuild());
+    Prefix prefix = MongoPrefixManager.getPrefix(e.getGuild());
+    String currentPrefix = prefix.getPrefix();
 
     if (args.length < 2) {
       e.getTextChannel()
@@ -76,7 +78,8 @@ public class PrefixCommand extends Command {
       return;
     }
 
-    PrefixManager.setPrefix(e.getGuild(), newPrefix);
+    prefix.setPrefix(newPrefix);
+    MongoPrefixManager.writePrefix(prefix);
 
     e.getTextChannel()
         .sendMessage(

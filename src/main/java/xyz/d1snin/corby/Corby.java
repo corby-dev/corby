@@ -65,7 +65,6 @@ public class Corby {
   public static Config config;
   public static Logger log = LoggerFactory.getLogger("loader");
   private static JDA api;
-
   private static boolean testMode = false;
 
   public static void main(String[] args) {

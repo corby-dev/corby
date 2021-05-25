@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.annotation.EventListener;
-import xyz.d1snin.corby.database.managers.PrefixManager;
+import xyz.d1snin.corby.database.managers.MongoPrefixManager;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
 
@@ -61,7 +61,7 @@ public class ServerJoinEvent extends Listener {
                 Corby.getApi().getSelfUser(),
                 String.format(
                     "Thank you for inviting me to your server!\nI can help you with moderation and administration of your server and much more. \nYou can find out the full list of commands by simply writing to any chat `%shelp`.",
-                    PrefixManager.getPrefix(thisEvent.getGuild())),
+                    MongoPrefixManager.getPrefix(thisEvent.getGuild())),
                 null,
                 null,
                 null))

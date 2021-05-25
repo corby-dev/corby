@@ -12,7 +12,7 @@ import com.github.bottomSoftwareFoundation.bottom.Bottom;
 import com.github.bottomSoftwareFoundation.bottom.TranslationError;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.commands.Command;
-import xyz.d1snin.corby.database.managers.PrefixManager;
+import xyz.d1snin.corby.database.managers.MongoPrefixManager;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
@@ -39,7 +39,7 @@ public class BottomCommand extends Command {
       final String message =
           e.getMessage()
               .getContentRaw()
-              .substring(PrefixManager.getPrefix(e.getGuild()).length() + 14);
+              .substring(MongoPrefixManager.getPrefix(e.getGuild()).getPrefix().length() + 14);
 
       switch (args[1]) {
         case "encode":

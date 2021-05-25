@@ -9,16 +9,17 @@
 package xyz.d1snin.corby.commands.settings;
 
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
-import xyz.d1snin.corby.database.managers.PrefixManager;
-import xyz.d1snin.corby.database.managers.StarboardManager;
+import xyz.d1snin.corby.database.managers.MongoPrefixManager;
+import xyz.d1snin.corby.database.managers.MongoStarboardManager;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
+import xyz.d1snin.corby.model.Starboard;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.OtherUtils;
-
-import java.util.Objects;
 
 public class StarboardCommand extends Command {
 
@@ -35,6 +36,21 @@ public class StarboardCommand extends Command {
         "Starboard is a channel where messages will be sent on which the number of star reactions will be equal to the specified one, so users will be able to mark messages they like.";
     this.permissions = new Permission[] {Permission.ADMINISTRATOR};
     this.botPermissions = new Permission[] {Permission.MESSAGE_ADD_REACTION};
+  }
+
+  private static void onNotConfigured(MessageReceivedEvent e) {
+    e.getTextChannel()
+        .sendMessage(
+            Embeds.create(
+                EmbedTemplate.ERROR,
+                e.getAuthor(),
+                String.format(
+                    "Starboard is not configured on your server, use `%sstarboard channel <#channel>` to configure starboard.",
+                    MongoPrefixManager.getPrefix(e.getGuild())),
+                e.getGuild(),
+                null,
+                null))
+        .queue();
   }
 
   @Override
@@ -55,21 +71,14 @@ public class StarboardCommand extends Command {
     final String sbStarsAlready =
         "The number of stars for the message is already set to this value.";
 
+    Starboard starboard = MongoStarboardManager.getStarboard(e.getGuild());
+
     if (args.length < 2) {
-      if (!StarboardManager.isConfigured(e.getGuild())) {
-        e.getTextChannel()
-            .sendMessage(
-                Embeds.create(
-                    EmbedTemplate.ERROR,
-                    e.getAuthor(),
-                    String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild())),
-                    e.getGuild(),
-                    null,
-                    null))
-            .queue();
+      if (starboard == null) {
+        onNotConfigured(e);
         return;
       }
-      if (!StarboardManager.getStatus(e.getGuild())) {
+      if (!starboard.isStatus()) {
         e.getTextChannel()
             .sendMessage(
                 Embeds.create(
@@ -84,10 +93,7 @@ public class StarboardCommand extends Command {
                   EmbedTemplate.DEFAULT,
                   e.getAuthor(),
                   String.format(
-                      sbInfo,
-                      StarboardManager.getStars(e.getGuild()),
-                      Objects.requireNonNull(StarboardManager.getChannel(e.getGuild()))
-                          .getAsMention()),
+                      sbInfo, starboard.getStars(), starboard.getChannel().getAsMention()),
                   e.getGuild(),
                   null,
                   null))
@@ -97,21 +103,12 @@ public class StarboardCommand extends Command {
 
     switch (args[1].toLowerCase()) {
       case "enable":
-        if (!StarboardManager.isConfigured(e.getGuild())) {
-          e.getTextChannel()
-              .sendMessage(
-                  Embeds.create(
-                      EmbedTemplate.ERROR,
-                      e.getAuthor(),
-                      String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild())),
-                      e.getGuild(),
-                      null,
-                      null))
-              .queue();
+        if (starboard == null) {
+          onNotConfigured(e);
           return;
         }
 
-        if (StarboardManager.getStatus(e.getGuild())) {
+        if (starboard.isStatus()) {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
@@ -125,7 +122,8 @@ public class StarboardCommand extends Command {
           return;
         }
 
-        StarboardManager.setStatus(e.getGuild(), true);
+        starboard.setStatus(true);
+        MongoStarboardManager.writeStarboard(starboard);
         e.getTextChannel()
             .sendMessage(
                 Embeds.create(
@@ -135,21 +133,12 @@ public class StarboardCommand extends Command {
         break;
 
       case "disable":
-        if (!StarboardManager.isConfigured(e.getGuild())) {
-          e.getTextChannel()
-              .sendMessage(
-                  Embeds.create(
-                      EmbedTemplate.ERROR,
-                      e.getAuthor(),
-                      String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild())),
-                      e.getGuild(),
-                      null,
-                      null))
-              .queue();
+        if (starboard == null) {
+          onNotConfigured(e);
           return;
         }
 
-        if (!StarboardManager.getStatus(e.getGuild())) {
+        if (!starboard.isStatus()) {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
@@ -163,7 +152,8 @@ public class StarboardCommand extends Command {
           return;
         }
 
-        StarboardManager.setStatus(e.getGuild(), false);
+        starboard.setStatus(false);
+        MongoStarboardManager.writeStarboard(starboard);
         e.getTextChannel()
             .sendMessage(
                 Embeds.create(
@@ -173,10 +163,8 @@ public class StarboardCommand extends Command {
         break;
 
       case "channel":
-        if (StarboardManager.isConfigured(e.getGuild())
-            && e.getMessage()
-                .getMentionedChannels()
-                .contains(StarboardManager.getChannel(e.getGuild()))) {
+        if (starboard != null
+            && e.getMessage().getMentionedChannels().contains(starboard.getChannel())) {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
@@ -190,7 +178,20 @@ public class StarboardCommand extends Command {
           return;
         }
 
-        StarboardManager.setChannel(e.getGuild(), e.getMessage().getMentionedChannels().get(0));
+        TextChannel channel = e.getMessage().getMentionedChannels().get(0);
+
+        if (starboard == null) {
+          MongoStarboardManager.writeStarboard(
+              new Starboard(
+                  e.getGuild(),
+                  channel,
+                  Corby.config.getDefaultStarboardStars(),
+                  Corby.config.isDefaultStarboardStatus()));
+        } else {
+          starboard.setChannel(channel);
+          MongoStarboardManager.writeStarboard(starboard);
+        }
+
         e.getTextChannel()
             .sendMessage(
                 Embeds.create(
@@ -210,7 +211,12 @@ public class StarboardCommand extends Command {
 
         stars = Integer.parseInt(args[2]);
 
-        if (!StarboardManager.getStatus(e.getGuild())) {
+        if (starboard == null) {
+          onNotConfigured(e);
+          return;
+        }
+
+        if (!starboard.isStatus()) {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
@@ -219,21 +225,7 @@ public class StarboardCommand extends Command {
           return;
         }
 
-        if (!StarboardManager.isConfigured(e.getGuild())) {
-          e.getTextChannel()
-              .sendMessage(
-                  Embeds.create(
-                      EmbedTemplate.ERROR,
-                      e.getAuthor(),
-                      String.format(sbNotConfigured, PrefixManager.getPrefix(e.getGuild())),
-                      e.getGuild(),
-                      null,
-                      null))
-              .queue();
-          return;
-        }
-
-        if (StarboardManager.getStars(e.getGuild()) == stars) {
+        if (starboard.getStars() == stars) {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
@@ -242,7 +234,8 @@ public class StarboardCommand extends Command {
           return;
         }
 
-        StarboardManager.setStars(stars, e.getGuild());
+        starboard.setStars(stars);
+        MongoStarboardManager.writeStarboard(starboard);
         e.getTextChannel()
             .sendMessage(
                 Embeds.create(

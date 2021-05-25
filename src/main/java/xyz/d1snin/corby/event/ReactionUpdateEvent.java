@@ -18,8 +18,9 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.annotation.EventListener;
-import xyz.d1snin.corby.database.managers.StarboardManager;
+import xyz.d1snin.corby.database.managers.MongoStarboardManager;
 import xyz.d1snin.corby.enums.EmbedTemplate;
+import xyz.d1snin.corby.model.Starboard;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.OtherUtils;
 
@@ -38,10 +39,12 @@ public class ReactionUpdateEvent extends Listener {
     GenericGuildMessageReactionEvent thisEvent = ((GenericGuildMessageReactionEvent) event);
 
     if (thisEvent.getReaction().getReactionEmote().getName().equals(Corby.config.getEmoteStar())) {
-      if (StarboardManager.getChannel(thisEvent.getGuild()) == null) {
+      Starboard starboard = MongoStarboardManager.getStarboard(thisEvent.getGuild());
+
+      if (starboard == null) {
         return;
       }
-      if (!StarboardManager.getStatus(thisEvent.getGuild())) {
+      if (!starboard.isStatus()) {
         return;
       }
 
@@ -62,8 +65,7 @@ public class ReactionUpdateEvent extends Listener {
         }
       }
 
-      if (reaction.getCount() == StarboardManager.getStars(thisEvent.getGuild())
-          && !executed.contains(reaction)) {
+      if (reaction.getCount() == starboard.getStars() && !executed.contains(reaction)) {
         try {
           Message.Attachment attachment =
               msg.getAttachments().isEmpty() ? null : msg.getAttachments().get(0);
@@ -71,7 +73,9 @@ public class ReactionUpdateEvent extends Listener {
           EmbedBuilder builder =
               new EmbedBuilder()
                   .setAuthor(
-                      msg.getAuthor().getAsTag(), msg.getJumpUrl(), msg.getAuthor().getAvatarUrl())
+                      msg.getAuthor().getAsTag(),
+                      msg.getJumpUrl(),
+                      msg.getAuthor().getEffectiveAvatarUrl())
                   .setDescription(
                       String.format("[[context]](%s)\n\n%s", msg.getJumpUrl(), msg.getContentRaw())
                           + (attachment == null
@@ -84,7 +88,7 @@ public class ReactionUpdateEvent extends Listener {
           if (attachment != null && attachment.isImage()) {
             builder.setImage(attachment.getProxyUrl());
           }
-          StarboardManager.getChannel(thisEvent.getGuild()).sendMessage(builder.build()).queue();
+          starboard.getChannel().sendMessage(builder.build()).queue();
         } catch (Exception e) {
           User owner =
               Objects.requireNonNull(

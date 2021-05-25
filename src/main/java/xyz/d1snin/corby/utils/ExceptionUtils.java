@@ -31,6 +31,9 @@ public class ExceptionUtils {
   private static String getStackTrace(Exception e) {
     StringBuilder sb = new StringBuilder();
     for (StackTraceElement element : e.getStackTrace()) {
+      if (sb.length() > 1900) {
+        break;
+      }
       sb.append(element.toString()).append("\n");
     }
     return sb.toString();

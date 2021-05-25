@@ -16,7 +16,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import xyz.d1snin.corby.Corby;
-import xyz.d1snin.corby.database.managers.PrefixManager;
+import xyz.d1snin.corby.database.managers.MongoPrefixManager;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.manager.CooldownsManager;
@@ -92,7 +92,7 @@ public abstract class Command extends ListenerAdapter {
   public String getUsagesString() {
     StringBuilder sb = new StringBuilder();
     String defaultUsage =
-        String.format("`%s" + getAlias() + "`", PrefixManager.getPrefix(event.getGuild()));
+        String.format("`%s" + getAlias() + "`", MongoPrefixManager.getPrefix(event.getGuild()));
 
     if (getUsages() == null || getUsages().length < 1) {
       return defaultUsage;
@@ -109,7 +109,8 @@ public abstract class Command extends ListenerAdapter {
 
       sb.append(
               String.format(
-                  "`%s" + getAlias() + " " + s + "`", PrefixManager.getPrefix(event.getGuild())))
+                  "`%s" + getAlias() + " " + s + "`",
+                  MongoPrefixManager.getPrefix(event.getGuild())))
           .append("\n");
     }
     return sb.toString();
@@ -242,6 +243,7 @@ public abstract class Command extends ListenerAdapter {
     return sb.toString();
   }
 
+  @SuppressWarnings("SameParameterValue")
   protected String getArgsString(int fromIndex, Message msg) {
     StringBuilder sb = new StringBuilder();
     String[] args = getCommandArgs(msg);
@@ -261,7 +263,7 @@ public abstract class Command extends ListenerAdapter {
     if (!getCommands().contains(this)) {
       return false;
     }
-    String prefix = PrefixManager.getPrefix(event.getGuild());
+    String prefix = MongoPrefixManager.getPrefix(event.getGuild()).getPrefix();
     String[] args = getCommandArgs(message);
     return Arrays.asList(args).get(0).toLowerCase().equals(prefix + getAlias())
         && args[0].startsWith(prefix);
