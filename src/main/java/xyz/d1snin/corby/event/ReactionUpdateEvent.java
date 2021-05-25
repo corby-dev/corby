@@ -10,6 +10,7 @@ package xyz.d1snin.corby.event;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.GenericEvent;
@@ -70,6 +71,8 @@ public class ReactionUpdateEvent extends Listener {
           Message.Attachment attachment =
               msg.getAttachments().isEmpty() ? null : msg.getAttachments().get(0);
 
+          MessageEmbed embed = msg.getEmbeds().isEmpty() ? null : msg.getEmbeds().get(0);
+
           EmbedBuilder builder =
               new EmbedBuilder()
                   .setAuthor(
@@ -77,10 +80,19 @@ public class ReactionUpdateEvent extends Listener {
                       msg.getJumpUrl(),
                       msg.getAuthor().getEffectiveAvatarUrl())
                   .setDescription(
-                      String.format("[[context]](%s)\n\n%s", msg.getJumpUrl(), msg.getContentRaw())
-                          + (attachment == null
+                      String.format(
+                          "[[context]](%s)\n%s%s%s",
+                          msg.getJumpUrl(),
+                          msg.getContentRaw().length() > 0 ? "\n" + msg.getContentRaw() : "",
+                          attachment == null
                               ? ""
-                              : attachment.isImage() ? "" : attachment.getProxyUrl()))
+                              : attachment.isImage() ? "" : "\n" + attachment.getProxyUrl(),
+                          embed == null
+                              ? ""
+                              : String.format(
+                                  "\n%s\n%s",
+                                  embed.getTitle() == null ? "" : embed.getTitle(),
+                                  embed.getDescription() == null ? "" : embed.getDescription())))
                   .setTimestamp(Instant.now())
                   .setColor(Corby.config.getStarboardColor())
                   .setFooter(Corby.config.getBotName(), Corby.config.getBotPfpUrl());
