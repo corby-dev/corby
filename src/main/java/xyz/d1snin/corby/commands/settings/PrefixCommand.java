@@ -62,9 +62,7 @@ public class PrefixCommand extends Command {
                   EmbedTemplate.ERROR,
                   e.getAuthor(),
                   String.format(prefixAlready, newPrefix),
-                  e.getGuild(),
-                  null,
-                  null))
+                  e.getGuild()))
           .queue();
       return;
     }
@@ -72,8 +70,7 @@ public class PrefixCommand extends Command {
     if (newPrefix.length() > 5) {
       e.getTextChannel()
           .sendMessage(
-              Embeds.create(
-                  EmbedTemplate.ERROR, e.getAuthor(), cannotBeMoreThen, e.getGuild(), null, null))
+              Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), cannotBeMoreThen, e.getGuild()))
           .queue();
       return;
     }
@@ -87,9 +84,7 @@ public class PrefixCommand extends Command {
                 EmbedTemplate.SUCCESS,
                 e.getAuthor(),
                 String.format(successChanged, newPrefix),
-                e.getGuild(),
-                null,
-                null))
+                e.getGuild()))
         .queue();
   }
 

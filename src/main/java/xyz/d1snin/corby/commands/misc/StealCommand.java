@@ -53,8 +53,7 @@ public class StealCommand extends Command {
     if (name.length() > 32 || name.length() < 1) {
       e.getTextChannel()
           .sendMessage(
-              Embeds.create(
-                  EmbedTemplate.ERROR, e.getAuthor(), nameSizeMessage, e.getGuild(), null, null))
+              Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), nameSizeMessage, e.getGuild()))
           .queue();
       return;
     }
@@ -66,8 +65,7 @@ public class StealCommand extends Command {
       if (!OtherUtils.isImage(args[1])) {
         e.getTextChannel()
             .sendMessage(
-                Embeds.create(
-                    EmbedTemplate.ERROR, e.getAuthor(), incorrectUrl, e.getGuild(), null, null))
+                Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), incorrectUrl, e.getGuild()))
             .queue();
         return;
       }
@@ -77,8 +75,7 @@ public class StealCommand extends Command {
       } catch (MalformedURLException malformedURLException) {
         e.getTextChannel()
             .sendMessage(
-                Embeds.create(
-                    EmbedTemplate.ERROR, e.getAuthor(), invalidUrl, e.getGuild(), null, null))
+                Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), invalidUrl, e.getGuild()))
             .queue();
         return;
       }
@@ -100,26 +97,16 @@ public class StealCommand extends Command {
                               EmbedTemplate.SUCCESS,
                               e.getAuthor(),
                               String.format(success, name),
-                              e.getGuild(),
-                              null,
-                              null))
+                              e.getGuild()))
                       .queue(),
               fail ->
                   e.getTextChannel()
                       .sendMessage(
-                          Embeds.create(
-                              EmbedTemplate.ERROR,
-                              e.getAuthor(),
-                              failure,
-                              e.getGuild(),
-                              null,
-                              null))
+                          Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), failure, e.getGuild()))
                       .queue());
     } catch (FileNotFoundException exception) {
       e.getTextChannel()
-          .sendMessage(
-              Embeds.create(
-                  EmbedTemplate.ERROR, e.getAuthor(), invalidUrl, e.getGuild(), null, null))
+          .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), invalidUrl, e.getGuild()))
           .queue();
     }
   }

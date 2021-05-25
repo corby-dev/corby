@@ -54,12 +54,7 @@ public class HelpCommand extends Command {
         e.getTextChannel()
             .sendMessage(
                 Embeds.create(
-                    EmbedTemplate.ERROR,
-                    e.getAuthor(),
-                    incorrectPageMessage,
-                    e.getGuild(),
-                    null,
-                    null))
+                    EmbedTemplate.ERROR, e.getAuthor(), incorrectPageMessage, e.getGuild()))
             .queue();
         return;
       }
@@ -77,9 +72,7 @@ public class HelpCommand extends Command {
                   EmbedTemplate.ERROR,
                   e.getAuthor(),
                   String.format(couldNotFindMessage, args[1]),
-                  e.getGuild(),
-                  null,
-                  null))
+                  e.getGuild()))
           .queue();
       return;
     }
@@ -126,13 +119,7 @@ public class HelpCommand extends Command {
     if (category == Category.ADMIN && !user.getId().equals(Corby.config.getOwnerId())) {
       e.getTextChannel()
           .sendMessage(
-              Embeds.create(
-                  EmbedTemplate.ERROR,
-                  e.getAuthor(),
-                  incorrectPageMessage,
-                  e.getGuild(),
-                  null,
-                  null))
+              Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), incorrectPageMessage, e.getGuild()))
           .queue();
       return null;
     }
@@ -156,8 +143,6 @@ public class HelpCommand extends Command {
         EmbedTemplate.DEFAULT,
         user,
         "**" + category.getName() + " Commands. Page " + page + "/" + categories + ".**\n\n" + sb,
-        e.getGuild(),
-        null,
-        null);
+        e.getGuild());
   }
 }

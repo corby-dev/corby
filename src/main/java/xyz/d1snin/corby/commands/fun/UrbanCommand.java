@@ -1,3 +1,11 @@
+/*                          GNU GENERAL PUBLIC LICENSE
+ *                            Version 3, 29 June 2007
+ *
+ *        Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+ *            Everyone is permitted to copy and distribute verbatim copies
+ *             of this license document, but changing it is not allowed.
+ */
+
 package xyz.d1snin.corby.commands.fun;
 
 import com.google.gson.JsonArray;
@@ -28,12 +36,7 @@ public class UrbanCommand extends Command {
     e.getTextChannel()
         .sendMessage(
             Embeds.create(
-                EmbedTemplate.DEFAULT,
-                e.getAuthor(),
-                "Looking at the data...",
-                e.getGuild(),
-                null,
-                null))
+                EmbedTemplate.DEFAULT, e.getAuthor(), "Looking at the data...", e.getGuild()))
         .queue(
             message -> {
               JsonArray array;
@@ -42,9 +45,7 @@ public class UrbanCommand extends Command {
                       EmbedTemplate.ERROR,
                       e.getAuthor(),
                       "Could not find this word.",
-                      e.getGuild(),
-                      null,
-                      null);
+                      e.getGuild());
               try {
                 array =
                     JsonParser.parseReader(
@@ -86,16 +87,12 @@ public class UrbanCommand extends Command {
                               String.format(
                                   "It seems the definition is too big, you can see it [here](%s).",
                                   array.get(0).getAsJsonObject().get("permalink").getAsString()),
-                              e.getGuild(),
-                              null,
-                              null)
+                              e.getGuild())
                           : Embeds.create(
                               EmbedTemplate.SUCCESS,
                               e.getAuthor(),
                               String.format("**Definition:** %s", definition),
-                              e.getGuild(),
-                              null,
-                              null))
+                              e.getGuild()))
                   .queue();
             });
   }

@@ -45,10 +45,7 @@ public class ServerJoinEvent extends Listener {
                   Corby.getApi().getSelfUser(),
                   String.format(
                       "It looks like you added me to your server without required permissions, this is necessary for the bot to work correctly, please invite me using this [link](%s). I will log out of your server now.",
-                      Corby.config.getInviteUrl()),
-                  null,
-                  null,
-                  null))
+                      Corby.config.getInviteUrl())))
           .queue();
       thisEvent.getGuild().leave().queue();
       return;
@@ -61,10 +58,7 @@ public class ServerJoinEvent extends Listener {
                 Corby.getApi().getSelfUser(),
                 String.format(
                     "Thank you for inviting me to your server!\nI can help you with moderation and administration of your server and much more. \nYou can find out the full list of commands by simply writing to any chat `%shelp`.",
-                    MongoPrefixManager.getPrefix(thisEvent.getGuild())),
-                null,
-                null,
-                null))
+                    MongoPrefixManager.getPrefix(thisEvent.getGuild()))))
         .queue();
   }
 }

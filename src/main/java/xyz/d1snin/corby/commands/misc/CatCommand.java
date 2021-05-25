@@ -44,8 +44,7 @@ public class CatCommand extends Command {
                             e.getAuthor(),
                             getFact(),
                             e.getGuild(),
-                            getPicture(),
-                            null))
+                            getPicture()))
                     .queue();
               } catch (MalformedURLException malformedURLException) {
                 malformedURLException.printStackTrace();

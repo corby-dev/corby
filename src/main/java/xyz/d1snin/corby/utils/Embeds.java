@@ -62,7 +62,13 @@ public class Embeds {
                                 : "")
                     + " "
                     + description)
-            .setFooter(getDefaultFooter(u), Corby.config.getBotPfpUrl());
+            .setFooter(
+                Corby.config.getBotName()
+                    + " | "
+                    + Thread.currentThread().getName()
+                    + " | "
+                    + u.getAsTag(),
+                Corby.config.getBotPfpUrl());
 
     if (imageUrl != null) {
       builder.setImage(imageUrl);
@@ -75,11 +81,17 @@ public class Embeds {
     return builder.build();
   }
 
-  public static String getDefaultFooter(User u) {
-    return Corby.config.getBotName()
-        + " | "
-        + Thread.currentThread().getName()
-        + " | "
-        + u.getAsTag();
+  public static MessageEmbed create(EmbedTemplate template, User u, String description) {
+    return create(template, u, description, null, null, null);
+  }
+
+  public static MessageEmbed create(
+      EmbedTemplate template, User u, String description, Guild guild) {
+    return create(template, u, description, guild, null, null);
+  }
+
+  public static MessageEmbed create(
+      EmbedTemplate template, User u, String description, Guild guild, String imageUrl) {
+    return create(template, u, description, guild, imageUrl, null);
   }
 }

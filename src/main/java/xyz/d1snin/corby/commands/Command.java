@@ -144,9 +144,7 @@ public abstract class Command extends ListenerAdapter {
                     EmbedTemplate.ERROR,
                     e.getAuthor(),
                     String.format(invalidPermission, getPermissionString()),
-                    e.getGuild(),
-                    null,
-                    null))
+                    e.getGuild()))
             .queue();
         return;
       }
@@ -164,9 +162,7 @@ public abstract class Command extends ListenerAdapter {
                     EmbedTemplate.ERROR,
                     e.getAuthor(),
                     String.format(invalidBotPermission, Corby.config.getInviteUrl()),
-                    e.getGuild(),
-                    null,
-                    null))
+                    e.getGuild()))
             .queue();
         e.getGuild().leave().queue();
         return;
@@ -179,9 +175,7 @@ public abstract class Command extends ListenerAdapter {
                     EmbedTemplate.ERROR,
                     e.getAuthor(),
                     String.format(invalidSyntax, e.getMessage().getContentRaw(), getUsagesString()),
-                    e.getGuild(),
-                    null,
-                    null))
+                    e.getGuild()))
             .queue();
         return;
       }
@@ -195,9 +189,7 @@ public abstract class Command extends ListenerAdapter {
                     EmbedTemplate.ERROR,
                     e.getAuthor(),
                     String.format(cooldown, cooldownTime),
-                    e.getGuild(),
-                    null,
-                    null))
+                    e.getGuild()))
             .queue();
         return;
       }

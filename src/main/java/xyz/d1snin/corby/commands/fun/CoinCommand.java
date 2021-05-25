@@ -1,3 +1,11 @@
+/*                          GNU GENERAL PUBLIC LICENSE
+ *                            Version 3, 29 June 2007
+ *
+ *        Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+ *            Everyone is permitted to copy and distribute verbatim copies
+ *             of this license document, but changing it is not allowed.
+ */
+
 package xyz.d1snin.corby.commands.fun;
 
 import com.google.gson.JsonArray;
@@ -69,9 +77,7 @@ public class CoinCommand extends Command {
                   e.getAuthor(),
                   String.format(
                       "We searched among %d coins but did not find any matches.", array.size()),
-                  e.getGuild(),
-                  null,
-                  null))
+                  e.getGuild()))
           .queue();
       return;
     }

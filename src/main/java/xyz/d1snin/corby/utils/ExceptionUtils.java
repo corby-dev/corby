@@ -1,3 +1,11 @@
+/*                          GNU GENERAL PUBLIC LICENSE
+ *                            Version 3, 29 June 2007
+ *
+ *        Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+ *            Everyone is permitted to copy and distribute verbatim copies
+ *             of this license document, but changing it is not allowed.
+ */
+
 package xyz.d1snin.corby.utils;
 
 import xyz.d1snin.corby.Corby;
@@ -19,10 +27,7 @@ public class ExceptionUtils {
                 exception.getClass().getName(),
                 exception.getMessage(),
                 exception.getCause(),
-                getStackTrace(exception)),
-            null,
-            null,
-            null),
+                getStackTrace(exception))),
         () ->
             Corby.log.warn(
                 "You have disabled messages from the bot, please enable them to receive information about errors during runtime."));

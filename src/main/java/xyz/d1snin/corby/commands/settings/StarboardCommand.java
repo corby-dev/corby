@@ -47,9 +47,7 @@ public class StarboardCommand extends Command {
                 String.format(
                     "Starboard is not configured on your server, use `%sstarboard channel <#channel>` to configure starboard.",
                     MongoPrefixManager.getPrefix(e.getGuild())),
-                e.getGuild(),
-                null,
-                null))
+                e.getGuild()))
         .queue();
   }
 
@@ -59,8 +57,6 @@ public class StarboardCommand extends Command {
     final String sbInfo =
         "Starboard is enabled on your server!\nRequired number of stars: %d\nChannel for starboard: %s";
     final String sbNotEnabled = "Starboard is not enabled on your server.";
-    final String sbNotConfigured =
-        "Starboard is not configured on your server, use `%sstarboard channel <#channel>` to configure starboard.";
     final String sbAlreadyEnabled = "Starboard is already enabled on your server.";
     final String sbEnabled = "Starboard has been successfully enabled on your server!";
     final String sbAlreadyDisabled = "Starboard is already disabled on your server.";
@@ -81,8 +77,7 @@ public class StarboardCommand extends Command {
       if (!starboard.isStatus()) {
         e.getTextChannel()
             .sendMessage(
-                Embeds.create(
-                    EmbedTemplate.ERROR, e.getAuthor(), sbNotEnabled, e.getGuild(), null, null))
+                Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbNotEnabled, e.getGuild()))
             .queue();
         return;
       }
@@ -94,9 +89,7 @@ public class StarboardCommand extends Command {
                   e.getAuthor(),
                   String.format(
                       sbInfo, starboard.getStars(), starboard.getChannel().getAsMention()),
-                  e.getGuild(),
-                  null,
-                  null))
+                  e.getGuild()))
           .queue();
       return;
     }
@@ -111,13 +104,7 @@ public class StarboardCommand extends Command {
         if (starboard.isStatus()) {
           e.getTextChannel()
               .sendMessage(
-                  Embeds.create(
-                      EmbedTemplate.ERROR,
-                      e.getAuthor(),
-                      sbAlreadyEnabled,
-                      e.getGuild(),
-                      null,
-                      null))
+                  Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbAlreadyEnabled, e.getGuild()))
               .queue();
           return;
         }
@@ -126,8 +113,7 @@ public class StarboardCommand extends Command {
         MongoStarboardManager.writeStarboard(starboard);
         e.getTextChannel()
             .sendMessage(
-                Embeds.create(
-                    EmbedTemplate.SUCCESS, e.getAuthor(), sbEnabled, e.getGuild(), null, null))
+                Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbEnabled, e.getGuild()))
             .queue();
 
         break;
@@ -142,12 +128,7 @@ public class StarboardCommand extends Command {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
-                      EmbedTemplate.ERROR,
-                      e.getAuthor(),
-                      sbAlreadyDisabled,
-                      e.getGuild(),
-                      null,
-                      null))
+                      EmbedTemplate.ERROR, e.getAuthor(), sbAlreadyDisabled, e.getGuild()))
               .queue();
           return;
         }
@@ -156,8 +137,7 @@ public class StarboardCommand extends Command {
         MongoStarboardManager.writeStarboard(starboard);
         e.getTextChannel()
             .sendMessage(
-                Embeds.create(
-                    EmbedTemplate.SUCCESS, e.getAuthor(), sbDisabled, e.getGuild(), null, null))
+                Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbDisabled, e.getGuild()))
             .queue();
 
         break;
@@ -168,12 +148,7 @@ public class StarboardCommand extends Command {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
-                      EmbedTemplate.ERROR,
-                      e.getAuthor(),
-                      sbChannelAlreadyInst,
-                      e.getGuild(),
-                      null,
-                      null))
+                      EmbedTemplate.ERROR, e.getAuthor(), sbChannelAlreadyInst, e.getGuild()))
               .queue();
           return;
         }
@@ -200,9 +175,7 @@ public class StarboardCommand extends Command {
                     String.format(
                         sbChannelInstalled,
                         e.getMessage().getMentionedChannels().get(0).getAsMention()),
-                    e.getGuild(),
-                    null,
-                    null))
+                    e.getGuild()))
             .queue();
         break;
 
@@ -219,8 +192,7 @@ public class StarboardCommand extends Command {
         if (!starboard.isStatus()) {
           e.getTextChannel()
               .sendMessage(
-                  Embeds.create(
-                      EmbedTemplate.ERROR, e.getAuthor(), sbNotEnabled, e.getGuild(), null, null))
+                  Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbNotEnabled, e.getGuild()))
               .queue();
           return;
         }
@@ -228,8 +200,7 @@ public class StarboardCommand extends Command {
         if (starboard.getStars() == stars) {
           e.getTextChannel()
               .sendMessage(
-                  Embeds.create(
-                      EmbedTemplate.ERROR, e.getAuthor(), sbStarsAlready, e.getGuild(), null, null))
+                  Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), sbStarsAlready, e.getGuild()))
               .queue();
           return;
         }
@@ -237,9 +208,7 @@ public class StarboardCommand extends Command {
         starboard.setStars(stars);
         MongoStarboardManager.writeStarboard(starboard);
         e.getTextChannel()
-            .sendMessage(
-                Embeds.create(
-                    EmbedTemplate.SUCCESS, e.getAuthor(), sbStars, e.getGuild(), null, null))
+            .sendMessage(Embeds.create(EmbedTemplate.SUCCESS, e.getAuthor(), sbStars, e.getGuild()))
             .queue();
 
       default:

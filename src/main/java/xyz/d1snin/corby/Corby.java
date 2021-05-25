@@ -28,6 +28,7 @@ import xyz.d1snin.corby.commands.settings.StarboardCommand;
 import xyz.d1snin.corby.database.DatabaseManager;
 import xyz.d1snin.corby.event.ReactionUpdateEvent;
 import xyz.d1snin.corby.event.ServerJoinEvent;
+import xyz.d1snin.corby.event.reactions.StarboardReactionEvent;
 import xyz.d1snin.corby.manager.CooldownsManager;
 import xyz.d1snin.corby.manager.LaunchArgumentsManager;
 import xyz.d1snin.corby.manager.config.ConfigFileManager;
@@ -111,6 +112,7 @@ public class Corby {
     jdaBuilder.addEventListeners(
         new ReactionUpdateEvent(),
         new ServerJoinEvent(),
+        new StarboardReactionEvent(),
         Command.add(new PingCommand()),
         Command.add(new PrefixCommand()),
         Command.add(new TerminateCommand()),
