@@ -44,7 +44,10 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.List;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Corby {
 
@@ -105,7 +108,11 @@ public class Corby {
 
     jdaBuilder.enableIntents(GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGE_REACTIONS);
     jdaBuilder.enableCache(
-        CacheFlag.CLIENT_STATUS, CacheFlag.VOICE_STATE, CacheFlag.ACTIVITY, CacheFlag.ROLE_TAGS, CacheFlag.EMOTE);
+        CacheFlag.CLIENT_STATUS,
+        CacheFlag.VOICE_STATE,
+        CacheFlag.ACTIVITY,
+        CacheFlag.ROLE_TAGS,
+        CacheFlag.EMOTE);
     jdaBuilder.setEnableShutdownHook(true);
     jdaBuilder.setStatus(OnlineStatus.IDLE);
 

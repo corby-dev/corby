@@ -45,7 +45,8 @@ public class ReactionUpdateEvent extends Listener {
     Message msg = thisEvent.retrieveMessage().complete();
 
     MessageReaction.ReactionEmote thisReaction = thisEvent.getReaction().getReactionEmote();
-    String emoteId = thisReaction.isEmoji() ? thisReaction.getName() : thisReaction.getEmote().getId();
+    String emoteId =
+        thisReaction.isEmoji() ? thisReaction.getName() : thisReaction.getEmote().getId();
 
     for (Map<String, ConcurrentHashMap<String, Runnable>> element : reactions) {
       if (element.containsKey(msg.getId())

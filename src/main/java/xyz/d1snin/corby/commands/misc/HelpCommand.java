@@ -26,17 +26,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class HelpCommand extends Command {
 
+  private Emote next;
+  private Emote back;
+  private boolean extEmojisAllowed;
+
   public HelpCommand() {
     this.alias = "help";
     this.description = "Gives you information about commands.";
     this.category = Category.MISC;
     this.usages = new String[] {"alias", "<Command Name>"};
   }
-
-  private Emote next;
-  private Emote back;
-
-  private boolean extEmojisAllowed;
 
   @Override
   protected void execute(MessageReceivedEvent e, String[] args) {
