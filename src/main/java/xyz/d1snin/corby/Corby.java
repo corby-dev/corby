@@ -197,6 +197,7 @@ public class Corby {
     log.warn("Terminating... Bye!");
     api.shutdownNow();
     schedulerPresence.shutdown();
+    service.shutdown();
     System.exit(exitCode);
   }
 
