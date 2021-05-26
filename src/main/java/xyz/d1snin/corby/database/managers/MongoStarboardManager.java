@@ -15,7 +15,7 @@ import com.mongodb.DBObject;
 import net.dv8tion.jda.api.entities.Guild;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.DatabaseManager;
-import xyz.d1snin.corby.model.Starboard;
+import xyz.d1snin.corby.model.database.Starboard;
 
 public class MongoStarboardManager {
 
@@ -25,15 +25,16 @@ public class MongoStarboardManager {
   public static void writeStarboard(Starboard starboard) {
     if (getStarboard(starboard.getGuild()) != null) {
       collection.update(
-          new BasicDBObject().append("guild", starboard.getGuild().getId()), toDbObject(starboard));
+          new BasicDBObject().append("guild", starboard.getGuild().getId()),
+          starboard.toDBObject());
     } else {
       collection.insert(
-          toDbObject(
-              new Starboard(
+          new Starboard(
                   starboard.getGuild(),
                   starboard.getChannel(),
                   Corby.config.getDefaultStarboardStars(),
-                  Corby.config.isDefaultStarboardStatus())));
+                  Corby.config.isDefaultStarboardStatus())
+              .toDBObject());
     }
   }
 
@@ -43,20 +44,7 @@ public class MongoStarboardManager {
       return null;
     }
     DBObject starboard = starboardCursor.next();
-    return new Starboard(
-        Corby.getApi().getGuildById(starboard.get("guild").toString()),
-        Corby.getApi().getTextChannelById(starboard.get("channel").toString()),
-        (int) starboard.get("stars"),
-        (boolean) starboard.get("status"));
-  }
 
-  private static DBObject toDbObject(Object object) {
-    Starboard starboard = (Starboard) object;
-
-    return new BasicDBObject()
-        .append("guild", starboard.getGuild().getId())
-        .append("channel", starboard.getChannel().getId())
-        .append("stars", starboard.getStars())
-        .append("status", starboard.isStatus());
+    return (Starboard) new Starboard().fromDBObject(starboard);
   }
 }

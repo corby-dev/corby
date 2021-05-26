@@ -17,7 +17,7 @@ import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactio
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.managers.MongoStarboardManager;
 import xyz.d1snin.corby.enums.EmbedTemplate;
-import xyz.d1snin.corby.model.Starboard;
+import xyz.d1snin.corby.model.database.Starboard;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.OtherUtils;
 

@@ -10,7 +10,6 @@ apply plugin: 'com.github.johnrengelman.shadow'
 group 'xyz.d1snin.corby'
 version 'v1.1'
 
-
 mainClassName = "xyz.d1snin.corby.Corby"
 
 allprojects {
@@ -20,7 +19,11 @@ allprojects {
 
 repositories {
     mavenCentral()
-    maven { url "https://jitpack.io" }
+
+    maven {
+        url "https://jitpack.io"
+    }
+
     maven {
         name 'm2-dv8tion'
         url 'https://m2.dv8tion.net/releases'
@@ -30,6 +33,7 @@ repositories {
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.20'
     annotationProcessor 'org.projectlombok:lombok:1.18.20'
+
     implementation 'org.slf4j:slf4j-simple:1.7.30'
     implementation 'net.dv8tion:JDA:4.2.1_265'
     implementation 'com.google.code.gson:gson:2.8.6'
