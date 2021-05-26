@@ -12,7 +12,7 @@ import lombok.Getter;
 
 import java.awt.*;
 
-@Getter()
+@Getter
 public class Config {
   public static final int NORMAL_SHUTDOWN_EXIT_CODE = 0;
   private String token;
@@ -29,11 +29,15 @@ public class Config {
   private Color successColor;
   private Color starboardColor;
   private String emoteStar;
+  private String emoteDefaultBack;
+  private String emoteDefaultNext;
   private int defaultStarboardStars;
   private boolean defaultStarboardStatus;
   private int defaultCooldown;
   private String emoteSuccess;
   private String emoteError;
+  private String emoteBack;
+  private String emoteNext;
 
   public Config(
       String token,
@@ -44,7 +48,9 @@ public class Config {
       boolean defaultStarboardStatus,
       int defaultCooldown,
       String emoteSuccess,
-      String emoteError) {
+      String emoteError,
+      String emoteBack,
+      String emoteNext) {
 
     this.token = token;
     this.testBotToken = testBotToken;
@@ -55,6 +61,8 @@ public class Config {
     this.defaultCooldown = defaultCooldown;
     this.emoteSuccess = emoteSuccess;
     this.emoteError = emoteError;
+    this.emoteBack = emoteBack;
+    this.emoteNext = emoteNext;
   }
 
   public Config() {}
@@ -69,7 +77,9 @@ public class Config {
       String inviteUrl,
       String id,
       String nameAsTag,
-      String emoteStar) {
+      String emoteStar,
+      String emoteDefaultBack,
+      String emoteDefaultNext) {
     this.defaultColor = defaultColor;
     this.errorColor = errorColor;
     this.successColor = successColor;
@@ -80,5 +90,7 @@ public class Config {
     this.id = id;
     this.nameAsTag = nameAsTag;
     this.emoteStar = emoteStar;
+    this.emoteDefaultBack = emoteDefaultBack;
+    this.emoteDefaultNext = emoteDefaultNext;
   }
 }

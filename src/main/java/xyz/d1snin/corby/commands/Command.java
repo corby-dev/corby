@@ -195,7 +195,15 @@ public abstract class Command extends ListenerAdapter {
       }
 
       try {
-        execute(e, getCommandArgs(msg));
+        Corby.getService()
+            .execute(
+                () -> {
+                  try {
+                    execute(e, getCommandArgs(msg));
+                  } catch (IOException ioException) {
+                    ExceptionUtils.processException(ioException);
+                  }
+                });
       } catch (Exception exception) {
         ExceptionUtils.processException(exception);
       }

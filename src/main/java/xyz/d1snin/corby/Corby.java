@@ -44,9 +44,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.util.List;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class Corby {
 
@@ -57,10 +55,12 @@ public class Corby {
           Permission.MESSAGE_HISTORY,
           Permission.MESSAGE_READ,
           Permission.MESSAGE_WRITE,
+          Permission.MESSAGE_MANAGE,
           Permission.VIEW_CHANNEL,
           Permission.MANAGE_CHANNEL);
   private static final ScheduledExecutorService schedulerPresence =
       Executors.newScheduledThreadPool(10);
+  private static final ForkJoinPool service = new ForkJoinPool();
   private static final List<String> presences = new ArrayList<>();
   private static final Random random = new Random();
   public static Config config;
@@ -105,7 +105,7 @@ public class Corby {
 
     jdaBuilder.enableIntents(GatewayIntent.GUILD_PRESENCES, GatewayIntent.GUILD_MESSAGE_REACTIONS);
     jdaBuilder.enableCache(
-        CacheFlag.CLIENT_STATUS, CacheFlag.VOICE_STATE, CacheFlag.ACTIVITY, CacheFlag.ROLE_TAGS);
+        CacheFlag.CLIENT_STATUS, CacheFlag.VOICE_STATE, CacheFlag.ACTIVITY, CacheFlag.ROLE_TAGS, CacheFlag.EMOTE);
     jdaBuilder.setEnableShutdownHook(true);
     jdaBuilder.setStatus(OnlineStatus.IDLE);
 
@@ -147,7 +147,9 @@ public class Corby {
         api.getInviteUrl(permissions),
         api.getSelfUser().getId(),
         api.getSelfUser().getAsTag(),
-        "⭐");
+        "⭐",
+        "◀️",
+        "➡️");
 
     log = LoggerFactory.getLogger(config.getBotName());
 
@@ -197,5 +199,9 @@ public class Corby {
 
   public static String getUptime() {
     return OtherUtils.formatMillis(rb.getUptime());
+  }
+
+  public static ForkJoinPool getService() {
+    return service;
   }
 }

@@ -8,58 +8,66 @@
 
 package xyz.d1snin.corby.commands.misc;
 
-import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Emote;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.MongoPrefixManager;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
+import xyz.d1snin.corby.event.ReactionUpdateEvent;
 import xyz.d1snin.corby.utils.Embeds;
-import xyz.d1snin.corby.utils.OtherUtils;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class HelpCommand extends Command {
-
-  private static final String incorrectPageMessage = "This page does not exist.";
 
   public HelpCommand() {
     this.alias = "help";
     this.description = "Gives you information about commands.";
     this.category = Category.MISC;
-    this.usages = new String[] {"alias", "<Page Number>", "<Command Name>"};
+    this.usages = new String[] {"alias", "<Command Name>"};
   }
+
+  private Emote next;
+  private Emote back;
+
+  private boolean extEmojisAllowed;
 
   @Override
   protected void execute(MessageReceivedEvent e, String[] args) {
+    back = Corby.getApi().getEmoteById(Corby.config.getEmoteBack());
+    next = Corby.getApi().getEmoteById(Corby.config.getEmoteNext());
+
+    extEmojisAllowed =
+        Objects.requireNonNull(e.getGuild().getBotRole())
+            .getPermissions()
+            .contains(Permission.MESSAGE_EXT_EMOJI);
 
     final String couldNotFindMessage = "Could not find this command: `%s`";
 
     if (args.length < 2) {
+      AtomicInteger page = new AtomicInteger(1);
       e.getTextChannel()
-          .sendMessage(Objects.requireNonNull(getEmbedByPage(1, e.getGuild(), e.getAuthor(), e)))
-          .queue();
-      return;
-    }
+          .sendMessage(Objects.requireNonNull(getEmbedByPage(page.get(), e)))
+          .queue(
+              message -> {
+                addReactionsSafe(message, e, back, next);
 
-    if (OtherUtils.isNumeric(args[1])) {
+                ReactionUpdateEvent.registerReaction(
+                    message.getId(),
+                    extEmojisAllowed ? back.getId() : Corby.config.getEmoteDefaultBack(),
+                    getRun(page, e, message, back));
 
-      MessageEmbed embed =
-          getEmbedByPage(Integer.parseInt(args[1]), e.getGuild(), e.getAuthor(), e);
-
-      if (embed == null) {
-        e.getTextChannel()
-            .sendMessage(
-                Embeds.create(
-                    EmbedTemplate.ERROR, e.getAuthor(), incorrectPageMessage, e.getGuild()))
-            .queue();
-        return;
-      }
-
-      e.getTextChannel().sendMessage(Objects.requireNonNull(embed)).queue();
+                ReactionUpdateEvent.registerReaction(
+                    message.getId(),
+                    extEmojisAllowed ? next.getId() : Corby.config.getEmoteDefaultNext(),
+                    getRun(page, e, message, next));
+              });
       return;
     }
 
@@ -101,7 +109,7 @@ public class HelpCommand extends Command {
     return args.length <= 2;
   }
 
-  private MessageEmbed getEmbedByPage(int page, Guild guild, User user, MessageReceivedEvent e) {
+  private MessageEmbed getEmbedByPage(int page, MessageReceivedEvent e) {
 
     int categories = Category.values().length;
 
@@ -116,17 +124,9 @@ public class HelpCommand extends Command {
       }
     }
 
-    if (category == Category.ADMIN && !user.getId().equals(Corby.config.getOwnerId())) {
-      e.getTextChannel()
-          .sendMessage(
-              Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), incorrectPageMessage, e.getGuild()))
-          .queue();
-      return null;
-    }
-
     StringBuilder sb = new StringBuilder();
 
-    String prefix = MongoPrefixManager.getPrefix(guild).getPrefix();
+    String prefix = MongoPrefixManager.getPrefix(e.getGuild()).getPrefix();
 
     for (Command c : getCommandsByCategory(category)) {
       sb.append("`")
@@ -141,8 +141,62 @@ public class HelpCommand extends Command {
     assert category != null;
     return Embeds.create(
         EmbedTemplate.DEFAULT,
-        user,
+        e.getAuthor(),
         "**" + category.getName() + " Commands. Page " + page + "/" + categories + ".**\n\n" + sb,
         e.getGuild());
+  }
+
+  private Runnable getRun(
+      AtomicInteger page, MessageReceivedEvent e, Message message, Emote emote) {
+    return () -> {
+      if (getEmbedByPage(emote == next ? page.get() + 1 : page.get() - 1, e) == null) {
+        if (extEmojisAllowed) {
+          message.removeReaction(emote, e.getAuthor()).queue();
+        } else {
+          message
+              .removeReaction(
+                  emote == next
+                      ? Corby.config.getEmoteDefaultNext()
+                      : Corby.config.getEmoteDefaultBack(),
+                  e.getAuthor())
+              .queue();
+        }
+        return;
+      }
+      message
+          .editMessage(
+              Objects.requireNonNull(getEmbedByPage(page.addAndGet(emote == next ? +1 : -1), e)))
+          .queue();
+      if (extEmojisAllowed) {
+        message.removeReaction(emote, e.getAuthor()).queue();
+      } else {
+        message
+            .removeReaction(
+                emote == next
+                    ? Corby.config.getEmoteDefaultNext()
+                    : Corby.config.getEmoteDefaultBack(),
+                e.getAuthor())
+            .queue();
+      }
+    };
+  }
+
+  private void addReactionsSafe(Message message, MessageReceivedEvent e, Emote... emotes) {
+    if (Objects.requireNonNull(e.getGuild().getBotRole())
+        .getPermissions()
+        .contains(Permission.MESSAGE_EXT_EMOJI)) {
+      for (Emote emote : emotes) {
+        message.addReaction(emote).queue();
+      }
+    } else {
+      for (Emote emote : emotes) {
+        message
+            .addReaction(
+                emote == next
+                    ? Corby.config.getEmoteDefaultNext()
+                    : Corby.config.getEmoteDefaultBack())
+            .queue();
+      }
+    }
   }
 }

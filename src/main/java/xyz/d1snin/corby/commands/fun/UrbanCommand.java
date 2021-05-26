@@ -26,7 +26,7 @@ public class UrbanCommand extends Command {
 
   public UrbanCommand() {
     this.alias = "urban";
-    this.description = "Defines a word from *urbandictionary.com*.";
+    this.description = "Defines a word from urbandictionary.com.";
     this.category = Category.FUN;
     this.usages = new String[] {"<Phrase>"};
   }

@@ -10,6 +10,7 @@ package xyz.d1snin.corby.event;
 
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.hooks.EventListener;
+import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.utils.ExceptionUtils;
 
 import java.util.Arrays;
@@ -30,7 +31,7 @@ public abstract class Listener implements EventListener {
                   .event())
           .contains(thisEvent)) {
         try {
-          perform(event);
+          Corby.getService().execute(() -> perform(event));
         } catch (Exception e) {
           ExceptionUtils.processException(e);
         }

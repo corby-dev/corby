@@ -15,28 +15,31 @@ import java.util.Objects;
 
 public class ExceptionUtils {
   public static void processException(Exception exception) {
-
-    final String message = "**An error was handled.**\n```%s: %s\n%s\n%s```";
-    OtherUtils.sendPrivateMessageSafe(
-        Objects.requireNonNull(Corby.getApi().getUserById(Corby.config.getOwnerId())),
-        Embeds.create(
-            EmbedTemplate.DEFAULT,
-            Corby.getApi().getUserById(Corby.config.getOwnerId()),
-            String.format(
-                message,
-                exception.getClass().getName(),
-                exception.getMessage(),
-                exception.getCause(),
-                getStackTrace(exception))),
-        () ->
-            Corby.log.warn(
-                "You have disabled messages from the bot, please enable them to receive information about errors during runtime."));
+    Corby.getService()
+        .execute(
+            () -> {
+              final String message = "**An error was handled.**\n```%s: %s\n%s\n%s```";
+              OtherUtils.sendPrivateMessageSafe(
+                  Objects.requireNonNull(Corby.getApi().getUserById(Corby.config.getOwnerId())),
+                  Embeds.create(
+                      EmbedTemplate.DEFAULT,
+                      Corby.getApi().getUserById(Corby.config.getOwnerId()),
+                      String.format(
+                          message,
+                          exception.getClass().getName(),
+                          exception.getMessage(),
+                          exception.getCause(),
+                          getStackTrace(exception))),
+                  () ->
+                      Corby.log.warn(
+                          "You have disabled messages from the bot, please enable them to receive information about errors during runtime."));
+            });
   }
 
   private static String getStackTrace(Exception e) {
     StringBuilder sb = new StringBuilder();
     for (StackTraceElement element : e.getStackTrace()) {
-      if (sb.length() > 1900) {
+      if (sb.length() > 1800) {
         break;
       }
       sb.append(element.toString()).append("\n");

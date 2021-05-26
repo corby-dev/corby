@@ -9,38 +9,50 @@
 package xyz.d1snin.corby.event;
 
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
 import xyz.d1snin.corby.annotation.EventListener;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-@EventListener(event = {GuildMessageReactionAddEvent.class, GuildMessageReactionRemoveEvent.class})
+@EventListener(event = {GuildMessageReactionAddEvent.class})
 public class ReactionUpdateEvent extends Listener {
 
-  private static final Map<String, ConcurrentHashMap<String, Runnable>> reactionMap =
-      new ConcurrentHashMap<>();
+  private static final CopyOnWriteArrayList<Map<String, ConcurrentHashMap<String, Runnable>>>
+      reactions = new CopyOnWriteArrayList<>();
 
   public static void registerReaction(String messageId, String reactionId, Runnable execute) {
     ConcurrentHashMap<String, Runnable> concurrentHashMap = new ConcurrentHashMap<>();
     concurrentHashMap.put(reactionId, execute);
-    reactionMap.put(messageId, concurrentHashMap);
+
+    ConcurrentHashMap<String, ConcurrentHashMap<String, Runnable>> eventExecution =
+        new ConcurrentHashMap<>();
+    eventExecution.put(messageId, concurrentHashMap);
+
+    reactions.add(eventExecution);
   }
 
   @Override
   protected void perform(GenericEvent event) {
     GenericGuildMessageReactionEvent thisEvent = ((GenericGuildMessageReactionEvent) event);
-
+    if (thisEvent.getReaction().isSelf()) {
+      return;
+    }
     Message msg = thisEvent.retrieveMessage().complete();
 
-    String emoteId = thisEvent.getReaction().getReactionEmote().getId();
-    if (reactionMap.containsKey(msg.getId())
-        && reactionMap.get(msg.getId()).containsKey(emoteId)
-        && !thisEvent.getReaction().isSelf()) {
-      reactionMap.get(msg.getId()).get(emoteId).run();
+    MessageReaction.ReactionEmote thisReaction = thisEvent.getReaction().getReactionEmote();
+    String emoteId = thisReaction.isEmoji() ? thisReaction.getName() : thisReaction.getEmote().getId();
+
+    for (Map<String, ConcurrentHashMap<String, Runnable>> element : reactions) {
+      if (element.containsKey(msg.getId())
+          && element.get(msg.getId()).containsKey(emoteId)
+          && !thisEvent.getReaction().isSelf()) {
+        element.get(msg.getId()).get(emoteId).run();
+      }
     }
   }
 }
