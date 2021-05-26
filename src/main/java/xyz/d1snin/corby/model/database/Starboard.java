@@ -8,46 +8,18 @@
 
 package xyz.d1snin.corby.model.database;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.TextChannel;
-import xyz.d1snin.corby.Corby;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class Starboard implements MongoSerializable {
-
-  private Guild guild;
-
-  private TextChannel channel;
-
+@NoArgsConstructor
+public class Starboard {
+  private String guild;
+  private String channel;
   private int stars;
-
   private boolean status;
-
-  @Override
-  public DBObject toDBObject() {
-    return new BasicDBObject()
-        .append("guild", getGuild().getId())
-        .append("channel", getChannel().getId())
-        .append("stars", getStars())
-        .append("status", isStatus());
-  }
-
-  @Override
-  public MongoSerializable fromDBObject(DBObject object) {
-    setGuild(Corby.getApi().getGuildById(object.get("guild").toString()));
-    setChannel(Corby.getApi().getTextChannelById(object.get("channel").toString()));
-    setStars((int) object.get("stars"));
-    setStatus((boolean) object.get("status"));
-
-    return this;
-  }
 }

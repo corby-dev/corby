@@ -76,6 +76,8 @@ public class PrefixCommand extends Command {
     }
 
     prefix.setPrefix(newPrefix);
+    prefix.setGuild(e.getGuild().getId());
+
     MongoPrefixManager.writePrefix(prefix);
 
     e.getTextChannel()

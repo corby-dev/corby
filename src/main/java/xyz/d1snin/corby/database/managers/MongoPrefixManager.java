@@ -8,36 +8,31 @@
 
 package xyz.d1snin.corby.database.managers;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
 import net.dv8tion.jda.api.entities.Guild;
+import org.jongo.MongoCollection;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.DatabaseManager;
 import xyz.d1snin.corby.model.database.Prefix;
 
 public class MongoPrefixManager {
-  private static final DBCollection collection =
-      DatabaseManager.getDb().getCollection("guildprefix");
+  private static final MongoCollection collection =
+      DatabaseManager.getJongo().getCollection("guildprefix");
+
+  public static Prefix getPrefix(Guild guild) {
+    return isDatabaseContainsPrefix(guild.getId())
+        ? collection.findOne(String.format("{guild: '%s'}", guild.getId())).as(Prefix.class)
+        : new Prefix(guild.getId(), Corby.config.getBotPrefixDefault());
+  }
 
   public static void writePrefix(Prefix prefix) {
     if (isDatabaseContainsPrefix(prefix.getGuild())) {
-      collection.update(
-          new BasicDBObject().append("guild", prefix.getGuild().getId()), prefix.toDBObject());
+      collection.update(String.format("{guild: '%s'}", prefix.getGuild())).with(prefix);
     } else {
-      collection.insert(prefix.toDBObject());
+      collection.insert(prefix);
     }
   }
 
-  public static Prefix getPrefix(Guild guild) {
-    DBCursor prefixCursor = collection.find(new BasicDBObject().append("guild", guild.getId()));
-    if (!prefixCursor.hasNext()) {
-      return new Prefix(guild, Corby.config.getBotPrefixDefault());
-    }
-    return (Prefix) new Prefix().fromDBObject(prefixCursor.next());
-  }
-
-  private static boolean isDatabaseContainsPrefix(Guild guild) {
-    return collection.count(new BasicDBObject().append("guild", guild.getId())) > 0;
+  private static boolean isDatabaseContainsPrefix(String guildId) {
+    return collection.count(String.format("{guild: '%s'}", guildId)) > 0;
   }
 }

@@ -8,21 +8,21 @@
 
 package xyz.d1snin.corby.event.reactions;
 
-import lombok.Getter;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import xyz.d1snin.corby.Corby;
 
 public abstract class ReactionEvent extends ListenerAdapter {
-  @Getter protected String emote;
 
-  protected abstract void execute(GenericGuildMessageReactionEvent event, Message msg);
+  protected String emoji;
+
+  protected abstract void execute(GuildMessageReactionAddEvent event, Message msg);
 
   @Override
-  public void onGenericGuildMessageReaction(@NotNull GenericGuildMessageReactionEvent event) {
-    if (event.getReaction().getReactionEmote().getName().equals(getEmote())) {
+  public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent event) {
+    if (emoji.equals(event.getReaction().getReactionEmote().getName())) {
       Corby.getService().execute(() -> execute(event, event.retrieveMessage().complete()));
     }
   }

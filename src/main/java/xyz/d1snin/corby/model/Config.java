@@ -9,10 +9,12 @@
 package xyz.d1snin.corby.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.awt.*;
 
 @Getter
+@NoArgsConstructor
 public class Config {
   public static final int NORMAL_SHUTDOWN_EXIT_CODE = 0;
   private String token;
@@ -50,7 +52,10 @@ public class Config {
       String emoteSuccess,
       String emoteError,
       String emoteBack,
-      String emoteNext) {
+      String emoteNext,
+      String emoteStar,
+      String emoteDefaultBack,
+      String emoteDefaultNext) {
 
     this.token = token;
     this.testBotToken = testBotToken;
@@ -63,9 +68,10 @@ public class Config {
     this.emoteError = emoteError;
     this.emoteBack = emoteBack;
     this.emoteNext = emoteNext;
+    this.emoteStar = emoteStar;
+    this.emoteDefaultBack = emoteDefaultBack;
+    this.emoteDefaultNext = emoteDefaultNext;
   }
-
-  public Config() {}
 
   public void initOther(
       Color defaultColor,
@@ -76,10 +82,7 @@ public class Config {
       String botPfpUrl,
       String inviteUrl,
       String id,
-      String nameAsTag,
-      String emoteStar,
-      String emoteDefaultBack,
-      String emoteDefaultNext) {
+      String nameAsTag) {
     this.defaultColor = defaultColor;
     this.errorColor = errorColor;
     this.successColor = successColor;
@@ -89,8 +92,5 @@ public class Config {
     this.inviteUrl = inviteUrl;
     this.id = id;
     this.nameAsTag = nameAsTag;
-    this.emoteStar = emoteStar;
-    this.emoteDefaultBack = emoteDefaultBack;
-    this.emoteDefaultNext = emoteDefaultNext;
   }
 }

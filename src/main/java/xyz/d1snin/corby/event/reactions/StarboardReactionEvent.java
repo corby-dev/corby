@@ -13,7 +13,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.managers.MongoStarboardManager;
 import xyz.d1snin.corby.enums.EmbedTemplate;
@@ -27,19 +27,21 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 public class StarboardReactionEvent extends ReactionEvent {
+
   private static final Set<MessageReaction> executed = new CopyOnWriteArraySet<>();
 
   public StarboardReactionEvent() {
-    this.emote = Corby.config.getEmoteStar();
+    this.emoji = Corby.config.getEmoteStar();
   }
 
   @Override
-  protected void execute(GenericGuildMessageReactionEvent event, Message msg) {
+  protected void execute(GuildMessageReactionAddEvent event, Message msg) {
     Starboard starboard = MongoStarboardManager.getStarboard(event.getGuild());
 
     if (starboard == null) {
       return;
     }
+
     if (!starboard.isStatus()) {
       return;
     }
@@ -47,6 +49,7 @@ public class StarboardReactionEvent extends ReactionEvent {
     if (msg.getAuthor().getId().equals(Corby.config.getId())) {
       return;
     }
+
     if (msg.getReactions().isEmpty()) {
       return;
     }
@@ -93,7 +96,9 @@ public class StarboardReactionEvent extends ReactionEvent {
         if (attachment != null && attachment.isImage()) {
           builder.setImage(attachment.getProxyUrl());
         }
-        starboard.getChannel().sendMessage(builder.build()).queue();
+        Objects.requireNonNull(Corby.getApi().getTextChannelById(starboard.getChannel()))
+            .sendMessage(builder.build())
+            .queue();
       } catch (Exception e) {
         User owner =
             Objects.requireNonNull(Objects.requireNonNull(event.getGuild().getOwner()).getUser());

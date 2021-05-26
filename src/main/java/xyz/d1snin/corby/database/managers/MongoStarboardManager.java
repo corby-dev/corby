@@ -8,43 +8,34 @@
 
 package xyz.d1snin.corby.database.managers;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
 import net.dv8tion.jda.api.entities.Guild;
+import org.jongo.MongoCollection;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.DatabaseManager;
 import xyz.d1snin.corby.model.database.Starboard;
 
+import java.util.Objects;
+
 public class MongoStarboardManager {
 
-  private static final DBCollection collection =
-      DatabaseManager.getDb().getCollection("starboards");
+  private static final MongoCollection collection =
+      DatabaseManager.getJongo().getCollection("starboards");
+
+  public static Starboard getStarboard(Guild guild) {
+    return collection.findOne(String.format("{guild: '%s'}", guild.getId())).as(Starboard.class);
+  }
 
   public static void writeStarboard(Starboard starboard) {
-    if (getStarboard(starboard.getGuild()) != null) {
-      collection.update(
-          new BasicDBObject().append("guild", starboard.getGuild().getId()),
-          starboard.toDBObject());
+    if (getStarboard(Objects.requireNonNull(Corby.getApi().getGuildById(starboard.getGuild())))
+        != null) {
+      collection.update(String.format("{guild: '%s'}", starboard.getGuild())).with(starboard);
     } else {
       collection.insert(
           new Starboard(
-                  starboard.getGuild(),
-                  starboard.getChannel(),
-                  Corby.config.getDefaultStarboardStars(),
-                  Corby.config.isDefaultStarboardStatus())
-              .toDBObject());
+              starboard.getGuild(),
+              starboard.getChannel(),
+              Corby.config.getDefaultStarboardStars(),
+              Corby.config.isDefaultStarboardStatus()));
     }
-  }
-
-  public static Starboard getStarboard(Guild guild) {
-    DBCursor starboardCursor = collection.find(new BasicDBObject().append("guild", guild.getId()));
-    if (!starboardCursor.hasNext()) {
-      return null;
-    }
-    DBObject starboard = starboardCursor.next();
-
-    return (Starboard) new Starboard().fromDBObject(starboard);
   }
 }
