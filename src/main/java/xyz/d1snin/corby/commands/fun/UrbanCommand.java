@@ -44,7 +44,7 @@ public class UrbanCommand extends Command {
                   Embeds.create(
                       EmbedTemplate.ERROR,
                       e.getAuthor(),
-                      "Could not find this word.",
+                      "Could not find this phrase.",
                       e.getGuild());
               try {
                 array =
