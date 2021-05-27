@@ -46,10 +46,6 @@ public class StarboardReactionEvent extends ReactionEvent {
       return;
     }
 
-    if (msg.getAuthor().getId().equals(Corby.config.getId())) {
-      return;
-    }
-
     if (msg.getReactions().isEmpty()) {
       return;
     }
