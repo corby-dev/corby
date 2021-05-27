@@ -14,6 +14,7 @@ import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
+import xyz.d1snin.corby.utils.OtherUtils;
 
 public class UptimeCommand extends Command {
 
@@ -30,7 +31,8 @@ public class UptimeCommand extends Command {
             Embeds.create(
                 EmbedTemplate.DEFAULT,
                 e.getAuthor(),
-                String.format("Uptime: **[ %s ]**", Corby.getUptime()),
+                OtherUtils.formatMessageKeyText(
+                    "Uptime", String.format("[ %s ]", Corby.getUptime())),
                 e.getGuild()))
         .queue();
   }

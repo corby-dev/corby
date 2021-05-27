@@ -30,12 +30,10 @@ public class MongoStarboardManager {
         != null) {
       collection.update(String.format("{guild: '%s'}", starboard.getGuild())).with(starboard);
     } else {
-      collection.insert(
-          new Starboard(
-              starboard.getGuild(),
-              starboard.getChannel(),
-              Corby.config.getDefaultStarboardStars(),
-              Corby.config.isDefaultStarboardStatus()));
+      starboard.setStatus(Corby.config.isDefaultStarboardStatus());
+      starboard.setStars(Corby.config.getDefaultStarboardStars());
+
+      collection.insert(starboard);
     }
   }
 }

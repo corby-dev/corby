@@ -14,6 +14,7 @@ import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
+import xyz.d1snin.corby.utils.OtherUtils;
 
 public class PingCommand extends Command {
 
@@ -30,7 +31,8 @@ public class PingCommand extends Command {
             Embeds.create(
                 EmbedTemplate.DEFAULT,
                 e.getAuthor(),
-                String.format("Current ping: %dms", Corby.getApi().getGatewayPing()),
+                OtherUtils.formatMessageKeyText(
+                    "Current ping", String.format("%dms", Corby.getApi().getGatewayPing())),
                 e.getGuild()))
         .queue();
   }
