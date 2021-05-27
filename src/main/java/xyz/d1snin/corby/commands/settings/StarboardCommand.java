@@ -56,8 +56,7 @@ public class StarboardCommand extends Command {
   @Override
   protected void execute(MessageReceivedEvent e, String[] args) {
 
-    final String sbInfo =
-        "Starboard is enabled on your server!\nRequired number of stars: %d\nChannel for starboard: %s";
+    final String sbInfo = "Starboard is enabled on your server!\n\n%s\n%s";
     final String sbNotEnabled = "Starboard is not enabled on your server.";
     final String sbAlreadyEnabled = "Starboard is already enabled on your server.";
     final String sbEnabled = "Starboard has been successfully enabled on your server!";
@@ -91,10 +90,13 @@ public class StarboardCommand extends Command {
                   e.getAuthor(),
                   String.format(
                       sbInfo,
-                      starboard.getStars(),
-                      Objects.requireNonNull(
-                              Corby.getApi().getTextChannelById(starboard.getChannel()))
-                          .getAsMention()),
+                      OtherUtils.formatMessageKeyText(
+                          "Required number of stars", String.valueOf(starboard.getStars())),
+                      OtherUtils.formatMessageKeyText(
+                          "Channel for starboard",
+                          Objects.requireNonNull(
+                                  Corby.getApi().getTextChannelById(starboard.getChannel()))
+                              .getAsMention())),
                   e.getGuild()))
           .queue();
       return;

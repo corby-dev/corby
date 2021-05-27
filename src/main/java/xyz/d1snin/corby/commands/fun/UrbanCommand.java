@@ -18,6 +18,7 @@ import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
+import xyz.d1snin.corby.utils.OtherUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -91,7 +92,7 @@ public class UrbanCommand extends Command {
                           : Embeds.create(
                               EmbedTemplate.SUCCESS,
                               e.getAuthor(),
-                              String.format("**Definition:** %s", definition),
+                              OtherUtils.formatMessageKeyText("Definition", definition),
                               e.getGuild()))
                   .queue();
             });

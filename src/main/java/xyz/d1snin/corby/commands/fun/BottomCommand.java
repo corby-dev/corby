@@ -16,6 +16,7 @@ import xyz.d1snin.corby.database.managers.MongoPrefixManager;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
+import xyz.d1snin.corby.utils.OtherUtils;
 
 public class BottomCommand extends Command {
 
@@ -33,7 +34,8 @@ public class BottomCommand extends Command {
       final int edMsgLimit = 300;
 
       final String result =
-          "**Result:**\n\n%s\n\nPowered by [bottom-software-foundation](https://github.com/bottom-software-foundation/bottom-java).";
+          "%s\n\nPowered by [bottom-software-foundation](https://github.com/bottom-software-foundation/bottom-java).";
+
       final String longR = "Sorry, generated result is too long.";
 
       final String message =
@@ -57,7 +59,8 @@ public class BottomCommand extends Command {
                   Embeds.create(
                       EmbedTemplate.SUCCESS,
                       e.getAuthor(),
-                      String.format(result, encodedMessage),
+                      String.format(
+                          OtherUtils.formatMessageKeyText("Result", "%s"), encodedMessage),
                       e.getGuild(),
                       null,
                       null))
@@ -80,7 +83,8 @@ public class BottomCommand extends Command {
                   Embeds.create(
                       EmbedTemplate.SUCCESS,
                       e.getAuthor(),
-                      String.format(result, decodedMessage),
+                      String.format(
+                          OtherUtils.formatMessageKeyText("Result", "%s"), decodedMessage),
                       e.getGuild()))
               .queue();
 

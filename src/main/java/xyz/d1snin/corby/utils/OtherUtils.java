@@ -42,6 +42,10 @@ public class OtherUtils {
         TimeUnit.MILLISECONDS.toSeconds(ms) % TimeUnit.MINUTES.toSeconds(1));
   }
 
+  public static String formatMessageKeyText(String key, String text) {
+    return String.format("**%s:** *%s*", key, text);
+  }
+
   public static boolean isImage(String url) {
     String lowered = url.toLowerCase();
     return (lowered.endsWith(".jpg") || lowered.endsWith(".png") || lowered.endsWith(".jpeg"));

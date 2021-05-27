@@ -124,7 +124,7 @@ public abstract class Command extends ListenerAdapter {
         "It looks like I do not have or I do not have enough permissions on this server, please invite me using [this](%s) link, I am leaving right now.";
     final String invalidSyntax = "**Incorrect Syntax:** `%s`\n\n**Usage:**\n%s";
     final String cooldown =
-        "You are currently on cooldown, wait **%d seconds** to use the command again.";
+        "You are currently on cooldown, wait **%d seconds** to use this command again.";
 
     if (!e.getChannelType().isGuild()) {
       return;

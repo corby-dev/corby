@@ -18,6 +18,7 @@ import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
+import xyz.d1snin.corby.utils.OtherUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -109,12 +110,17 @@ public class CoinCommand extends Command {
                 EmbedTemplate.SUCCESS,
                 e.getAuthor(),
                 String.format(
-                    "**Search results for coin:** *%s*\n\n**Name:** *%s*\n**Current Price:** *%s*\n**Highest price in 24h:** *%s*\n**Lowest Price in 24h:** *%s*",
-                    coinId,
-                    name,
-                    price == null ? "No data available." : price,
-                    highPrice == null ? "No data available." : highPrice,
-                    lowPrice == null ? "No data available." : lowPrice),
+                    "%s\n\n%s\n%s\n%s\n%s",
+                    OtherUtils.formatMessageKeyText("Search results for coin", coinId),
+                    OtherUtils.formatMessageKeyText("Name", name),
+                    OtherUtils.formatMessageKeyText(
+                        "Current price", (price == null ? "No data available." : price)),
+                    OtherUtils.formatMessageKeyText(
+                        "Highest price in 24h",
+                        (highPrice == null ? "No data available." : highPrice)),
+                    OtherUtils.formatMessageKeyText(
+                        "Lowest Price in 24h",
+                        (lowPrice == null ? "No data available." : lowPrice))),
                 e.getGuild(),
                 null,
                 img))
