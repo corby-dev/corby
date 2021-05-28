@@ -34,68 +34,58 @@ public class UrbanCommand extends Command {
 
   @Override
   protected void execute(MessageReceivedEvent e, String[] args) {
-    e.getTextChannel()
-        .sendMessage(
-            Embeds.create(
-                EmbedTemplate.DEFAULT, e.getAuthor(), "Looking at the data...", e.getGuild()))
-        .queue(
-            message -> {
-              JsonArray array;
-              MessageEmbed errorMessage =
-                  Embeds.create(
-                      EmbedTemplate.ERROR,
-                      e.getAuthor(),
-                      "Could not find this phrase.",
-                      e.getGuild());
-              try {
-                array =
-                    JsonParser.parseReader(
-                            new URLReader(
-                                new URL(
-                                    String.format(
-                                        "https://api.urbandictionary.com/v0/define?term=%s",
-                                        getArgsString(1, e.getMessage())
-                                            .replaceAll("\\s+", "%20")))))
-                        .getAsJsonObject()
-                        .get("list")
-                        .getAsJsonArray();
-              } catch (MalformedURLException | JsonIOException exception) {
-                message.editMessage(errorMessage).queue();
-                return;
-              }
 
-              assert array != null;
-              if (array.size() == 0) {
-                message.editMessage(errorMessage).queue();
-                return;
-              }
+    OtherUtils.sendLoadingAndEdit(
+        e,
+        () -> {
+          JsonArray array;
+          MessageEmbed errorMessage =
+              Embeds.create(
+                  EmbedTemplate.ERROR, e.getAuthor(), "Could not find this phrase.", e.getGuild());
+          try {
+            array =
+                JsonParser.parseReader(
+                        new URLReader(
+                            new URL(
+                                String.format(
+                                    "https://api.urbandictionary.com/v0/define?term=%s",
+                                    getArgsString(1, e.getMessage()).replaceAll("\\s+", "%20")))))
+                    .getAsJsonObject()
+                    .get("list")
+                    .getAsJsonArray();
 
-              String definition =
-                  array
-                      .get(0)
-                      .getAsJsonObject()
-                      .get("definition")
-                      .getAsString()
-                      .replace("[", "")
-                      .replace("]", "");
+          } catch (MalformedURLException | JsonIOException exception) {
+            return errorMessage;
+          }
 
-              message
-                  .editMessage(
-                      definition.length() > 2000
-                          ? Embeds.create(
-                              EmbedTemplate.ERROR,
-                              e.getAuthor(),
-                              String.format(
-                                  "It seems the definition is too big, you can see it [here](%s).",
-                                  array.get(0).getAsJsonObject().get("permalink").getAsString()),
-                              e.getGuild())
-                          : Embeds.create(
-                              EmbedTemplate.SUCCESS,
-                              e.getAuthor(),
-                              OtherUtils.formatMessageKeyText("Definition", definition),
-                              e.getGuild()))
-                  .queue();
-            });
+          assert array != null;
+          if (array.size() == 0) {
+            return errorMessage;
+          }
+
+          String definition =
+              array
+                  .get(0)
+                  .getAsJsonObject()
+                  .get("definition")
+                  .getAsString()
+                  .replace("[", "")
+                  .replace("]", "");
+
+          return (definition.length() > 2000
+              ? Embeds.create(
+                  EmbedTemplate.ERROR,
+                  e.getAuthor(),
+                  String.format(
+                      "It seems the definition is too big, you can see it [here](%s).",
+                      array.get(0).getAsJsonObject().get("permalink").getAsString()),
+                  e.getGuild())
+              : Embeds.create(
+                  EmbedTemplate.SUCCESS,
+                  e.getAuthor(),
+                  OtherUtils.formatMessageKeyText("Definition", definition, false),
+                  e.getGuild()));
+        });
   }
 
   @Override

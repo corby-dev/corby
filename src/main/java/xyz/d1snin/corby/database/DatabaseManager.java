@@ -17,12 +17,16 @@ import java.net.UnknownHostException;
 
 public class DatabaseManager {
 
-  @Getter private static DB db;
+  @Getter private static final Jongo jongo;
+  @Getter private static DB db = null;
 
-  @Getter private static Jongo jongo;
+  static {
+    try {
+      db = new MongoClient("localhost", 27017).getDB("corby");
+    } catch (UnknownHostException e) {
+      e.printStackTrace();
+    }
 
-  public static void createConnection() throws UnknownHostException {
-    db = new MongoClient("localhost", 27017).getDB("corby");
     jongo = new Jongo(db);
   }
 }

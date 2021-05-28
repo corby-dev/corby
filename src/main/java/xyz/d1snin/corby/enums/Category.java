@@ -11,7 +11,7 @@ package xyz.d1snin.corby.enums;
 public enum Category {
   MISC("Misc"),
   FUN("Fun"),
-  SETTINGS("Settings"),
+  SETTINGS("Bot Settings"),
   ADMIN("Admin");
 
   private final String name;

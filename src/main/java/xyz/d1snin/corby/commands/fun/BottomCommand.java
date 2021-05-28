@@ -60,7 +60,9 @@ public class BottomCommand extends Command {
                       EmbedTemplate.SUCCESS,
                       e.getAuthor(),
                       String.format(
-                          OtherUtils.formatMessageKeyText("Result", "%s"), encodedMessage),
+                          result,
+                          String.format(
+                              OtherUtils.formatMessageKeyText("Result", "%s"), encodedMessage)),
                       e.getGuild(),
                       null,
                       null))

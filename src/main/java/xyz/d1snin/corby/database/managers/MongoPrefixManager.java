@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import org.jongo.MongoCollection;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.DatabaseManager;
-import xyz.d1snin.corby.model.database.Prefix;
+import xyz.d1snin.corby.model.Prefix;
 
 public class MongoPrefixManager {
   private static final MongoCollection collection =
@@ -21,7 +21,7 @@ public class MongoPrefixManager {
   public static Prefix getPrefix(Guild guild) {
     return isDatabaseContainsPrefix(guild.getId())
         ? collection.findOne(String.format("{guild: '%s'}", guild.getId())).as(Prefix.class)
-        : new Prefix(guild.getId(), Corby.config.getBotPrefixDefault());
+        : new Prefix(guild.getId(), Corby.getConfig().getBotPrefixDefault());
   }
 
   public static void writePrefix(Prefix prefix) {

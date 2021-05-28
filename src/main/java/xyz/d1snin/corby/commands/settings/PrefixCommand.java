@@ -14,7 +14,7 @@ import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.MongoPrefixManager;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
-import xyz.d1snin.corby.model.database.Prefix;
+import xyz.d1snin.corby.model.Prefix;
 import xyz.d1snin.corby.utils.Embeds;
 
 public class PrefixCommand extends Command {

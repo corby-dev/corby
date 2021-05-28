@@ -17,7 +17,7 @@ import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEve
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.managers.MongoStarboardManager;
 import xyz.d1snin.corby.enums.EmbedTemplate;
-import xyz.d1snin.corby.model.database.Starboard;
+import xyz.d1snin.corby.model.Starboard;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.OtherUtils;
 
@@ -31,7 +31,7 @@ public class StarboardReactionEvent extends ReactionEvent {
   private static final Set<MessageReaction> executed = new CopyOnWriteArraySet<>();
 
   public StarboardReactionEvent() {
-    this.emoji = Corby.config.getEmoteStar();
+    this.emoji = Corby.getConfig().getEmoteStar();
   }
 
   @Override
@@ -53,7 +53,7 @@ public class StarboardReactionEvent extends ReactionEvent {
     MessageReaction reaction = msg.getReactions().get(0);
 
     for (MessageReaction r : msg.getReactions()) {
-      if (r.getReactionEmote().getName().equals(Corby.config.getEmoteStar())) {
+      if (r.getReactionEmote().getName().equals(Corby.getConfig().getEmoteStar())) {
         reaction = r;
       }
     }
@@ -86,13 +86,13 @@ public class StarboardReactionEvent extends ReactionEvent {
                                 embed.getTitle() == null ? "" : embed.getTitle(),
                                 embed.getDescription() == null ? "" : embed.getDescription())))
                 .setTimestamp(Instant.now())
-                .setColor(Corby.config.getStarboardColor())
-                .setFooter(Corby.config.getBotName(), Corby.config.getBotPfpUrl());
+                .setColor(Corby.getConfig().getStarboardColor())
+                .setFooter(Corby.getConfig().getBotName(), Corby.getConfig().getBotPfpUrl());
 
         if (attachment != null && attachment.isImage()) {
           builder.setImage(attachment.getProxyUrl());
         }
-        Objects.requireNonNull(Corby.getApi().getTextChannelById(starboard.getChannel()))
+        Objects.requireNonNull(Corby.getShards().getTextChannelById(starboard.getChannel()))
             .sendMessage(builder.build())
             .queue();
       } catch (Exception e) {

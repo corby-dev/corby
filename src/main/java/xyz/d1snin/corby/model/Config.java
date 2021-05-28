@@ -20,6 +20,7 @@ public class Config {
   private String token;
   private String testBotToken;
   private String botPrefixDefault;
+  private int shardsTotal;
   private String ownerId;
   private String botName;
   private String botPfpUrl;
@@ -45,6 +46,7 @@ public class Config {
       String token,
       String testBotToken,
       String botPrefixDefault,
+      int shardsTotal,
       String ownerId,
       int defaultStarboardStars,
       boolean defaultStarboardStatus,
@@ -60,6 +62,7 @@ public class Config {
     this.token = token;
     this.testBotToken = testBotToken;
     this.botPrefixDefault = botPrefixDefault;
+    this.shardsTotal = shardsTotal;
     this.ownerId = ownerId;
     this.defaultStarboardStars = defaultStarboardStars;
     this.defaultStarboardStatus = defaultStarboardStatus;

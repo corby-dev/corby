@@ -12,7 +12,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import org.jongo.MongoCollection;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.DatabaseManager;
-import xyz.d1snin.corby.model.database.Starboard;
+import xyz.d1snin.corby.model.Starboard;
 
 import java.util.Objects;
 
@@ -26,13 +26,10 @@ public class MongoStarboardManager {
   }
 
   public static void writeStarboard(Starboard starboard) {
-    if (getStarboard(Objects.requireNonNull(Corby.getApi().getGuildById(starboard.getGuild())))
+    if (getStarboard(Objects.requireNonNull(Corby.getShards().getGuildById(starboard.getGuild())))
         != null) {
       collection.update(String.format("{guild: '%s'}", starboard.getGuild())).with(starboard);
     } else {
-      starboard.setStatus(Corby.config.isDefaultStarboardStatus());
-      starboard.setStars(Corby.config.getDefaultStarboardStars());
-
       collection.insert(starboard);
     }
   }

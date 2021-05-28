@@ -20,7 +20,6 @@ public abstract class ReactionEvent extends ListenerAdapter {
 
   protected abstract void execute(GuildMessageReactionAddEvent event, Message msg);
 
-  @Override
   public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent event) {
     if (emoji.equals(event.getReaction().getReactionEmote().getName())) {
       Corby.getService().execute(() -> execute(event, event.retrieveMessage().complete()));

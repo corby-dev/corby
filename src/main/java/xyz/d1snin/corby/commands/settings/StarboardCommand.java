@@ -17,7 +17,7 @@ import xyz.d1snin.corby.database.managers.MongoPrefixManager;
 import xyz.d1snin.corby.database.managers.MongoStarboardManager;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
-import xyz.d1snin.corby.model.database.Starboard;
+import xyz.d1snin.corby.model.Starboard;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.OtherUtils;
 
@@ -95,7 +95,7 @@ public class StarboardCommand extends Command {
                       OtherUtils.formatMessageKeyText(
                           "Channel for starboard",
                           Objects.requireNonNull(
-                                  Corby.getApi().getTextChannelById(starboard.getChannel()))
+                                  Corby.getShards().getTextChannelById(starboard.getChannel()))
                               .getAsMention())),
                   e.getGuild()))
           .queue();
@@ -154,7 +154,7 @@ public class StarboardCommand extends Command {
         if (starboard != null
             && e.getMessage()
                 .getMentionedChannels()
-                .contains(Corby.getApi().getTextChannelById(starboard.getChannel()))) {
+                .contains(Corby.getShards().getTextChannelById(starboard.getChannel()))) {
           e.getTextChannel()
               .sendMessage(
                   Embeds.create(
@@ -170,8 +170,8 @@ public class StarboardCommand extends Command {
               new Starboard(
                   e.getGuild().getId(),
                   channel.getId(),
-                  Corby.config.getDefaultStarboardStars(),
-                  Corby.config.isDefaultStarboardStatus()));
+                  Corby.getConfig().getDefaultStarboardStars(),
+                  Corby.getConfig().isDefaultStarboardStatus()));
         } else {
           starboard.setChannel(channel.getId());
           MongoStarboardManager.writeStarboard(starboard);

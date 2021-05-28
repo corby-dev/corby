@@ -6,7 +6,7 @@
  *             of this license document, but changing it is not allowed.
  */
 
-package xyz.d1snin.corby.commands.misc;
+package xyz.d1snin.corby.commands.fun;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;

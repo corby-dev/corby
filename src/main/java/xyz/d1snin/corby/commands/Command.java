@@ -23,6 +23,7 @@ import xyz.d1snin.corby.manager.CooldownsManager;
 import xyz.d1snin.corby.model.Cooldown;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.ExceptionUtils;
+import xyz.d1snin.corby.utils.OtherUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import java.util.Objects;
 public abstract class Command extends ListenerAdapter {
 
   private static final List<Command> commands = new ArrayList<>();
+
   @Getter protected String alias = null;
   @Getter protected String description = null;
   @Getter protected Category category = null;
@@ -41,6 +43,7 @@ public abstract class Command extends ListenerAdapter {
   @Getter protected String longDescription = null;
   @Getter protected Permission[] permissions = new Permission[0];
   @Getter protected Permission[] botPermissions = new Permission[0];
+
   private MessageReceivedEvent event = null;
 
   public static List<Command> getCommandsByCategory(Category category) {
@@ -62,23 +65,30 @@ public abstract class Command extends ListenerAdapter {
     return null;
   }
 
-  public static Command add(Command command) {
-
+  public static List<Command> addAll(Command... commandz) {
     final String invalidCommandConfig =
-        "It looks like one of the fields is not initialized in the command (%s), fields alias, description, category and usages should be initialized. This command are ignored.";
+        "It looks like one of the fields is not initialized in the command (%s), fields alias, description and category should be initialized. This command are ignored.";
 
-    if (command.getAlias() == null
-        || command.getDescription() == null
-        || command.getCategory() == null) {
-      Corby.log.warn(String.format(invalidCommandConfig, command.getClass().getName()));
-    } else {
-      commands.add(command);
+    for (Command command : commandz) {
+
+      if (command.getAlias() == null
+          || command.getDescription() == null
+          || command.getCategory() == null) {
+        Corby.getLog().warn(String.format(invalidCommandConfig, command.getClass().getName()));
+
+      } else {
+        commands.add(command);
+      }
+
+      Corby.getPermissions().addAll(Arrays.asList(command.getBotPermissions()));
+
+      command.setCooldown(
+          command.getCooldown() == 0
+              ? Corby.getConfig().getDefaultCooldown()
+              : command.getCooldown());
     }
-    Corby.permissions.addAll(Arrays.asList(command.getBotPermissions()));
 
-    command.setCooldown(
-        command.getCooldown() == 0 ? Corby.config.getDefaultCooldown() : command.getCooldown());
-    return command;
+    return Arrays.asList(commandz);
   }
 
   public static List<Command> getCommands() {
@@ -150,18 +160,43 @@ public abstract class Command extends ListenerAdapter {
       }
 
       if ((getCategory() == Category.ADMIN)
-          && !e.getAuthor().getId().equals(Corby.config.getOwnerId())) {
+          && !e.getAuthor().getId().equals(Corby.getConfig().getOwnerId())) {
+        return;
+      }
+
+      if (!e.getGuild().getSelfMember().hasPermission(e.getTextChannel(), Corby.getPermissions())) {
+        if (e.getGuild().getOwner() == null) {
+          e.getGuild().leave().queue();
+          return;
+        }
+
+        OtherUtils.sendPrivateMessageSafe(
+            Objects.requireNonNull(e.getGuild().getOwner()).getUser(),
+            Embeds.create(
+                EmbedTemplate.ERROR,
+                Corby.getFirstJda().getSelfUser(),
+                String.format(invalidBotPermission, Corby.getConfig().getInviteUrl())),
+            () -> {
+              /* epic failure */
+            });
+
+        e.getGuild().leave().queue();
+
         return;
       }
 
       if (e.getGuild().getBotRole() == null
-          || !Objects.requireNonNull(e.getGuild().getBotRole()).hasPermission(Corby.permissions)) {
+          || !Objects.requireNonNull(e.getGuild().getBotRole())
+              .hasPermission(Corby.getPermissions())
+          || !e.getGuild()
+              .getSelfMember()
+              .hasPermission(e.getTextChannel(), Corby.getPermissions())) {
         e.getTextChannel()
             .sendMessage(
                 Embeds.create(
                     EmbedTemplate.ERROR,
                     e.getAuthor(),
-                    String.format(invalidBotPermission, Corby.config.getInviteUrl()),
+                    String.format(invalidBotPermission, Corby.getConfig().getInviteUrl()),
                     e.getGuild()))
             .queue();
         e.getGuild().leave().queue();
@@ -194,19 +229,15 @@ public abstract class Command extends ListenerAdapter {
         return;
       }
 
-      try {
-        Corby.getService()
-            .execute(
-                () -> {
-                  try {
-                    execute(e, getCommandArgs(msg));
-                  } catch (IOException ioException) {
-                    ExceptionUtils.processException(ioException);
-                  }
-                });
-      } catch (Exception exception) {
-        ExceptionUtils.processException(exception);
-      }
+      Corby.getService()
+          .execute(
+              () -> {
+                try {
+                  execute(e, getCommandArgs(msg));
+                } catch (Exception exception) {
+                  ExceptionUtils.processException(exception);
+                }
+              });
 
       CooldownsManager.setCooldown(new Cooldown(e.getAuthor(), this.getCooldown(), this));
     }
@@ -228,7 +259,8 @@ public abstract class Command extends ListenerAdapter {
             .getAuthor()
             .getId()
             .equals(
-                Corby.config.getOwnerId()); // <- Don't worry, this is only needed to test the bot.
+                Corby.getConfig()
+                    .getOwnerId()); // <- Don't worry, this is only needed to test the bot.
   }
 
   private String getPermissionString() {

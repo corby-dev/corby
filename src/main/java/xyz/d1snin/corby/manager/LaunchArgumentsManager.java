@@ -23,7 +23,7 @@ public class LaunchArgumentsManager {
     arguments.addAll(Arrays.asList(argument));
 
     if (args.length < 1) {
-      Corby.log.info("No arguments provided.");
+      Corby.getLog().info("No arguments provided.");
       return;
     }
 
@@ -34,7 +34,7 @@ public class LaunchArgumentsManager {
         throw new RuntimeException(String.format("Could not resolve this argument: %s", s));
       }
 
-      Corby.log.info(String.format("Argument detected: %s", arg.getName()));
+      Corby.getLog().info(String.format("Argument detected: %s", arg.getName()));
       arg.execute();
     }
   }

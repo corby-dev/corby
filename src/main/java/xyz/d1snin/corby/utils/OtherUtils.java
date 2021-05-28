@@ -10,8 +10,11 @@ package xyz.d1snin.corby.utils;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import xyz.d1snin.corby.enums.EmbedTemplate;
 
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 public class OtherUtils {
   public static void sendPrivateMessageSafe(User user, MessageEmbed success, Runnable onFailure) {
@@ -23,6 +26,15 @@ public class OtherUtils {
               /* ok */
             },
             fail -> onFailure.run());
+  }
+
+  public static void sendLoadingAndEdit(
+      MessageReceivedEvent e, Supplier<MessageEmbed> messageSupplier) {
+    e.getTextChannel()
+        .sendMessage(
+            Embeds.create(
+                EmbedTemplate.DEFAULT, e.getAuthor(), "Looking at the data...", e.getGuild()))
+        .queue(message -> message.editMessage(messageSupplier.get()).queue());
   }
 
   public static boolean isNumeric(String s) {
@@ -43,7 +55,11 @@ public class OtherUtils {
   }
 
   public static String formatMessageKeyText(String key, String text) {
-    return String.format("**%s:** *%s*", key, text);
+    return formatMessageKeyText(key, text, true);
+  }
+
+  public static String formatMessageKeyText(String key, String text, boolean italicText) {
+    return String.format("**%s:** " + (italicText ? "*%s*" : "%s"), key, text);
   }
 
   public static boolean isImage(String url) {

@@ -39,8 +39,8 @@ public class HelpCommand extends Command {
 
   @Override
   protected void execute(MessageReceivedEvent e, String[] args) {
-    back = Corby.getApi().getEmoteById(Corby.config.getEmoteBack());
-    next = Corby.getApi().getEmoteById(Corby.config.getEmoteNext());
+    back = Corby.getShards().getEmoteById(Corby.getConfig().getEmoteBack());
+    next = Corby.getShards().getEmoteById(Corby.getConfig().getEmoteNext());
 
     extEmojisAllowed =
         Objects.requireNonNull(e.getGuild().getBotRole())
@@ -59,12 +59,12 @@ public class HelpCommand extends Command {
 
                 ReactionUpdateEvent.registerReaction(
                     message.getId(),
-                    extEmojisAllowed ? back.getId() : Corby.config.getEmoteDefaultBack(),
+                    extEmojisAllowed ? back.getId() : Corby.getConfig().getEmoteDefaultBack(),
                     getRun(page, e, message, back));
 
                 ReactionUpdateEvent.registerReaction(
                     message.getId(),
-                    extEmojisAllowed ? next.getId() : Corby.config.getEmoteDefaultNext(),
+                    extEmojisAllowed ? next.getId() : Corby.getConfig().getEmoteDefaultNext(),
                     getRun(page, e, message, next));
               });
       return;
@@ -155,8 +155,8 @@ public class HelpCommand extends Command {
           message
               .removeReaction(
                   emote == next
-                      ? Corby.config.getEmoteDefaultNext()
-                      : Corby.config.getEmoteDefaultBack(),
+                      ? Corby.getConfig().getEmoteDefaultNext()
+                      : Corby.getConfig().getEmoteDefaultBack(),
                   e.getAuthor())
               .queue();
         }
@@ -172,8 +172,8 @@ public class HelpCommand extends Command {
         message
             .removeReaction(
                 emote == next
-                    ? Corby.config.getEmoteDefaultNext()
-                    : Corby.config.getEmoteDefaultBack(),
+                    ? Corby.getConfig().getEmoteDefaultNext()
+                    : Corby.getConfig().getEmoteDefaultBack(),
                 e.getAuthor())
             .queue();
       }
@@ -192,8 +192,8 @@ public class HelpCommand extends Command {
         message
             .addReaction(
                 emote == next
-                    ? Corby.config.getEmoteDefaultNext()
-                    : Corby.config.getEmoteDefaultBack())
+                    ? Corby.getConfig().getEmoteDefaultNext()
+                    : Corby.getConfig().getEmoteDefaultBack())
             .queue();
       }
     }

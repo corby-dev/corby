@@ -34,15 +34,15 @@ public class Embeds {
     Emote emote = null;
     switch (template) {
       case ERROR:
-        color = Corby.config.getErrorColor();
-        emote = Corby.getApi().getEmoteById(Corby.config.getEmoteError());
+        color = Corby.getConfig().getErrorColor();
+        emote = Corby.getShards().getEmoteById(Corby.getConfig().getEmoteError());
         break;
       case DEFAULT:
-        color = Corby.config.getDefaultColor();
+        color = Corby.getConfig().getDefaultColor();
         break;
       case SUCCESS:
-        color = Corby.config.getSuccessColor();
-        emote = Corby.getApi().getEmoteById(Corby.config.getEmoteSuccess());
+        color = Corby.getConfig().getSuccessColor();
+        emote = Corby.getShards().getEmoteById(Corby.getConfig().getEmoteSuccess());
         break;
       default:
     }
@@ -63,12 +63,12 @@ public class Embeds {
                     + " "
                     + description)
             .setFooter(
-                Corby.config.getBotName()
+                Corby.getConfig().getBotName()
                     + " | "
                     + Thread.currentThread().getName()
                     + " | "
                     + u.getAsTag(),
-                Corby.config.getBotPfpUrl());
+                Corby.getConfig().getBotPfpUrl());
 
     if (imageUrl != null) {
       builder.setImage(imageUrl);

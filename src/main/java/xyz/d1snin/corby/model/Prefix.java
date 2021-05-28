@@ -6,7 +6,7 @@
  *             of this license document, but changing it is not allowed.
  */
 
-package xyz.d1snin.corby.model.database;
+package xyz.d1snin.corby.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
