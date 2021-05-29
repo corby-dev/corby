@@ -124,7 +124,7 @@ public class Corby {
     }
   }
 
-  public static void start() throws LoginException, IOException {
+  public static void start() throws LoginException, IOException, InterruptedException {
     config = ConfigManager.init();
 
     shards =
@@ -160,6 +160,10 @@ public class Corby {
                         new StarboardCommand())))
             .setShardsTotal(isNoShardsMode() ? 1 : getConfig().getShardsTotal())
             .build();
+
+    for (JDA jda : shards.getShards()) {
+      jda.awaitReady();
+    }
 
     System.out.println(
         "\n"
@@ -202,7 +206,7 @@ public class Corby {
             config.getInviteUrl()));
 
     if (!isNoShardsMode()) {
-      log.warn("Shards loading can be long");
+      log.warn("Shards loading can be long\n");
     }
   }
 

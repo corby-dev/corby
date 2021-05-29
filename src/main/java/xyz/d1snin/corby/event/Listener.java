@@ -14,11 +14,13 @@ import org.jetbrains.annotations.NotNull;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.utils.ExceptionUtils;
 
+import java.io.IOException;
+
 public abstract class Listener implements EventListener {
 
-  public abstract void perform(GenericEvent event);
-
   public Class<? extends GenericEvent> event = null;
+
+  public abstract void perform(GenericEvent event) throws IOException;
 
   @Override
   public void onEvent(@NotNull GenericEvent thisEvent) {
@@ -26,11 +28,15 @@ public abstract class Listener implements EventListener {
 
       if (event.equals(thisEvent.getClass())) {
 
-        try {
-          Corby.getService().execute(() -> perform(thisEvent));
-        } catch (Exception e) {
-          ExceptionUtils.processException(e);
-        }
+        Corby.getService()
+            .execute(
+                () -> {
+                  try {
+                    perform(thisEvent);
+                  } catch (Exception e) {
+                    ExceptionUtils.processException(e);
+                  }
+                });
       }
     }
   }

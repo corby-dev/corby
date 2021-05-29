@@ -22,7 +22,6 @@ import xyz.d1snin.corby.event.Listener;
 import xyz.d1snin.corby.manager.CooldownsManager;
 import xyz.d1snin.corby.model.Cooldown;
 import xyz.d1snin.corby.utils.Embeds;
-import xyz.d1snin.corby.utils.ExceptionUtils;
 import xyz.d1snin.corby.utils.OtherUtils;
 
 import java.io.IOException;
@@ -43,12 +42,11 @@ public abstract class Command extends Listener {
   @Getter protected String longDescription = null;
   @Getter protected Permission[] permissions = new Permission[0];
   @Getter protected Permission[] botPermissions = new Permission[0];
+  private MessageReceivedEvent evt = null;
 
   public Command() {
     this.event = MessageReceivedEvent.class;
   }
-
-  private MessageReceivedEvent evt = null;
 
   public static List<Command> getCommandsByCategory(Category category) {
     List<Command> result = new ArrayList<>();
@@ -130,7 +128,7 @@ public abstract class Command extends Listener {
   }
 
   @Override
-  public void perform(GenericEvent thisEvent) {
+  public void perform(GenericEvent thisEvent) throws IOException {
     evt = (MessageReceivedEvent) thisEvent;
 
     final String invalidPermission = "You must have permissions %s to use this command.";
@@ -236,15 +234,7 @@ public abstract class Command extends Listener {
         return;
       }
 
-      Corby.getService()
-          .execute(
-              () -> {
-                try {
-                  execute(evt, getCommandArgs(msg));
-                } catch (Exception exception) {
-                  ExceptionUtils.processException(exception);
-                }
-              });
+      execute(evt, getCommandArgs(msg));
 
       CooldownsManager.setCooldown(new Cooldown(evt.getAuthor(), this.getCooldown(), this));
     }

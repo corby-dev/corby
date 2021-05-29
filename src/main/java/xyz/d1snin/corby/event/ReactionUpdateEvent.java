@@ -19,12 +19,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ReactionUpdateEvent extends Listener {
 
+  private static final CopyOnWriteArrayList<Map<String, ConcurrentHashMap<String, Runnable>>>
+      reactions = new CopyOnWriteArrayList<>();
+
   public ReactionUpdateEvent() {
     this.event = MessageReactionAddEvent.class;
   }
-
-  private static final CopyOnWriteArrayList<Map<String, ConcurrentHashMap<String, Runnable>>>
-      reactions = new CopyOnWriteArrayList<>();
 
   public static void registerReaction(String messageId, String reactionId, Runnable execute) {
     ConcurrentHashMap<String, Runnable> concurrentHashMap = new ConcurrentHashMap<>();

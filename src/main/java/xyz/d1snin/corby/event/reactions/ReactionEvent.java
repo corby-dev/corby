@@ -16,11 +16,11 @@ import xyz.d1snin.corby.event.Listener;
 
 public abstract class ReactionEvent extends Listener {
 
+  protected String emoji;
+
   public ReactionEvent() {
     this.event = MessageReactionAddEvent.class;
   }
-
-  protected String emoji;
 
   protected abstract void performReaction(MessageReactionAddEvent event, Message msg);
 
