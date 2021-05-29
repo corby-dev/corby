@@ -13,7 +13,6 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import xyz.d1snin.corby.Corby;
-import xyz.d1snin.corby.annotation.EventListener;
 import xyz.d1snin.corby.database.managers.MongoPrefixManager;
 import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
@@ -21,11 +20,14 @@ import xyz.d1snin.corby.utils.Embeds;
 import java.util.List;
 import java.util.Objects;
 
-@EventListener(event = GuildJoinEvent.class)
 public class ServerJoinEvent extends Listener {
 
+  public ServerJoinEvent() {
+    this.event = GuildJoinEvent.class;
+  }
+
   @Override
-  protected void perform(GenericEvent event) {
+  public void perform(GenericEvent event) {
 
     GuildJoinEvent thisEvent = ((GuildJoinEvent) event);
 

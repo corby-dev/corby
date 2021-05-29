@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.managers.MongoStarboardManager;
 import xyz.d1snin.corby.enums.EmbedTemplate;
@@ -35,7 +36,7 @@ public class StarboardReactionEvent extends ReactionEvent {
   }
 
   @Override
-  protected void execute(GuildMessageReactionAddEvent event, Message msg) {
+  protected void performReaction(MessageReactionAddEvent event, Message msg) {
     Starboard starboard = MongoStarboardManager.getStarboard(event.getGuild());
 
     if (starboard == null) {

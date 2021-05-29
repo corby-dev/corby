@@ -11,16 +11,17 @@ package xyz.d1snin.corby.event;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.events.message.guild.react.GenericGuildMessageReactionEvent;
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
-import xyz.d1snin.corby.annotation.EventListener;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-@EventListener(event = {GuildMessageReactionAddEvent.class})
 public class ReactionUpdateEvent extends Listener {
+
+  public ReactionUpdateEvent() {
+    this.event = MessageReactionAddEvent.class;
+  }
 
   private static final CopyOnWriteArrayList<Map<String, ConcurrentHashMap<String, Runnable>>>
       reactions = new CopyOnWriteArrayList<>();
@@ -37,8 +38,8 @@ public class ReactionUpdateEvent extends Listener {
   }
 
   @Override
-  protected void perform(GenericEvent event) {
-    GenericGuildMessageReactionEvent thisEvent = ((GenericGuildMessageReactionEvent) event);
+  public void perform(GenericEvent event) {
+    MessageReactionAddEvent thisEvent = (MessageReactionAddEvent) event;
     if (thisEvent.getReaction().isSelf()) {
       return;
     }

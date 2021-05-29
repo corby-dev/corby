@@ -12,13 +12,13 @@ import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.GenericEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.jetbrains.annotations.NotNull;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.managers.MongoPrefixManager;
 import xyz.d1snin.corby.enums.Category;
 import xyz.d1snin.corby.enums.EmbedTemplate;
+import xyz.d1snin.corby.event.Listener;
 import xyz.d1snin.corby.manager.CooldownsManager;
 import xyz.d1snin.corby.model.Cooldown;
 import xyz.d1snin.corby.utils.Embeds;
@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class Command extends ListenerAdapter {
+public abstract class Command extends Listener {
 
   private static final List<Command> commands = new ArrayList<>();
 
@@ -44,7 +44,11 @@ public abstract class Command extends ListenerAdapter {
   @Getter protected Permission[] permissions = new Permission[0];
   @Getter protected Permission[] botPermissions = new Permission[0];
 
-  private MessageReceivedEvent event = null;
+  public Command() {
+    this.event = MessageReceivedEvent.class;
+  }
+
+  private MessageReceivedEvent evt = null;
 
   public static List<Command> getCommandsByCategory(Category category) {
     List<Command> result = new ArrayList<>();
@@ -102,7 +106,7 @@ public abstract class Command extends ListenerAdapter {
   public String getUsagesString() {
     StringBuilder sb = new StringBuilder();
     String defaultUsage =
-        String.format("`%s" + getAlias() + "`", MongoPrefixManager.getPrefix(event.getGuild()));
+        String.format("`%s" + getAlias() + "`", MongoPrefixManager.getPrefix(evt.getGuild()));
 
     if (getUsages() == null || getUsages().length < 1) {
       return defaultUsage;
@@ -119,15 +123,15 @@ public abstract class Command extends ListenerAdapter {
 
       sb.append(
               String.format(
-                  "`%s" + getAlias() + " " + s + "`",
-                  MongoPrefixManager.getPrefix(event.getGuild())))
+                  "`%s" + getAlias() + " " + s + "`", MongoPrefixManager.getPrefix(evt.getGuild())))
           .append("\n");
     }
     return sb.toString();
   }
 
-  public void onMessageReceived(@NotNull MessageReceivedEvent e) {
-    event = e;
+  @Override
+  public void perform(GenericEvent thisEvent) {
+    evt = (MessageReceivedEvent) thisEvent;
 
     final String invalidPermission = "You must have permissions %s to use this command.";
     final String invalidBotPermission =
@@ -136,42 +140,44 @@ public abstract class Command extends ListenerAdapter {
     final String cooldown =
         "You are currently on cooldown, wait **%d seconds** to use this command again.";
 
-    if (!e.getChannelType().isGuild()) {
+    if (!evt.getChannelType().isGuild()) {
       return;
     }
 
-    Message msg = e.getMessage();
+    Message msg = evt.getMessage();
 
-    if (e.getAuthor().isBot()) {
+    if (evt.getAuthor().isBot()) {
       return;
     }
 
-    if (isCommand(msg, e)) {
-      if (!hasPermission(e)) {
-        e.getTextChannel()
+    if (isCommand(msg, evt)) {
+      if (!hasPermission(evt)) {
+        evt.getTextChannel()
             .sendMessage(
                 Embeds.create(
                     EmbedTemplate.ERROR,
-                    e.getAuthor(),
+                    evt.getAuthor(),
                     String.format(invalidPermission, getPermissionString()),
-                    e.getGuild()))
+                    evt.getGuild()))
             .queue();
         return;
       }
 
       if ((getCategory() == Category.ADMIN)
-          && !e.getAuthor().getId().equals(Corby.getConfig().getOwnerId())) {
+          && !evt.getAuthor().getId().equals(Corby.getConfig().getOwnerId())) {
         return;
       }
 
-      if (!e.getGuild().getSelfMember().hasPermission(e.getTextChannel(), Corby.getPermissions())) {
-        if (e.getGuild().getOwner() == null) {
-          e.getGuild().leave().queue();
+      if (!evt.getGuild()
+          .getSelfMember()
+          .hasPermission(evt.getTextChannel(), Corby.getPermissions())) {
+        if (evt.getGuild().getOwner() == null) {
+          evt.getGuild().leave().queue();
           return;
         }
 
         OtherUtils.sendPrivateMessageSafe(
-            Objects.requireNonNull(e.getGuild().getOwner()).getUser(),
+            Objects.requireNonNull(evt.getGuild().getOwner()).getUser(),
             Embeds.create(
                 EmbedTemplate.ERROR,
                 Corby.getFirstJda().getSelfUser(),
@@ -180,51 +186,52 @@ public abstract class Command extends ListenerAdapter {
               /* epic failure */
             });
 
-        e.getGuild().leave().queue();
+        evt.getGuild().leave().queue();
 
         return;
       }
 
-      if (e.getGuild().getBotRole() == null
-          || !Objects.requireNonNull(e.getGuild().getBotRole())
+      if (evt.getGuild().getBotRole() == null
+          || !Objects.requireNonNull(evt.getGuild().getBotRole())
               .hasPermission(Corby.getPermissions())
-          || !e.getGuild()
+          || !evt.getGuild()
               .getSelfMember()
-              .hasPermission(e.getTextChannel(), Corby.getPermissions())) {
-        e.getTextChannel()
+              .hasPermission(evt.getTextChannel(), Corby.getPermissions())) {
+        evt.getTextChannel()
             .sendMessage(
                 Embeds.create(
                     EmbedTemplate.ERROR,
-                    e.getAuthor(),
+                    evt.getAuthor(),
                     String.format(invalidBotPermission, Corby.getConfig().getInviteUrl()),
-                    e.getGuild()))
+                    evt.getGuild()))
             .queue();
-        e.getGuild().leave().queue();
+        evt.getGuild().leave().queue();
         return;
       }
 
-      if (!isValidSyntax(e, getCommandArgs(e.getMessage()))) {
-        e.getTextChannel()
+      if (!isValidSyntax(evt, getCommandArgs(evt.getMessage()))) {
+        evt.getTextChannel()
             .sendMessage(
                 Embeds.create(
                     EmbedTemplate.ERROR,
-                    e.getAuthor(),
-                    String.format(invalidSyntax, e.getMessage().getContentRaw(), getUsagesString()),
-                    e.getGuild()))
+                    evt.getAuthor(),
+                    String.format(
+                        invalidSyntax, evt.getMessage().getContentRaw(), getUsagesString()),
+                    evt.getGuild()))
             .queue();
         return;
       }
 
-      int cooldownTime = CooldownsManager.getCooldown(e.getAuthor(), this);
+      int cooldownTime = CooldownsManager.getCooldown(evt.getAuthor(), this);
 
       if (cooldownTime > 0) {
-        e.getTextChannel()
+        evt.getTextChannel()
             .sendMessage(
                 Embeds.create(
                     EmbedTemplate.ERROR,
-                    e.getAuthor(),
+                    evt.getAuthor(),
                     String.format(cooldown, cooldownTime),
-                    e.getGuild()))
+                    evt.getGuild()))
             .queue();
         return;
       }
@@ -233,18 +240,18 @@ public abstract class Command extends ListenerAdapter {
           .execute(
               () -> {
                 try {
-                  execute(e, getCommandArgs(msg));
+                  execute(evt, getCommandArgs(msg));
                 } catch (Exception exception) {
                   ExceptionUtils.processException(exception);
                 }
               });
 
-      CooldownsManager.setCooldown(new Cooldown(e.getAuthor(), this.getCooldown(), this));
+      CooldownsManager.setCooldown(new Cooldown(evt.getAuthor(), this.getCooldown(), this));
     }
   }
 
   protected String getMessageContent() {
-    return event.getMessage().getContentRaw();
+    return evt.getMessage().getContentRaw();
   }
 
   private boolean hasPermission(MessageReceivedEvent event) {

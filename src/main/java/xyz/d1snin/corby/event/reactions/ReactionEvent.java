@@ -9,20 +9,28 @@
 package xyz.d1snin.corby.event.reactions;
 
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.jetbrains.annotations.NotNull;
+import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import xyz.d1snin.corby.Corby;
+import xyz.d1snin.corby.event.Listener;
 
-public abstract class ReactionEvent extends ListenerAdapter {
+public abstract class ReactionEvent extends Listener {
+
+  public ReactionEvent() {
+    this.event = MessageReactionAddEvent.class;
+  }
 
   protected String emoji;
 
-  protected abstract void execute(GuildMessageReactionAddEvent event, Message msg);
+  protected abstract void performReaction(MessageReactionAddEvent event, Message msg);
 
-  public void onGuildMessageReactionAdd(@NotNull GuildMessageReactionAddEvent event) {
-    if (emoji.equals(event.getReaction().getReactionEmote().getName())) {
-      Corby.getService().execute(() -> execute(event, event.retrieveMessage().complete()));
+  @Override
+  public void perform(GenericEvent event) {
+    MessageReactionAddEvent thisEvent = (MessageReactionAddEvent) event;
+
+    if (emoji.equals(thisEvent.getReaction().getReactionEmote().getName())) {
+      Corby.getService()
+          .execute(() -> performReaction(thisEvent, thisEvent.retrieveMessage().complete()));
     }
   }
 }
