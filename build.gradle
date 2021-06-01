@@ -12,10 +12,7 @@ version 'v1.1'
 
 mainClassName = "xyz.d1snin.corby.Corby"
 
-allprojects {
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-}
+sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
@@ -40,6 +37,10 @@ dependencies {
     implementation 'org.mongodb:mongo-java-driver:2.13.2'
     implementation 'com.github.bottom-software-foundation:bottom-java:v2.1.0'
     implementation 'org.jongo:jongo:1.3.0'
+}
+
+wrapper {
+    gradleVersion '6.8.1'
 }
 
 compileJava.options.encoding = 'UTF-8'
