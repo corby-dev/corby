@@ -35,14 +35,12 @@ package xyz.d1snin.corby.commands.misc;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Icon;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.commands.Command;
-import xyz.d1snin.corby.enums.Category;
-import xyz.d1snin.corby.enums.EmbedTemplate;
-import xyz.d1snin.corby.utils.Embeds;
+import xyz.d1snin.corby.model.Argument;
+import xyz.d1snin.corby.model.Category;
+import xyz.d1snin.corby.model.EmbedTemplate;
 import xyz.d1snin.corby.utils.OtherUtils;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -53,90 +51,66 @@ import java.util.List;
 public class StealCommand extends Command {
 
   public StealCommand() {
-    this.alias = "steal";
+    this.usage = "steal";
     this.description = "Uploads emoji from a link or other emoji to your server";
     this.category = Category.MISC;
-    this.usages = new String[] {"<URL> <Name>", "<Emoji> <Name>"};
 
-    this.permissions = new Permission[] {Permission.MANAGE_EMOTES};
-    this.botPermissions = new Permission[] {Permission.MANAGE_EMOTES};
-  }
+    this.userPerms = new Permission[] {Permission.MANAGE_EMOTES};
+    this.botPerms = new Permission[] {Permission.MANAGE_EMOTES};
 
-  @Override
-  protected void execute(MessageReceivedEvent e, String[] args) throws IOException {
-    final String nameSizeMessage = "Name must be between 1 and 32 characters in length.";
-    final String invalidUrl = "Provided URL is invalid.";
-    final String success = "The emote `:%s:` has been successfully added!";
-    final String failure = "Something went wrong while adding an emote, please try again.";
-    final String incorrectUrl = "This format is not supported.";
+    arg(
+        u -> {
+          final List<Emote> emotes = u.getMessage().getEmotes();
+          final String name = u.getArgumentValue(1);
 
-    final List<Emote> emotes = e.getMessage().getEmotes();
+          final String invalidUrl = "Provided URL is invalid.";
 
-    final String name = args[2].toLowerCase();
+          if (name.length() > 32 || name.length() < 1) {
+            u.sendEmbed(EmbedTemplate.ERROR, "Name must be between 1 and 32 characters in length.");
+            return;
+          }
 
-    if (name.length() > 32 || name.length() < 1) {
-      e.getTextChannel()
-          .sendMessage(
-              Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), nameSizeMessage, e.getGuild()))
-          .queue();
-      return;
-    }
+          OtherUtils.sendLoadingAndEdit(
+              u.getEvent(),
+              () -> {
+                try {
 
-    URL url;
+                  URL url;
 
-    if (emotes.isEmpty()) {
+                  if (emotes.isEmpty()) {
 
-      if (!OtherUtils.isImage(args[1])) {
-        e.getTextChannel()
-            .sendMessage(
-                Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), incorrectUrl, e.getGuild()))
-            .queue();
-        return;
-      }
+                    if (!OtherUtils.isImage(u.getArgumentValue(0))) {
+                      return u.createEmbed(EmbedTemplate.ERROR, "This format is not supported.");
+                    }
 
-      try {
-        url = new URL(args[1]);
-      } catch (MalformedURLException malformedURLException) {
-        e.getTextChannel()
-            .sendMessage(
-                Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), invalidUrl, e.getGuild()))
-            .queue();
-        return;
-      }
-    } else {
-      url = new URL(emotes.get(0).getImageUrl());
-    }
+                    try {
+                      url = new URL(u.getArgumentValue(0));
+                    } catch (MalformedURLException malformedURLException) {
+                      return u.createEmbed(EmbedTemplate.ERROR, invalidUrl);
+                    }
 
-    URLConnection connection = url.openConnection();
-    connection.setRequestProperty("User-Agent", "");
+                  } else {
 
-    try (InputStream stream = connection.getInputStream()) {
-      e.getGuild()
-          .createEmote(name, Icon.from(stream))
-          .queue(
-              successfully ->
-                  e.getTextChannel()
-                      .sendMessage(
-                          Embeds.create(
-                              EmbedTemplate.SUCCESS,
-                              e.getAuthor(),
-                              String.format(success, name),
-                              e.getGuild()))
-                      .queue(),
-              fail ->
-                  e.getTextChannel()
-                      .sendMessage(
-                          Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), failure, e.getGuild()))
-                      .queue());
-    } catch (FileNotFoundException exception) {
-      e.getTextChannel()
-          .sendMessage(Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), invalidUrl, e.getGuild()))
-          .queue();
-    }
-  }
+                    url = new URL(emotes.get(0).getImageUrl());
+                  }
 
-  @Override
-  protected boolean isValidSyntax(MessageReceivedEvent e, String[] args) {
-    return args.length == 3;
+                  URLConnection connection = url.openConnection();
+                  connection.setRequestProperty("User-Agent", "");
+
+                  try (InputStream stream = connection.getInputStream()) {
+                    u.getGuild().createEmote(name, Icon.from(stream)).queue();
+                  }
+
+                } catch (IOException exception) {
+                  exception.printStackTrace();
+                }
+
+                return u.createEmbed(
+                    EmbedTemplate.SUCCESS,
+                    String.format("The emote `:%s:` has been successfully added!", name));
+              });
+        },
+        new Argument(null, "<URL or Emote>", false, false),
+        new Argument(null, "<Name>", false, false));
   }
 }

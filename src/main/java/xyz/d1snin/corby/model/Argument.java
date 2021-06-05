@@ -30,21 +30,17 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package xyz.d1snin.corby.enums;
+package xyz.d1snin.corby.model;
 
-public enum Category {
-  MISC("Misc"),
-  FUN("Fun"),
-  SETTINGS("Bot Settings"),
-  ADMIN("Admin");
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
-  private final String name;
-
-  Category(String name) {
-    this.name = name;
-  }
-
-  public String getName() {
-    return name;
-  }
+@RequiredArgsConstructor
+public class Argument {
+  @Getter private final String usage;
+  @Getter private final String type;
+  @Getter private final boolean valueRequired;
+  @Getter private final boolean variableLength;
+  @Getter @Setter private String value;
 }

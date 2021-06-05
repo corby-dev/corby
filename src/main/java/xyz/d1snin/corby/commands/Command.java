@@ -35,69 +35,50 @@ package xyz.d1snin.corby.commands;
 import lombok.Getter;
 import lombok.Setter;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.guild.GenericGuildEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import xyz.d1snin.corby.Corby;
-import xyz.d1snin.corby.database.managers.MongoPrefixManager;
-import xyz.d1snin.corby.enums.Category;
-import xyz.d1snin.corby.enums.EmbedTemplate;
 import xyz.d1snin.corby.event.Listener;
 import xyz.d1snin.corby.manager.CooldownsManager;
-import xyz.d1snin.corby.model.Cooldown;
+import xyz.d1snin.corby.model.Category;
+import xyz.d1snin.corby.model.*;
+import xyz.d1snin.corby.utils.CommandUtil;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.OtherUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
+import java.util.function.Consumer;
 
 public abstract class Command extends Listener {
 
-  private static final List<Command> commands = new ArrayList<>();
-
-  @Getter protected String alias = null;
+  @Getter private static final List<Command> commands = new ArrayList<>();
+  @Getter private final List<Statement> statements = new ArrayList<>();
+  @Getter protected String usage = null;
   @Getter protected String description = null;
   @Getter protected Category category = null;
-  @Getter protected String[] usages = null;
   @Getter @Setter protected int cooldown = 0;
   @Getter protected String longDescription = null;
-  @Getter protected Permission[] permissions = new Permission[0];
-  @Getter protected Permission[] botPermissions = new Permission[0];
-  private MessageReceivedEvent evt = null;
-
+  @Getter protected Permission[] userPerms = new Permission[0];
+  @Getter protected Permission[] botPerms = new Permission[0];
+  @Getter private Consumer<CommandUtil> defaultAction = null;
+  @Getter private Statement currentStatement;
+  private CommandUtil util;
+  private List<String> args;
+  private User author;
   public Command() {
-    this.event = MessageReceivedEvent.class;
-  }
-
-  public static List<Command> getCommandsByCategory(Category category) {
-    List<Command> result = new ArrayList<>();
-    for (Command c : getCommands()) {
-      if (c.getCategory() == category) {
-        result.add(c);
-      }
-    }
-    return result;
-  }
-
-  public static Command getCommandByAlias(String alias) {
-    for (Command c : getCommands()) {
-      if (c.getAlias().equals(alias)) {
-        return c;
-      }
-    }
-    return null;
+    this.event = GuildMessageReceivedEvent.class;
   }
 
   public static List<Command> addAll(Command... commandz) {
     final String invalidCommandConfig =
-        "It looks like one of the fields is not initialized in the command (%s), fields alias, description and category should be initialized. This command are ignored.";
+        "It looks like one of the fields is not initialized in the command (%s), fields usage, description and category should be initialized. This command are ignored.";
 
     for (Command command : commandz) {
 
-      if (command.getAlias() == null
+      if (command.getUsage() == null
           || command.getDescription() == null
           || command.getCategory() == null) {
         Corby.getLog().warn(String.format(invalidCommandConfig, command.getClass().getName()));
@@ -106,7 +87,7 @@ public abstract class Command extends Listener {
         commands.add(command);
       }
 
-      Corby.getPermissions().addAll(Arrays.asList(command.getBotPermissions()));
+      Corby.getPermissions().addAll(Arrays.asList(command.getBotPerms()));
 
       command.setCooldown(
           command.getCooldown() == 0
@@ -117,208 +98,225 @@ public abstract class Command extends Listener {
     return Arrays.asList(commandz);
   }
 
-  public static List<Command> getCommands() {
-    return commands;
-  }
-
-  protected abstract void execute(MessageReceivedEvent e, String[] args) throws IOException;
-
-  protected abstract boolean isValidSyntax(MessageReceivedEvent e, String[] args);
-
-  public String getUsagesString() {
-    StringBuilder sb = new StringBuilder();
-    String defaultUsage =
-        String.format("`%s" + getAlias() + "`", MongoPrefixManager.getPrefix(evt.getGuild()));
-
-    if (getUsages() == null || getUsages().length < 1) {
-      return defaultUsage;
-    }
-
-    if (Arrays.asList(getUsages()).contains("alias")) {
-      sb.append(defaultUsage).append("\n");
-    }
-
-    for (String s : getUsages()) {
-      if (s.equals("alias")) {
-        continue;
-      }
-
-      sb.append(
-              String.format(
-                  "`%s" + getAlias() + " " + s + "`", MongoPrefixManager.getPrefix(evt.getGuild())))
-          .append("\n");
-    }
-    return sb.toString();
-  }
-
   @Override
-  public void perform(GenericEvent thisEvent) throws IOException {
-    evt = (MessageReceivedEvent) thisEvent;
+  public void perform(GenericGuildEvent event) {
+    GuildMessageReceivedEvent e = (GuildMessageReceivedEvent) event;
 
-    final String invalidPermission = "You must have permissions %s to use this command.";
-    final String invalidBotPermission =
-        "It looks like I do not have or I do not have enough permissions on this server, please invite me using [this](%s) link, I am leaving right now.";
-    final String invalidSyntax = "**Incorrect Syntax:** `%s`\n\n**Usage:**\n%s";
-    final String cooldown =
-        "You are currently on cooldown, wait **%d seconds** to use this command again.";
+    util = new CommandUtil(this, e);
+    author = util.getAuthor();
+    args = util.getArgs();
 
-    if (!evt.getChannelType().isGuild()) {
+    Message msg = util.getMessage();
+    TextChannel ch = util.getChannel();
+    Guild guild = util.getGuild();
+    Role botRole = util.getBotRole();
+
+    if (author.isBot()
+        || !msg.isFromGuild()
+        || msg.isWebhookMessage()
+        || !getCommands().contains(this)) {
       return;
     }
 
-    Message msg = evt.getMessage();
+    if (util.isCommand()) {
 
-    if (evt.getAuthor().isBot()) {
-      return;
-    }
+      String invalidBotPerms =
+          "I do not have or I do not have enough permissions on this server, please invite me using [this](%s) link, I am leaving right now.";
 
-    if (isCommand(msg, evt)) {
-      if (!hasPermission(evt)) {
-        evt.getTextChannel()
-            .sendMessage(
+      if (!util.hasPermissions()) {
+        ch.sendMessage(
                 Embeds.create(
                     EmbedTemplate.ERROR,
-                    evt.getAuthor(),
-                    String.format(invalidPermission, getPermissionString()),
-                    evt.getGuild()))
+                    author,
+                    String.format(
+                        "You must have permissions %s to use this command.",
+                        util.getRequiredPermissionsAsString()),
+                    guild))
             .queue();
         return;
       }
 
-      if ((getCategory() == Category.ADMIN)
-          && !evt.getAuthor().getId().equals(Corby.getConfig().getOwnerId())) {
+      if (category == Category.ADMIN && !OtherUtils.isOwner(author)) {
         return;
       }
 
-      if (!evt.getGuild()
-          .getSelfMember()
-          .hasPermission(evt.getTextChannel(), Corby.getPermissions())) {
-        if (evt.getGuild().getOwner() == null) {
-          evt.getGuild().leave().queue();
+      if (!guild.getSelfMember().hasPermission(ch, Corby.getPermissions())) {
+
+        if (guild.getOwner() == null) {
+          guild.leave().queue();
           return;
         }
 
         OtherUtils.sendPrivateMessageSafe(
-            Objects.requireNonNull(evt.getGuild().getOwner()).getUser(),
+            guild.getOwner().getUser(),
             Embeds.create(
                 EmbedTemplate.ERROR,
                 Corby.getFirstJda().getSelfUser(),
-                String.format(invalidBotPermission, Corby.getConfig().getInviteUrl())),
+                String.format(invalidBotPerms, Corby.getConfig().getInviteUrl())),
             () -> {
-              /* epic failure */
+              /* epic fail */
             });
 
-        evt.getGuild().leave().queue();
+        guild.leave().queue();
 
         return;
       }
 
-      if (evt.getGuild().getBotRole() == null
-          || !Objects.requireNonNull(evt.getGuild().getBotRole())
-              .hasPermission(Corby.getPermissions())
-          || !evt.getGuild()
-              .getSelfMember()
-              .hasPermission(evt.getTextChannel(), Corby.getPermissions())) {
-        evt.getTextChannel()
-            .sendMessage(
+      if (botRole == null
+          || !botRole.hasPermission(Corby.getPermissions())
+          || !guild.getSelfMember().hasPermission(ch, Corby.getPermissions())) {
+        ch.sendMessage(
                 Embeds.create(
                     EmbedTemplate.ERROR,
-                    evt.getAuthor(),
-                    String.format(invalidBotPermission, Corby.getConfig().getInviteUrl()),
-                    evt.getGuild()))
+                    author,
+                    String.format(invalidBotPerms, Corby.getConfig().getInviteUrl()),
+                    guild))
             .queue();
-        evt.getGuild().leave().queue();
+
+        guild.leave().queue();
+
         return;
       }
 
-      if (!isValidSyntax(evt, getCommandArgs(evt.getMessage()))) {
-        evt.getTextChannel()
-            .sendMessage(
+      int cooldown = CooldownsManager.getCooldown(author, this);
+
+      if (cooldown > 0) {
+        ch.sendMessage(
                 Embeds.create(
                     EmbedTemplate.ERROR,
-                    evt.getAuthor(),
+                    author,
                     String.format(
-                        invalidSyntax, evt.getMessage().getContentRaw(), getUsagesString()),
-                    evt.getGuild()))
+                        "You are currently on cooldown, wait **%d seconds** to use this command again.",
+                        cooldown),
+                    guild))
             .queue();
         return;
       }
 
-      int cooldownTime = CooldownsManager.getCooldown(evt.getAuthor(), this);
-
-      if (cooldownTime > 0) {
-        evt.getTextChannel()
-            .sendMessage(
-                Embeds.create(
-                    EmbedTemplate.ERROR,
-                    evt.getAuthor(),
-                    String.format(cooldown, cooldownTime),
-                    evt.getGuild()))
-            .queue();
-        return;
+      if (!tryExec()) {
+        util.trigger();
       }
-
-      execute(evt, getCommandArgs(msg));
-
-      CooldownsManager.setCooldown(new Cooldown(evt.getAuthor(), this.getCooldown(), this));
     }
   }
 
-  protected String getMessageContent() {
-    return evt.getMessage().getContentRaw();
-  }
-
-  private boolean hasPermission(MessageReceivedEvent event) {
-    if (getPermissions().length == 0) {
-      return true;
-    }
-
-    return Objects.requireNonNull(event.getMember())
-            .getPermissions()
-            .containsAll(Arrays.asList(getPermissions()))
-        || event
-            .getAuthor()
-            .getId()
-            .equals(
-                Corby.getConfig()
-                    .getOwnerId()); // <- Don't worry, this is only needed to test the bot.
-  }
-
-  private String getPermissionString() {
-
-    StringBuilder sb = new StringBuilder();
-
-    for (int i = 0; i < getPermissions().length; i++) {
-      sb.append(getPermissions()[i].getName())
-          .append((i == getPermissions().length - 1) ? "" : ", ");
-    }
-
-    return sb.toString();
-  }
-
-  @SuppressWarnings("SameParameterValue")
-  protected String getArgsString(int fromIndex, Message msg) {
-    StringBuilder sb = new StringBuilder();
-    String[] args = getCommandArgs(msg);
-
-    for (int i = fromIndex; i < args.length; i++) {
-      sb.append(args[i]).append(" ");
-    }
-
-    return sb.toString();
-  }
-
-  private String[] getCommandArgs(Message msg) {
-    return msg.getContentRaw().split("\\s+");
-  }
-
-  private boolean isCommand(Message message, MessageReceivedEvent event) {
-    if (!getCommands().contains(this)) {
+  private boolean tryExec() {
+    if (defaultAction == null && statements.isEmpty()) {
+      Corby.getLog()
+          .warn(
+              "You did not set the actions on execution in the command constructor: "
+                  + this.getClass().getSimpleName());
       return false;
     }
-    String prefix = MongoPrefixManager.getPrefix(event.getGuild()).getPrefix();
-    String[] args = getCommandArgs(message);
-    return Arrays.asList(args).get(0).toLowerCase().equals(prefix + getAlias())
-        && args[0].startsWith(prefix);
+
+    if (args.size() < 2) {
+
+      if (defaultAction == null) {
+        return false;
+      }
+
+      defaultAction.accept(util);
+
+      return true;
+
+    } else {
+
+      if (statements.isEmpty()) {
+        return false;
+      }
+
+      outer:
+      for (Statement s : statements) {
+        if (s.getLength() != 0 && s.getLength() != args.size() - 1) {
+          continue;
+        }
+
+        List<Argument> arguments = s.getArguments();
+
+        int argCount = 0;
+
+        for (int i = 0; i < arguments.size(); i++) {
+
+          Argument arg = arguments.get(argCount);
+
+          if (arg.getUsage() != null) {
+
+            if (!arg.getUsage().equals(args.get(i + 1))) {
+
+              if (statements.indexOf(s) == statements.size() - 1) {
+                return false;
+
+              } else {
+
+                continue outer;
+              }
+            }
+
+            if (arg.isValueRequired()) {
+
+              if (arg.isVariableLength()) {
+                arg.setValue(util.getContent(i + 2));
+                break;
+              }
+
+              arg.setValue(util.getContent(i + 2));
+
+              i++;
+            }
+
+          } else {
+
+            if (arg.isVariableLength()) {
+              arg.setValue(util.getContent(i + 1));
+              break;
+            }
+
+            arg.setValue(args.get(i + 1));
+          }
+
+          argCount++;
+        }
+
+        currentStatement = s;
+
+        s.getConsumer().accept(util);
+
+        CooldownsManager.setCooldown(new Cooldown(author, this.cooldown, this));
+
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  protected void arg(Consumer<CommandUtil> consumer, Argument... arguments) {
+
+    Statement statement = new Statement(Arrays.asList(arguments), consumer);
+
+    this.statements.add(statement);
+
+    for (Argument a : arguments) {
+      if (a.isVariableLength()) {
+        statement.setLength(0);
+        return;
+      }
+
+      if (a.isValueRequired()) {
+
+        statement.setLength(statement.getLength() + 2);
+
+      } else {
+
+        statement.setLength(statement.getLength() + 1);
+      }
+    }
+  }
+
+  protected void execute(Consumer<CommandUtil> consumer) {
+    defaultAction = consumer;
+  }
+
+  public CommandUtil getUtil(GuildMessageReceivedEvent e) {
+    return new CommandUtil(this, e);
   }
 }

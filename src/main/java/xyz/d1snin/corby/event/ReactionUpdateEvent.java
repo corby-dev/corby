@@ -34,8 +34,8 @@ package xyz.d1snin.corby.event;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageReaction;
-import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.events.guild.GenericGuildEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,7 +47,7 @@ public class ReactionUpdateEvent extends Listener {
       reactions = new CopyOnWriteArrayList<>();
 
   public ReactionUpdateEvent() {
-    this.event = MessageReactionAddEvent.class;
+    this.event = GuildMessageReactionAddEvent.class;
   }
 
   public static void registerReaction(String messageId, String reactionId, Runnable execute) {
@@ -62,8 +62,8 @@ public class ReactionUpdateEvent extends Listener {
   }
 
   @Override
-  public void perform(GenericEvent event) {
-    MessageReactionAddEvent thisEvent = (MessageReactionAddEvent) event;
+  public void perform(GenericGuildEvent event) {
+    GuildMessageReactionAddEvent thisEvent = (GuildMessageReactionAddEvent) event;
     if (thisEvent.getReaction().isSelf()) {
       return;
     }

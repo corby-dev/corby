@@ -30,51 +30,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package xyz.d1snin.corby.utils;
+package xyz.d1snin.corby.model;
 
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
-import xyz.d1snin.corby.Corby;
-import xyz.d1snin.corby.model.EmbedTemplate;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import xyz.d1snin.corby.utils.CommandUtil;
 
-import java.util.function.Supplier;
+import java.util.List;
+import java.util.function.Consumer;
 
-public class OtherUtils {
-  public static void sendPrivateMessageSafe(User user, MessageEmbed success, Runnable onFailure) {
-    user.openPrivateChannel()
-        .complete()
-        .sendMessage(success)
-        .queue(
-            response -> {
-              /* ok */
-            },
-            fail -> onFailure.run());
-  }
-
-  public static void sendLoadingAndEdit(
-      GuildMessageReceivedEvent e, Supplier<MessageEmbed> messageSupplier) {
-    e.getChannel()
-        .sendMessage(
-            Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Processing...", e.getGuild()))
-        .queue(message -> message.editMessage(messageSupplier.get()).queue());
-  }
-
-  public static boolean isNumeric(String s) {
-    try {
-      Integer.parseInt(s);
-      return true;
-    } catch (NumberFormatException e) {
-      return false;
-    }
-  }
-
-  public static boolean isImage(String url) {
-    String lowered = url.toLowerCase();
-    return (lowered.endsWith(".jpg") || lowered.endsWith(".png") || lowered.endsWith(".jpeg"));
-  }
-
-  public static boolean isOwner(User user) {
-    return user.getId().equals(Corby.getConfig().getOwnerId());
-  }
+@RequiredArgsConstructor
+public class Statement {
+  @Getter private final List<Argument> arguments;
+  @Getter private final Consumer<CommandUtil> consumer;
+  @Getter @Setter private int length;
 }
