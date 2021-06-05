@@ -33,8 +33,8 @@
 package xyz.d1snin.corby.event.reactions;
 
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.events.guild.GenericGuildEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.event.Listener;
 
@@ -43,14 +43,14 @@ public abstract class ReactionEvent extends Listener {
   protected String emoji;
 
   public ReactionEvent() {
-    this.event = MessageReactionAddEvent.class;
+    this.event = GuildMessageReactionAddEvent.class;
   }
 
-  protected abstract void performReaction(MessageReactionAddEvent event, Message msg);
+  protected abstract void performReaction(GuildMessageReactionAddEvent event, Message msg);
 
   @Override
-  public void perform(GenericEvent event) {
-    MessageReactionAddEvent thisEvent = (MessageReactionAddEvent) event;
+  public void perform(GenericGuildEvent event) {
+    GuildMessageReactionAddEvent thisEvent = (GuildMessageReactionAddEvent) event;
 
     if (emoji.equals(thisEvent.getReaction().getReactionEmote().getName())) {
       Corby.getService()

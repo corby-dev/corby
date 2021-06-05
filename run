@@ -2,7 +2,7 @@
 git pull origin dev
 
 if [ -n "$1" ]; then
-  ./gradlew run --args="$*"
+  ./gradlew runShadow --args="$*"
 else
-  ./gradlew run
+  ./gradlew runShadow
 fi

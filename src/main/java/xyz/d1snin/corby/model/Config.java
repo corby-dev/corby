@@ -43,6 +43,8 @@ public class Config {
   public static final int NORMAL_SHUTDOWN_EXIT_CODE = 0;
   private String token;
   private String testBotToken;
+  private String statusPageToken;
+  private String statusPageMainPage;
   private String botPrefixDefault;
   private int shardsTotal;
   private String ownerId;
@@ -69,6 +71,8 @@ public class Config {
   public Config(
       String token,
       String testBotToken,
+      String statusPageToken,
+      String statusPageMainPage,
       String botPrefixDefault,
       int shardsTotal,
       String ownerId,
@@ -85,6 +89,8 @@ public class Config {
 
     this.token = token;
     this.testBotToken = testBotToken;
+    this.statusPageToken = statusPageToken;
+    this.statusPageMainPage = statusPageMainPage;
     this.botPrefixDefault = botPrefixDefault;
     this.shardsTotal = shardsTotal;
     this.ownerId = ownerId;

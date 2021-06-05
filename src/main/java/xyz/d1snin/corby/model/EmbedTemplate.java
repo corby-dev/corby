@@ -30,7 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package xyz.d1snin.corby.enums;
+package xyz.d1snin.corby.model;
 
 public enum EmbedTemplate {
   ERROR,

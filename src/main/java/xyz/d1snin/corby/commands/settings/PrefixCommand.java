@@ -33,89 +33,59 @@
 package xyz.d1snin.corby.commands.settings;
 
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.MongoPrefixManager;
-import xyz.d1snin.corby.enums.Category;
-import xyz.d1snin.corby.enums.EmbedTemplate;
+import xyz.d1snin.corby.model.Argument;
+import xyz.d1snin.corby.model.Category;
+import xyz.d1snin.corby.model.EmbedTemplate;
 import xyz.d1snin.corby.model.Prefix;
-import xyz.d1snin.corby.utils.Embeds;
 
 public class PrefixCommand extends Command {
 
   public PrefixCommand() {
-    this.alias = "prefix";
+    this.usage = "prefix";
     this.description = "Changes the bot prefix on the server.";
     this.category = Category.SETTINGS;
-    this.usages = new String[] {"alias", "<New Prefix>"};
 
-    this.permissions = new Permission[] {Permission.ADMINISTRATOR};
-  }
+    this.userPerms = new Permission[] {Permission.ADMINISTRATOR};
 
-  @Override
-  protected void execute(MessageReceivedEvent e, String[] args) {
+    execute(
+        u ->
+            u.sendEmbed(
+                EmbedTemplate.DEFAULT,
+                String.format(
+                    "Current prefix is `%s`.",
+                    MongoPrefixManager.getPrefix(u.getGuild()).getPrefix())));
 
-    final String currPrefix = "Current prefix is `%s`.";
-    final String prefixAlready = "Bot prefix is already `%s`.";
-    final String cannotBeMoreThen = "The prefix cannot be more than 5 characters.";
-    final String successChanged = "The prefix was successfully changed to `%s`.";
+    arg(
+        u -> {
+          Prefix prefix = MongoPrefixManager.getPrefix(u.getGuild());
+          String currentPrefix = prefix.getPrefix();
 
-    Prefix prefix = MongoPrefixManager.getPrefix(e.getGuild());
-    String currentPrefix = prefix.getPrefix();
+          String newPrefix = u.getArgumentValue(0);
 
-    if (args.length < 2) {
-      e.getTextChannel()
-          .sendMessage(
-              Embeds.create(
-                  EmbedTemplate.DEFAULT,
-                  e.getAuthor(),
-                  String.format(currPrefix, currentPrefix),
-                  e.getGuild(),
-                  null,
-                  null))
-          .queue();
-      return;
-    }
+          if (currentPrefix.equals(newPrefix)) {
+            u.sendEmbed(
+                EmbedTemplate.ERROR, String.format("Bot prefix is already `%s`.", newPrefix));
+            return;
+          }
 
-    String newPrefix = args[1];
+          /* TODO: config customization for this prefix length limit */
 
-    if (currentPrefix.equals(newPrefix)) {
-      e.getTextChannel()
-          .sendMessage(
-              Embeds.create(
-                  EmbedTemplate.ERROR,
-                  e.getAuthor(),
-                  String.format(prefixAlready, newPrefix),
-                  e.getGuild()))
-          .queue();
-      return;
-    }
+          if (newPrefix.length() > 5) {
+            u.sendEmbed(EmbedTemplate.ERROR, "The prefix cannot be more than 5 characters.");
+            return;
+          }
 
-    if (newPrefix.length() > 5) {
-      e.getTextChannel()
-          .sendMessage(
-              Embeds.create(EmbedTemplate.ERROR, e.getAuthor(), cannotBeMoreThen, e.getGuild()))
-          .queue();
-      return;
-    }
+          prefix.setPrefix(newPrefix);
+          prefix.setGuild(u.getGuild().getId());
 
-    prefix.setPrefix(newPrefix);
-    prefix.setGuild(e.getGuild().getId());
+          MongoPrefixManager.writePrefix(prefix);
 
-    MongoPrefixManager.writePrefix(prefix);
-
-    e.getTextChannel()
-        .sendMessage(
-            Embeds.create(
-                EmbedTemplate.SUCCESS,
-                e.getAuthor(),
-                String.format(successChanged, newPrefix),
-                e.getGuild()))
-        .queue();
-  }
-
-  @Override
-  protected boolean isValidSyntax(MessageReceivedEvent e, String[] args) {
-    return args.length <= 2;
+          u.sendEmbed(
+              EmbedTemplate.SUCCESS,
+              String.format("The prefix was successfully changed to `%s`.", newPrefix));
+        },
+        new Argument(null, "<New Prefix>", false, false));
   }
 }

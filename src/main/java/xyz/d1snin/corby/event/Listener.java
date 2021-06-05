@@ -32,22 +32,20 @@
 
 package xyz.d1snin.corby.event;
 
-import net.dv8tion.jda.api.events.GenericEvent;
-import net.dv8tion.jda.api.hooks.EventListener;
+import net.dv8tion.jda.api.events.guild.GenericGuildEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.utils.ExceptionUtils;
 
-import java.io.IOException;
+public abstract class Listener extends ListenerAdapter {
 
-public abstract class Listener implements EventListener {
+  public Class<? extends GenericGuildEvent> event = null;
 
-  public Class<? extends GenericEvent> event = null;
-
-  public abstract void perform(GenericEvent event) throws IOException;
+  public abstract void perform(GenericGuildEvent event);
 
   @Override
-  public void onEvent(@NotNull GenericEvent thisEvent) {
+  public void onGenericGuild(@NotNull GenericGuildEvent thisEvent) {
     if (event != null) {
 
       if (event.equals(thisEvent.getClass())) {

@@ -35,11 +35,11 @@ package xyz.d1snin.corby.commands.fun;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import jdk.nashorn.api.scripting.URLReader;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import xyz.d1snin.corby.commands.Command;
-import xyz.d1snin.corby.enums.Category;
-import xyz.d1snin.corby.enums.EmbedTemplate;
+import xyz.d1snin.corby.model.Category;
+import xyz.d1snin.corby.model.EmbedTemplate;
 import xyz.d1snin.corby.utils.Embeds;
+import xyz.d1snin.corby.utils.OtherUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -47,48 +47,41 @@ import java.net.URL;
 public class CatCommand extends Command {
 
   public CatCommand() {
-    this.alias = "cat";
+    this.usage = "cat";
     this.description = "Gives you a picture of a cat";
     this.category = Category.FUN;
-  }
 
-  @Override
-  protected void execute(MessageReceivedEvent e, String[] args) {
-    e.getTextChannel()
-        .sendMessage(
-            Embeds.create(
-                EmbedTemplate.DEFAULT, e.getAuthor(), "Fetching...", e.getGuild(), null, null))
-        .queue(
-            message -> {
-              try {
-                message
-                    .editMessage(
-                        Embeds.create(
-                            EmbedTemplate.DEFAULT,
-                            e.getAuthor(),
-                            getFact(),
-                            e.getGuild(),
-                            getPicture()))
-                    .queue();
-              } catch (MalformedURLException malformedURLException) {
-                malformedURLException.printStackTrace();
-              }
-            });
-  }
+    execute(
+        u ->
+            OtherUtils.sendLoadingAndEdit(
+                u.getEvent(),
+                () -> {
+                  try {
+                    return Embeds.create(
+                        EmbedTemplate.DEFAULT,
+                        u.getAuthor(),
+                        getFact(),
+                        u.getGuild(),
+                        getPicture());
+                  } catch (MalformedURLException exception) {
+                    exception.printStackTrace();
+                  }
 
-  @Override
-  protected boolean isValidSyntax(MessageReceivedEvent e, String[] args) {
-    return args.length <= 1;
+                  return null;
+                }));
   }
 
   private String getFact() throws MalformedURLException {
     while (true) {
+
       JsonElement root =
           JsonParser.parseReader(
               new URLReader(
                   new URL("https://cat-fact.herokuapp.com/facts/random?animal_type=cat&amount=1")));
+
       JsonElement verifiedElement =
           root.getAsJsonObject().get("status").getAsJsonObject().get("verified");
+
       if (!verifiedElement.isJsonNull() && verifiedElement.getAsBoolean()) {
         return root.getAsJsonObject().get("text").getAsString();
       }
