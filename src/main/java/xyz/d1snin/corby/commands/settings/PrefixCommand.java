@@ -70,8 +70,6 @@ public class PrefixCommand extends Command {
             return;
           }
 
-          /* TODO: config customization for this prefix length limit */
-
           if (newPrefix.length() > 5) {
             u.sendEmbed(EmbedTemplate.ERROR, "The prefix cannot be more than 5 characters.");
             return;
