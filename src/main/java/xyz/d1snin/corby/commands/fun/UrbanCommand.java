@@ -65,13 +65,14 @@ public class UrbanCommand extends Command {
                       u.createEmbed(EmbedType.ERROR, "Could not find this phrase.");
 
                   try {
+                    System.out.println(u.getArgumentValue(0));
                     array =
                         JsonParser.parseReader(
                                 new URLReader(
                                     new URL(
                                         String.format(
                                             "https://api.urbandictionary.com/v0/define?term=%s",
-                                            u.getArgumentValue(0).replace(" ", "%20")))))
+                                            u.getArgumentValue(0).replaceAll("\\s+", "%20")))))
                             .getAsJsonObject()
                             .get("list")
                             .getAsJsonArray();

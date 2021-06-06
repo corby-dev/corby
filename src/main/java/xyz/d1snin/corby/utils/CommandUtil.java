@@ -96,7 +96,7 @@ public class CommandUtil {
     sb.setLength(0);
 
     for (int i = fromPosition; i < args.size(); i++) {
-      sb.append(args.get(i));
+      sb.append(args.get(i)).append(" ");
     }
 
     return sb.toString();
