@@ -1,3 +1,4 @@
+# Corby 
 [![CodeFactor](https://www.codefactor.io/repository/github/corby-dev/corby/badge)](https://www.codefactor.io/repository/github/corby-dev/corby)
 [![<ORG_NAME>](https://circleci.com/gh/corby-dev/corby.svg?style=svg)](https://circleci.com/gh/corby-dev/corby)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
@@ -5,9 +6,7 @@
 
 ![corby pic](https://raw.githubusercontent.com/d1snin/corby/development/src/main/resources/corby-header.png)
 
-# Corby:
-
-### Made in 🇷🇺 with ❤️.
+## Made in 🇷🇺 with ❤️.
 
 Corby is a bot that aims to log any events that occur in your discord server and to moderate it, I am open to any of your pool requests
 
