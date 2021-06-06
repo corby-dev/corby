@@ -1,5 +1,4 @@
-# Corby 
-[![CodeFactor](https://www.codefactor.io/repository/github/corby-dev/corby/badge)](https://www.codefactor.io/repository/github/corby-dev/corby)
+# Corby [![CodeFactor](https://www.codefactor.io/repository/github/corby-dev/corby/badge)](https://www.codefactor.io/repository/github/corby-dev/corby)
 [![<ORG_NAME>](https://circleci.com/gh/corby-dev/corby.svg?style=svg)](https://circleci.com/gh/corby-dev/corby)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![lines of code](https://img.shields.io/tokei/lines/github/corby-dev/corby)](https://github.com/corby-dev/corby)
