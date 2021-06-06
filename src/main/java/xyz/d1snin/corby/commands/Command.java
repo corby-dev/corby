@@ -42,8 +42,8 @@ import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.event.Listener;
 import xyz.d1snin.corby.manager.CooldownsManager;
 import xyz.d1snin.corby.model.Category;
-import xyz.d1snin.corby.model.*;
 import xyz.d1snin.corby.model.EmbedType;
+import xyz.d1snin.corby.model.*;
 import xyz.d1snin.corby.utils.CommandUtil;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.OtherUtils;
@@ -69,6 +69,7 @@ public abstract class Command extends Listener {
   private CommandUtil util;
   private List<String> args;
   private User author;
+
   public Command() {
     this.event = GuildMessageReceivedEvent.class;
   }
@@ -125,15 +126,11 @@ public abstract class Command extends Listener {
           "I do not have or I do not have enough permissions on this server, please invite me using [this](%s) link, I am leaving right now.";
 
       if (!util.hasPermissions()) {
-        ch.sendMessage(
-                Embeds.create(
-                    EmbedType.ERROR,
-                    author,
-                    String.format(
-                        "You must have permissions %s to use this command.",
-                        util.getRequiredPermissionsAsString()),
-                    guild))
-            .queue();
+        util.sendEmbed(
+            EmbedType.ERROR,
+            String.format(
+                "You must have permissions %s to use this command.",
+                util.getRequiredPermissionsAsString()));
         return;
       }
 
@@ -166,13 +163,8 @@ public abstract class Command extends Listener {
       if (botRole == null
           || !botRole.hasPermission(Corby.getPermissions())
           || !guild.getSelfMember().hasPermission(ch, Corby.getPermissions())) {
-        ch.sendMessage(
-                Embeds.create(
-                    EmbedType.ERROR,
-                    author,
-                    String.format(invalidBotPerms, Corby.getConfig().getInviteUrl()),
-                    guild))
-            .queue();
+        util.sendEmbed(
+            EmbedType.ERROR, String.format(invalidBotPerms, Corby.getConfig().getInviteUrl()));
 
         guild.leave().queue();
 
@@ -182,15 +174,11 @@ public abstract class Command extends Listener {
       int cooldown = CooldownsManager.getCooldown(author, this);
 
       if (cooldown > 0) {
-        ch.sendMessage(
-                Embeds.create(
-                    EmbedType.ERROR,
-                    author,
-                    String.format(
-                        "You are currently on cooldown, wait **%d seconds** to use this command again.",
-                        cooldown),
-                    guild))
-            .queue();
+        util.sendEmbed(
+            EmbedType.ERROR,
+            String.format(
+                "You are currently on cooldown, wait **%d seconds** to use this command again.",
+                cooldown));
         return;
       }
 
