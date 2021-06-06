@@ -32,19 +32,23 @@
 
 package xyz.d1snin.corby.model;
 
+import lombok.Getter;
+
 public enum Category {
   MISC("Misc"),
   FUN("Fun"),
   SETTINGS("Bot Settings"),
-  ADMIN("Admin");
+  ADMIN("Admin", true);
 
-  private final String name;
+  @Getter private final String name;
+  @Getter private boolean adminCategory;
+
+  Category(String name, boolean adminCategory) {
+    this.name = name;
+    this.adminCategory = adminCategory;
+  }
 
   Category(String name) {
     this.name = name;
-  }
-
-  public String getName() {
-    return name;
   }
 }

@@ -45,7 +45,9 @@ import xyz.d1snin.corby.model.Argument;
 import xyz.d1snin.corby.model.Category;
 import xyz.d1snin.corby.model.EmbedType;
 import xyz.d1snin.corby.utils.Embeds;
+import xyz.d1snin.corby.utils.OtherUtils;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -129,7 +131,10 @@ public class HelpCommand extends Command {
 
   private MessageEmbed getEmbedByPage(int page, GuildMessageReceivedEvent e) {
 
-    int categories = Category.values().length;
+    long categories =
+        OtherUtils.isOwner(e.getAuthor())
+            ? Category.values().length
+            : Arrays.stream(Category.values()).filter(it -> !it.isAdminCategory()).count();
 
     if (page > categories || page < 1) {
       return null;
