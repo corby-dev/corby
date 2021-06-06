@@ -57,7 +57,7 @@ public class UrbanCommand extends Command {
     arg(
         u ->
             OtherUtils.sendLoadingAndEdit(
-                u.getEvent(),
+                u,
                 () -> {
                   JsonArray array;
 

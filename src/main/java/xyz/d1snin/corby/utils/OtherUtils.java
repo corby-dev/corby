@@ -34,7 +34,6 @@ package xyz.d1snin.corby.utils;
 
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.model.EmbedType;
 
@@ -52,12 +51,10 @@ public class OtherUtils {
             fail -> onFailure.run());
   }
 
-  public static void sendLoadingAndEdit(
-      GuildMessageReceivedEvent e, Supplier<MessageEmbed> messageSupplier) {
-    e.getChannel()
-        .sendMessage(
-            Embeds.create(EmbedType.DEFAULT, e.getAuthor(), "Processing...", e.getGuild()))
-        .queue(message -> message.editMessage(messageSupplier.get()).queue());
+  public static void sendLoadingAndEdit(CommandUtil u, Supplier<MessageEmbed> messageSupplier) {
+    u.getChannel()
+        .sendMessage(u.createEmbed(EmbedType.DEFAULT, "Processing..."))
+        .queue(m -> m.editMessage(messageSupplier.get()).queue());
   }
 
   public static boolean isNumeric(String s) {

@@ -71,7 +71,7 @@ public class StealCommand extends Command {
           }
 
           OtherUtils.sendLoadingAndEdit(
-              u.getEvent(),
+              u,
               () -> {
                 try {
 

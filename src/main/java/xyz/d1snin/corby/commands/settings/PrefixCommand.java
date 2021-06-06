@@ -65,8 +65,7 @@ public class PrefixCommand extends Command {
           String newPrefix = u.getArgumentValue(0);
 
           if (currentPrefix.equals(newPrefix)) {
-            u.sendEmbed(
-                EmbedType.ERROR, String.format("Bot prefix is already `%s`.", newPrefix));
+            u.sendEmbed(EmbedType.ERROR, String.format("Bot prefix is already `%s`.", newPrefix));
             return;
           }
 

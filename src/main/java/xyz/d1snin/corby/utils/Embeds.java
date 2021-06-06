@@ -109,13 +109,12 @@ public class Embeds {
     return create(template, u, description, null, null, null);
   }
 
-  public static MessageEmbed create(
-          EmbedType template, User u, String description, Guild guild) {
+  public static MessageEmbed create(EmbedType template, User u, String description, Guild guild) {
     return create(template, u, description, guild, null, null);
   }
 
   public static MessageEmbed create(
-          EmbedType template, User u, String description, Guild guild, String imageUrl) {
+      EmbedType template, User u, String description, Guild guild, String imageUrl) {
     return create(template, u, description, guild, imageUrl, null);
   }
 

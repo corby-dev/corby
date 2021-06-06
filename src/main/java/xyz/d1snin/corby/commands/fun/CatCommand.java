@@ -54,15 +54,11 @@ public class CatCommand extends Command {
     execute(
         u ->
             OtherUtils.sendLoadingAndEdit(
-                u.getEvent(),
+                u,
                 () -> {
                   try {
                     return Embeds.create(
-                        EmbedType.DEFAULT,
-                        u.getAuthor(),
-                        getFact(),
-                        u.getGuild(),
-                        getPicture());
+                        EmbedType.DEFAULT, u.getAuthor(), getFact(), u.getGuild(), getPicture());
                   } catch (MalformedURLException exception) {
                     exception.printStackTrace();
                   }
