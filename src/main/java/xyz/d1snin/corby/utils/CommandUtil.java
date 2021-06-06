@@ -99,7 +99,7 @@ public class CommandUtil {
       sb.append(args.get(i)).append(" ");
     }
 
-    return sb.toString();
+    return sb.toString().trim();
   }
 
   public final String getArgumentValue(int index) {
