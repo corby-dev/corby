@@ -71,7 +71,7 @@ public class UrbanCommand extends Command {
                                     new URL(
                                         String.format(
                                             "https://api.urbandictionary.com/v0/define?term=%s",
-                                            u.getArgumentValue(0).replaceAll("\\s+", "%20")))))
+                                            u.getArgumentValue(0).replace(" ", "%20")))))
                             .getAsJsonObject()
                             .get("list")
                             .getAsJsonArray();
