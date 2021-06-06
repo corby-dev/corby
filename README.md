@@ -8,9 +8,6 @@ Corby is a bot that aims to log any events that occur in your discord server and
 
 **Right now in active development!**
 
-### Commands:
-You can find the commands my bot supports on [this](https://d1snin.xyz/corby/) web page.
-
 ### Self hosting:
 You can find instructions on this topic [here](https://github.com/d1snin/corby/blob/dev/SELF_HOSTING.md).
 
