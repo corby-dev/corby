@@ -32,7 +32,7 @@
 
 package xyz.d1snin.corby.model;
 
-public enum EmbedTemplate {
+public enum EmbedType {
   ERROR,
   SUCCESS,
   DEFAULT

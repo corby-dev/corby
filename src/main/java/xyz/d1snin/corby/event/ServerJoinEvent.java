@@ -38,7 +38,7 @@ import net.dv8tion.jda.api.events.guild.GenericGuildEvent;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.managers.MongoPrefixManager;
-import xyz.d1snin.corby.model.EmbedTemplate;
+import xyz.d1snin.corby.model.EmbedType;
 import xyz.d1snin.corby.utils.Embeds;
 
 import java.util.List;
@@ -67,7 +67,7 @@ public class ServerJoinEvent extends Listener {
       ((TextChannel) channel)
           .sendMessage(
               Embeds.create(
-                  EmbedTemplate.DEFAULT,
+                  EmbedType.DEFAULT,
                   Corby.getFirstJda().getSelfUser(),
                   String.format(
                       "It looks like you added me to your server without required permissions, this is necessary for the bot to work correctly, please invite me using this [link](%s). I will log out of your server now.",
@@ -80,7 +80,7 @@ public class ServerJoinEvent extends Listener {
     ((TextChannel) channel)
         .sendMessage(
             Embeds.create(
-                EmbedTemplate.DEFAULT,
+                EmbedType.DEFAULT,
                 Corby.getFirstJda().getSelfUser(),
                 String.format(
                     "Thank you for inviting me to your server!\nI can help you with moderation and administration of your server and much more. \nYou can find out the full list of commands by simply writing to any chat `%shelp`.",

@@ -36,7 +36,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import xyz.d1snin.corby.Corby;
-import xyz.d1snin.corby.model.EmbedTemplate;
+import xyz.d1snin.corby.model.EmbedType;
 
 import java.util.function.Supplier;
 
@@ -56,7 +56,7 @@ public class OtherUtils {
       GuildMessageReceivedEvent e, Supplier<MessageEmbed> messageSupplier) {
     e.getChannel()
         .sendMessage(
-            Embeds.create(EmbedTemplate.DEFAULT, e.getAuthor(), "Processing...", e.getGuild()))
+            Embeds.create(EmbedType.DEFAULT, e.getAuthor(), "Processing...", e.getGuild()))
         .queue(message -> message.editMessage(messageSupplier.get()).queue());
   }
 

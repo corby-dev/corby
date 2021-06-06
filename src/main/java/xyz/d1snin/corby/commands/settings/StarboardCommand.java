@@ -40,7 +40,7 @@ import xyz.d1snin.corby.database.managers.MongoPrefixManager;
 import xyz.d1snin.corby.database.managers.MongoStarboardManager;
 import xyz.d1snin.corby.model.Argument;
 import xyz.d1snin.corby.model.Category;
-import xyz.d1snin.corby.model.EmbedTemplate;
+import xyz.d1snin.corby.model.EmbedType;
 import xyz.d1snin.corby.model.Starboard;
 import xyz.d1snin.corby.utils.CommandUtil;
 import xyz.d1snin.corby.utils.FormatUtils;
@@ -70,12 +70,12 @@ public class StarboardCommand extends Command {
             return;
           }
           if (!sb.isStatus()) {
-            u.sendEmbed(EmbedTemplate.ERROR, sbNotEnabled);
+            u.sendEmbed(EmbedType.ERROR, sbNotEnabled);
             return;
           }
 
           u.sendEmbed(
-              EmbedTemplate.DEFAULT,
+              EmbedType.DEFAULT,
               String.format(
                   "Starboard is enabled on your server!\n\n%s\n%s",
                   FormatUtils.formatMessageKeyText(
@@ -96,7 +96,7 @@ public class StarboardCommand extends Command {
           }
 
           if (sb.isStatus()) {
-            u.sendEmbed(EmbedTemplate.ERROR, "Starboard is already enabled on your server.");
+            u.sendEmbed(EmbedType.ERROR, "Starboard is already enabled on your server.");
             return;
           }
 
@@ -105,7 +105,7 @@ public class StarboardCommand extends Command {
           MongoStarboardManager.writeStarboard(sb);
 
           u.sendEmbed(
-              EmbedTemplate.SUCCESS, "Starboard has been successfully enabled on your server!");
+              EmbedType.SUCCESS, "Starboard has been successfully enabled on your server!");
         },
         new Argument("enable", "enable", false, false));
 
@@ -119,7 +119,7 @@ public class StarboardCommand extends Command {
           }
 
           if (!sb.isStatus()) {
-            u.sendEmbed(EmbedTemplate.ERROR, "Starboard is already disabled on your server.");
+            u.sendEmbed(EmbedType.ERROR, "Starboard is already disabled on your server.");
             return;
           }
 
@@ -128,7 +128,7 @@ public class StarboardCommand extends Command {
           MongoStarboardManager.writeStarboard(sb);
 
           u.sendEmbed(
-              EmbedTemplate.SUCCESS, "Starboard has been successfully disabled on your server!");
+              EmbedType.SUCCESS, "Starboard has been successfully disabled on your server!");
         },
         new Argument("disable", "disable", false, false));
 
@@ -145,7 +145,7 @@ public class StarboardCommand extends Command {
               && u.getMessage()
                   .getMentionedChannels()
                   .contains(Corby.getShards().getTextChannelById(sb.getChannel()))) {
-            u.sendEmbed(EmbedTemplate.ERROR, "Starboard channel is already set to this channel.");
+            u.sendEmbed(EmbedType.ERROR, "Starboard channel is already set to this channel.");
             return;
           }
 
@@ -167,7 +167,7 @@ public class StarboardCommand extends Command {
           }
 
           u.sendEmbed(
-              EmbedTemplate.SUCCESS,
+              EmbedType.SUCCESS,
               String.format(
                   "Starboard successfully installed on the channel %s", channel.getAsMention()));
         },
@@ -195,13 +195,13 @@ public class StarboardCommand extends Command {
           }
 
           if (!sb.isStatus()) {
-            u.sendEmbed(EmbedTemplate.ERROR, sbNotEnabled);
+            u.sendEmbed(EmbedType.ERROR, sbNotEnabled);
             return;
           }
 
           if (sb.getStars() == stars) {
             u.sendEmbed(
-                EmbedTemplate.ERROR,
+                EmbedType.ERROR,
                 "The number of stars for the message is already set to this value.");
           }
 
@@ -210,7 +210,7 @@ public class StarboardCommand extends Command {
           MongoStarboardManager.writeStarboard(sb);
 
           u.sendEmbed(
-              EmbedTemplate.SUCCESS,
+              EmbedType.SUCCESS,
               String.format(
                   "The number of stars for the message has been successfully updated to %d.",
                   stars));
@@ -220,7 +220,7 @@ public class StarboardCommand extends Command {
 
   private static void onNotConfigured(CommandUtil u) {
     u.sendEmbed(
-        EmbedTemplate.ERROR,
+        EmbedType.ERROR,
         String.format(
             "Starboard is not configured on your server, use `%sstarboard channel <#channel>` to configure starboard.",
             MongoPrefixManager.getPrefix(u.getGuild())));

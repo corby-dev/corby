@@ -36,7 +36,7 @@ import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.model.Category;
 import xyz.d1snin.corby.model.Config;
-import xyz.d1snin.corby.model.EmbedTemplate;
+import xyz.d1snin.corby.model.EmbedType;
 
 public class TerminateCommand extends Command {
 
@@ -47,7 +47,7 @@ public class TerminateCommand extends Command {
 
     execute(
         u -> {
-          u.sendEmbed(EmbedTemplate.SUCCESS, "Terminating... Bye!");
+          u.sendEmbed(EmbedType.SUCCESS, "Terminating... Bye!");
           Corby.shutdown(Config.NORMAL_SHUTDOWN_EXIT_CODE);
         });
   }

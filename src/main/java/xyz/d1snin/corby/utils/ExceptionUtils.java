@@ -33,7 +33,7 @@
 package xyz.d1snin.corby.utils;
 
 import xyz.d1snin.corby.Corby;
-import xyz.d1snin.corby.model.EmbedTemplate;
+import xyz.d1snin.corby.model.EmbedType;
 
 import java.util.Objects;
 
@@ -47,7 +47,7 @@ public class ExceptionUtils {
                   Objects.requireNonNull(
                       Corby.getShards().getUserById(Corby.getConfig().getOwnerId())),
                   Embeds.create(
-                      EmbedTemplate.DEFAULT,
+                      EmbedType.DEFAULT,
                       Corby.getShards().getUserById(Corby.getConfig().getOwnerId()),
                       String.format(
                           message,

@@ -40,7 +40,7 @@ import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.MongoPrefixManager;
 import xyz.d1snin.corby.model.Argument;
 import xyz.d1snin.corby.model.Category;
-import xyz.d1snin.corby.model.EmbedTemplate;
+import xyz.d1snin.corby.model.EmbedType;
 import xyz.d1snin.corby.model.Statement;
 
 import javax.annotation.concurrent.Immutable;
@@ -164,17 +164,17 @@ public class CommandUtil {
     return sb.toString();
   }
 
-  public final void sendEmbed(EmbedTemplate template, String content) {
+  public final void sendEmbed(EmbedType template, String content) {
     getChannel().sendMessage(Embeds.create(template, author, content, guild)).queue();
   }
 
-  public final MessageEmbed createEmbed(EmbedTemplate template, String content) {
+  public final MessageEmbed createEmbed(EmbedType template, String content) {
     return Embeds.create(template, author, content, guild);
   }
 
   public final void trigger() {
     sendEmbed(
-        EmbedTemplate.ERROR,
+        EmbedType.ERROR,
         String.format(
             "**Incorrect Syntax:** `%s`\n\n**Usage:**\n%s", getContent(), getUsagesAsString()));
   }

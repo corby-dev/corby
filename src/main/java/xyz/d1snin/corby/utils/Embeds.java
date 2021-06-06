@@ -39,7 +39,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import xyz.d1snin.corby.Corby;
-import xyz.d1snin.corby.model.EmbedTemplate;
+import xyz.d1snin.corby.model.EmbedType;
 
 import javax.annotation.Nullable;
 import java.awt.*;
@@ -47,7 +47,7 @@ import java.util.Objects;
 
 public class Embeds {
   public static MessageEmbed create(
-      EmbedTemplate template,
+      EmbedType template,
       User u,
       String description,
       @Nullable Guild guild,
@@ -105,21 +105,21 @@ public class Embeds {
     return builder.build();
   }
 
-  public static MessageEmbed create(EmbedTemplate template, User u, String description) {
+  public static MessageEmbed create(EmbedType template, User u, String description) {
     return create(template, u, description, null, null, null);
   }
 
   public static MessageEmbed create(
-      EmbedTemplate template, User u, String description, Guild guild) {
+          EmbedType template, User u, String description, Guild guild) {
     return create(template, u, description, guild, null, null);
   }
 
   public static MessageEmbed create(
-      EmbedTemplate template, User u, String description, Guild guild, String imageUrl) {
+          EmbedType template, User u, String description, Guild guild, String imageUrl) {
     return create(template, u, description, guild, imageUrl, null);
   }
 
-  public static MessageEmbed create(EmbedTemplate template, String description, CommandUtil util) {
+  public static MessageEmbed create(EmbedType template, String description, CommandUtil util) {
     return create(template, util.getAuthor(), description, util.getGuild());
   }
 }

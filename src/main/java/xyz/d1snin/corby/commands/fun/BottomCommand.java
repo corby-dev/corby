@@ -37,7 +37,7 @@ import com.github.bottomSoftwareFoundation.bottom.TranslationError;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.model.Argument;
 import xyz.d1snin.corby.model.Category;
-import xyz.d1snin.corby.model.EmbedTemplate;
+import xyz.d1snin.corby.model.EmbedType;
 import xyz.d1snin.corby.utils.FormatUtils;
 
 import java.util.Objects;
@@ -59,12 +59,12 @@ public class BottomCommand extends Command {
           String encodedMessage = Bottom.encode(Objects.requireNonNull(u.getContent(2)));
 
           if (encodedMessage.length() > edMsgLimit) {
-            u.sendEmbed(EmbedTemplate.ERROR, longR);
+            u.sendEmbed(EmbedType.ERROR, longR);
             return;
           }
 
           u.sendEmbed(
-              EmbedTemplate.SUCCESS,
+              EmbedType.SUCCESS,
               String.format(
                   result,
                   String.format(FormatUtils.formatMessageKeyText("Result", "%s"), encodedMessage)));
@@ -78,12 +78,12 @@ public class BottomCommand extends Command {
             String decodedMessage = Bottom.decode(u.getArgumentValue(0));
 
             if (decodedMessage.length() > edMsgLimit) {
-              u.sendEmbed(EmbedTemplate.ERROR, longR);
+              u.sendEmbed(EmbedType.ERROR, longR);
               return;
             }
 
             u.sendEmbed(
-                EmbedTemplate.SUCCESS,
+                EmbedType.SUCCESS,
                 String.format(
                     result,
                     String.format(
@@ -91,7 +91,7 @@ public class BottomCommand extends Command {
           } catch (TranslationError error) {
 
             u.sendEmbed(
-                EmbedTemplate.ERROR,
+                EmbedType.ERROR,
                 String.format("You cannot decrypt this message: %s", error.getWhy()));
           }
         },
