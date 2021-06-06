@@ -44,6 +44,7 @@ import xyz.d1snin.corby.event.ReactionUpdateEvent;
 import xyz.d1snin.corby.model.Argument;
 import xyz.d1snin.corby.model.Category;
 import xyz.d1snin.corby.model.EmbedType;
+import xyz.d1snin.corby.utils.CommandUtil;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.OtherUtils;
 
@@ -122,7 +123,7 @@ public class HelpCommand extends Command {
                   + "\n\n"
                   + "**Usage:**"
                   + "\n"
-                  + u.getUsagesAsString();
+                  + new CommandUtil(command, u.getEvent()).getUsagesAsString();
 
           u.sendEmbed(EmbedType.DEFAULT, msg);
         },
