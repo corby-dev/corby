@@ -65,7 +65,6 @@ public class UrbanCommand extends Command {
                       u.createEmbed(EmbedType.ERROR, "Could not find this phrase.");
 
                   try {
-                    System.out.println(u.getArgumentValue(0));
                     array =
                         JsonParser.parseReader(
                                 new URLReader(
