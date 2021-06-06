@@ -40,7 +40,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.model.Argument;
 import xyz.d1snin.corby.model.Category;
-import xyz.d1snin.corby.model.EmbedTemplate;
+import xyz.d1snin.corby.model.EmbedType;
 import xyz.d1snin.corby.utils.FormatUtils;
 import xyz.d1snin.corby.utils.OtherUtils;
 
@@ -62,7 +62,7 @@ public class UrbanCommand extends Command {
                   JsonArray array;
 
                   MessageEmbed errorMessage =
-                      u.createEmbed(EmbedTemplate.ERROR, "Could not find this phrase.");
+                      u.createEmbed(EmbedType.ERROR, "Could not find this phrase.");
 
                   try {
                     array =
@@ -95,12 +95,12 @@ public class UrbanCommand extends Command {
 
                   return (definition.length() > 2000
                       ? u.createEmbed(
-                          EmbedTemplate.ERROR,
+                          EmbedType.ERROR,
                           String.format(
                               "It seems the definition is too big, you can see it [here](%s).",
                               array.get(0).getAsJsonObject().get("permalink").getAsString()))
                       : u.createEmbed(
-                          EmbedTemplate.SUCCESS,
+                          EmbedType.SUCCESS,
                           FormatUtils.formatMessageKeyText("Definition", definition, false)));
                 }),
         new Argument(null, "<Phrase>", true, true));

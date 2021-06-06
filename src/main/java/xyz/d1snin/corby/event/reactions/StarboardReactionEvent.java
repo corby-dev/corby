@@ -40,7 +40,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.database.managers.MongoStarboardManager;
-import xyz.d1snin.corby.model.EmbedTemplate;
+import xyz.d1snin.corby.model.EmbedType;
 import xyz.d1snin.corby.model.Starboard;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.OtherUtils;
@@ -125,7 +125,7 @@ public class StarboardReactionEvent extends ReactionEvent {
         OtherUtils.sendPrivateMessageSafe(
             owner,
             Embeds.create(
-                EmbedTemplate.DEFAULT,
+                EmbedType.DEFAULT,
                 owner,
                 "Hey! You received this message because I cannot send messages to the starboard. Please make sure I have permission."),
             () -> {

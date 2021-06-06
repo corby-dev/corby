@@ -37,7 +37,7 @@ import com.google.gson.JsonParser;
 import jdk.nashorn.api.scripting.URLReader;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.model.Category;
-import xyz.d1snin.corby.model.EmbedTemplate;
+import xyz.d1snin.corby.model.EmbedType;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.OtherUtils;
 
@@ -58,7 +58,7 @@ public class CatCommand extends Command {
                 () -> {
                   try {
                     return Embeds.create(
-                        EmbedTemplate.DEFAULT,
+                        EmbedType.DEFAULT,
                         u.getAuthor(),
                         getFact(),
                         u.getGuild(),

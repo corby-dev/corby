@@ -37,7 +37,7 @@ import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.database.managers.MongoPrefixManager;
 import xyz.d1snin.corby.model.Argument;
 import xyz.d1snin.corby.model.Category;
-import xyz.d1snin.corby.model.EmbedTemplate;
+import xyz.d1snin.corby.model.EmbedType;
 import xyz.d1snin.corby.model.Prefix;
 
 public class PrefixCommand extends Command {
@@ -52,7 +52,7 @@ public class PrefixCommand extends Command {
     execute(
         u ->
             u.sendEmbed(
-                EmbedTemplate.DEFAULT,
+                EmbedType.DEFAULT,
                 String.format(
                     "Current prefix is `%s`.",
                     MongoPrefixManager.getPrefix(u.getGuild()).getPrefix())));
@@ -66,12 +66,12 @@ public class PrefixCommand extends Command {
 
           if (currentPrefix.equals(newPrefix)) {
             u.sendEmbed(
-                EmbedTemplate.ERROR, String.format("Bot prefix is already `%s`.", newPrefix));
+                EmbedType.ERROR, String.format("Bot prefix is already `%s`.", newPrefix));
             return;
           }
 
           if (newPrefix.length() > 5) {
-            u.sendEmbed(EmbedTemplate.ERROR, "The prefix cannot be more than 5 characters.");
+            u.sendEmbed(EmbedType.ERROR, "The prefix cannot be more than 5 characters.");
             return;
           }
 
@@ -81,7 +81,7 @@ public class PrefixCommand extends Command {
           MongoPrefixManager.writePrefix(prefix);
 
           u.sendEmbed(
-              EmbedTemplate.SUCCESS,
+              EmbedType.SUCCESS,
               String.format("The prefix was successfully changed to `%s`.", newPrefix));
         },
         new Argument(null, "<New Prefix>", false, false));

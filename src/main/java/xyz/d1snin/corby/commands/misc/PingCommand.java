@@ -37,7 +37,7 @@ import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.model.Argument;
 import xyz.d1snin.corby.model.Category;
-import xyz.d1snin.corby.model.EmbedTemplate;
+import xyz.d1snin.corby.model.EmbedType;
 import xyz.d1snin.corby.utils.FormatUtils;
 
 import java.util.List;
@@ -52,7 +52,7 @@ public class PingCommand extends Command {
     execute(
         u ->
             u.sendEmbed(
-                EmbedTemplate.DEFAULT,
+                EmbedType.DEFAULT,
                 FormatUtils.formatMessageKeyText(
                     "Gateway ping", String.format("%sms", Corby.getPing()))));
 
@@ -73,7 +73,7 @@ public class PingCommand extends Command {
           }
 
           u.sendEmbed(
-              EmbedTemplate.DEFAULT,
+              EmbedType.DEFAULT,
               FormatUtils.formatMessageKeyText(
                       "Average gateway ping", String.format("%sms", Corby.getPing()))
                   + "\n\n"

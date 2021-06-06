@@ -43,6 +43,7 @@ import xyz.d1snin.corby.event.Listener;
 import xyz.d1snin.corby.manager.CooldownsManager;
 import xyz.d1snin.corby.model.Category;
 import xyz.d1snin.corby.model.*;
+import xyz.d1snin.corby.model.EmbedType;
 import xyz.d1snin.corby.utils.CommandUtil;
 import xyz.d1snin.corby.utils.Embeds;
 import xyz.d1snin.corby.utils.OtherUtils;
@@ -126,7 +127,7 @@ public abstract class Command extends Listener {
       if (!util.hasPermissions()) {
         ch.sendMessage(
                 Embeds.create(
-                    EmbedTemplate.ERROR,
+                    EmbedType.ERROR,
                     author,
                     String.format(
                         "You must have permissions %s to use this command.",
@@ -150,7 +151,7 @@ public abstract class Command extends Listener {
         OtherUtils.sendPrivateMessageSafe(
             guild.getOwner().getUser(),
             Embeds.create(
-                EmbedTemplate.ERROR,
+                EmbedType.ERROR,
                 Corby.getFirstJda().getSelfUser(),
                 String.format(invalidBotPerms, Corby.getConfig().getInviteUrl())),
             () -> {
@@ -167,7 +168,7 @@ public abstract class Command extends Listener {
           || !guild.getSelfMember().hasPermission(ch, Corby.getPermissions())) {
         ch.sendMessage(
                 Embeds.create(
-                    EmbedTemplate.ERROR,
+                    EmbedType.ERROR,
                     author,
                     String.format(invalidBotPerms, Corby.getConfig().getInviteUrl()),
                     guild))
@@ -183,7 +184,7 @@ public abstract class Command extends Listener {
       if (cooldown > 0) {
         ch.sendMessage(
                 Embeds.create(
-                    EmbedTemplate.ERROR,
+                    EmbedType.ERROR,
                     author,
                     String.format(
                         "You are currently on cooldown, wait **%d seconds** to use this command again.",

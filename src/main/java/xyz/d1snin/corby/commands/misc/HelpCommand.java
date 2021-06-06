@@ -43,7 +43,7 @@ import xyz.d1snin.corby.database.managers.MongoPrefixManager;
 import xyz.d1snin.corby.event.ReactionUpdateEvent;
 import xyz.d1snin.corby.model.Argument;
 import xyz.d1snin.corby.model.Category;
-import xyz.d1snin.corby.model.EmbedTemplate;
+import xyz.d1snin.corby.model.EmbedType;
 import xyz.d1snin.corby.utils.Embeds;
 
 import java.util.Objects;
@@ -101,7 +101,7 @@ public class HelpCommand extends Command {
 
           if (command == null) {
             u.sendEmbed(
-                EmbedTemplate.ERROR,
+                EmbedType.ERROR,
                 String.format("Could not find this command: `%s`", u.getArgumentValue(0)));
             return;
           }
@@ -122,7 +122,7 @@ public class HelpCommand extends Command {
                   + "\n"
                   + u.getUsagesAsString();
 
-          u.sendEmbed(EmbedTemplate.DEFAULT, msg);
+          u.sendEmbed(EmbedType.DEFAULT, msg);
         },
         new Argument(null, "<Command Usage>", false, false));
   }
@@ -159,7 +159,7 @@ public class HelpCommand extends Command {
 
     assert category != null;
     return Embeds.create(
-        EmbedTemplate.DEFAULT,
+        EmbedType.DEFAULT,
         "**" + category.getName() + " Commands. Page " + page + "/" + categories + ".**\n\n" + sb,
         getUtil(e));
   }

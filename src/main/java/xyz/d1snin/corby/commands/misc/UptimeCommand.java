@@ -35,7 +35,7 @@ package xyz.d1snin.corby.commands.misc;
 import xyz.d1snin.corby.Corby;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.model.Category;
-import xyz.d1snin.corby.model.EmbedTemplate;
+import xyz.d1snin.corby.model.EmbedType;
 import xyz.d1snin.corby.utils.FormatUtils;
 
 public class UptimeCommand extends Command {
@@ -48,7 +48,7 @@ public class UptimeCommand extends Command {
     execute(
         u ->
             u.sendEmbed(
-                EmbedTemplate.DEFAULT,
+                EmbedType.DEFAULT,
                 FormatUtils.formatMessageKeyText(
                     "Uptime", String.format("[ %s ]", Corby.getUptime()))));
   }

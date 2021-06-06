@@ -38,7 +38,7 @@ import net.dv8tion.jda.api.entities.Icon;
 import xyz.d1snin.corby.commands.Command;
 import xyz.d1snin.corby.model.Argument;
 import xyz.d1snin.corby.model.Category;
-import xyz.d1snin.corby.model.EmbedTemplate;
+import xyz.d1snin.corby.model.EmbedType;
 import xyz.d1snin.corby.utils.OtherUtils;
 
 import java.io.IOException;
@@ -66,7 +66,7 @@ public class StealCommand extends Command {
           final String invalidUrl = "Provided URL is invalid.";
 
           if (name.length() > 32 || name.length() < 1) {
-            u.sendEmbed(EmbedTemplate.ERROR, "Name must be between 1 and 32 characters in length.");
+            u.sendEmbed(EmbedType.ERROR, "Name must be between 1 and 32 characters in length.");
             return;
           }
 
@@ -80,13 +80,13 @@ public class StealCommand extends Command {
                   if (emotes.isEmpty()) {
 
                     if (!OtherUtils.isImage(u.getArgumentValue(0))) {
-                      return u.createEmbed(EmbedTemplate.ERROR, "This format is not supported.");
+                      return u.createEmbed(EmbedType.ERROR, "This format is not supported.");
                     }
 
                     try {
                       url = new URL(u.getArgumentValue(0));
                     } catch (MalformedURLException malformedURLException) {
-                      return u.createEmbed(EmbedTemplate.ERROR, invalidUrl);
+                      return u.createEmbed(EmbedType.ERROR, invalidUrl);
                     }
 
                   } else {
@@ -106,7 +106,7 @@ public class StealCommand extends Command {
                 }
 
                 return u.createEmbed(
-                    EmbedTemplate.SUCCESS,
+                    EmbedType.SUCCESS,
                     String.format("The emote `:%s:` has been successfully added!", name));
               });
         },
