@@ -95,42 +95,15 @@ public class StarboardCommand extends Command {
             return;
           }
 
-          if (sb.isStatus()) {
-            u.sendEmbed(EmbedType.ERROR, "Starboard is already enabled on your server.");
-            return;
-          }
-
-          sb.setStatus(true);
+          sb.setStatus(!sb.isStatus());
 
           MongoStarboardManager.writeStarboard(sb);
 
           u.sendEmbed(
-              EmbedType.SUCCESS, "Starboard has been successfully enabled on your server!");
+              EmbedType.SUCCESS,
+              "Starboard has been successfully toggled " + (sb.isStatus() ? "on." : "off."));
         },
-        new Argument("enable", "enable", false, false));
-
-    arg(
-        u -> {
-          Starboard sb = MongoStarboardManager.getStarboard(u.getGuild());
-
-          if (sb == null) {
-            onNotConfigured(u);
-            return;
-          }
-
-          if (!sb.isStatus()) {
-            u.sendEmbed(EmbedType.ERROR, "Starboard is already disabled on your server.");
-            return;
-          }
-
-          sb.setStatus(false);
-
-          MongoStarboardManager.writeStarboard(sb);
-
-          u.sendEmbed(
-              EmbedType.SUCCESS, "Starboard has been successfully disabled on your server!");
-        },
-        new Argument("disable", "disable", false, false));
+        new Argument("toggle", "toggle", false, false));
 
     arg(
         u -> {
