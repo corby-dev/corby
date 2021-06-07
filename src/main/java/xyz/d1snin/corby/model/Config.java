@@ -57,7 +57,7 @@ public class Config {
   private Color errorColor;
   private Color successColor;
   private Color starboardColor;
-  private String emoteStar;
+  private String emoteDefaultStar;
   private String emoteDefaultBack;
   private String emoteDefaultNext;
   private int defaultStarboardStars;
@@ -83,7 +83,7 @@ public class Config {
       String emoteError,
       String emoteBack,
       String emoteNext,
-      String emoteStar,
+      String emoteDefaultStar,
       String emoteDefaultBack,
       String emoteDefaultNext) {
 
@@ -101,7 +101,7 @@ public class Config {
     this.emoteError = emoteError;
     this.emoteBack = emoteBack;
     this.emoteNext = emoteNext;
-    this.emoteStar = emoteStar;
+    this.emoteDefaultStar = emoteDefaultStar;
     this.emoteDefaultBack = emoteDefaultBack;
     this.emoteDefaultNext = emoteDefaultNext;
   }

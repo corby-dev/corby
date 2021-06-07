@@ -55,7 +55,7 @@ public class StarboardReactionEvent extends ReactionEvent {
   private static final Set<MessageReaction> executed = new CopyOnWriteArraySet<>();
 
   public StarboardReactionEvent() {
-    this.emoji = Corby.getConfig().getEmoteStar();
+    this.emoji = Corby.getConfig().getEmoteDefaultStar();
   }
 
   @Override
@@ -77,7 +77,7 @@ public class StarboardReactionEvent extends ReactionEvent {
     MessageReaction reaction = msg.getReactions().get(0);
 
     for (MessageReaction r : msg.getReactions()) {
-      if (r.getReactionEmote().getName().equals(Corby.getConfig().getEmoteStar())) {
+      if (r.getReactionEmote().getName().equals(Corby.getConfig().getEmoteDefaultStar())) {
         reaction = r;
       }
     }
