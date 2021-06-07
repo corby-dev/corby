@@ -153,7 +153,9 @@ public class HelpCommand extends Command {
 
     String prefix = MongoPrefixManager.getPrefix(e.getGuild()).getPrefix();
 
-    for (Command c : getUtil(e).getCommandsByCategory(category)) {
+    CommandUtil util = new CommandUtil(this, e);
+
+    for (Command c : util.getCommandsByCategory(category)) {
       sb.append("`")
           .append(prefix)
           .append(c.getUsage())
@@ -167,7 +169,7 @@ public class HelpCommand extends Command {
     return Embeds.create(
         EmbedType.DEFAULT,
         "**" + category.getName() + " Commands. Page " + page + "/" + categories + ".**\n\n" + sb,
-        getUtil(e));
+        util);
   }
 
   private Runnable getRun(

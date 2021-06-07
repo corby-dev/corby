@@ -304,8 +304,4 @@ public abstract class Command extends Listener {
   protected void execute(Consumer<CommandUtil> consumer) {
     defaultAction = consumer;
   }
-
-  public CommandUtil getUtil(GuildMessageReceivedEvent e) {
-    return new CommandUtil(this, e);
-  }
 }
