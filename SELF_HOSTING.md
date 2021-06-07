@@ -61,6 +61,7 @@ git clone https://github.com/corby-dev/corby.git && cd corby
 ***emoteDefaultNext:*** *Unicode designation of the right arrow.*
 
 ***Example how to get emote id:***
+
 ![epic_tutorial](https://i.imgur.com/GSAB5qz.png)
 
 ***An example of filling in the config, which you are most likely to use:***
