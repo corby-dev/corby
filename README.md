@@ -2,7 +2,7 @@
 
 ![corby pic](https://raw.githubusercontent.com/d1snin/corby/development/src/main/resources/corby-header.png)
 
-## *Made in 🇷🇺 with ❤️.*
+## *Made in 🇷🇺 with ❤️*
 
 Corby is a bot that aims to log events that occur in your discord server to help with moderation. We accept pull requests.
 
