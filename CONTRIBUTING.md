@@ -17,6 +17,7 @@
 *`impr:` - You have made changes to an existing function.*\
 *`fix:` - You fixed the bug.*\
 *`feature:` - Cool and interesting new thing*\
+*`refactor:` - You refactor the project*\
 *`docs:` - You have made changes to the documentation*
 
 *Example:*
