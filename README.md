@@ -4,12 +4,12 @@
 
 ## *Made in 🇷🇺 with ❤️.*
 
-Corby is a bot that aims to log any events that occur in your discord server and to moderate it, I am open to any of your pool requests
+Corby is a bot that aims to log events that occur in your discord server to help with moderation. We accept pull requests.
 
-**Right now in active development!**
+**This project is currently in active development!**
 
 ### *Self hosting:*
-*You can find instructions on this topic [here](https://github.com/corby-dev/corby/blob/dev/SELF_HOSTING.md).*
+*You can find instructions on how to self host [here](https://github.com/corby-dev/corby/blob/dev/SELF_HOSTING.md).*
 
 ### *Contributing:*
-*You can find instructions on how to contribute to this project [here](https://github.com/corby-dev/corby/blob/dev/CONTRIBUTING.md).*
+*You can find instructions on how to contribute [here](https://github.com/corby-dev/corby/blob/dev/CONTRIBUTING.md).*
