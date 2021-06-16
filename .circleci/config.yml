@@ -26,4 +26,4 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
       - store_artifacts:
-          path: /build/libs
+          path: build/libs
