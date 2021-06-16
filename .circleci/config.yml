@@ -32,7 +32,7 @@ jobs:
           name: Renaming Jar
           command: |
             target=$(ls build/libs | grep all.jar)
-            echo ${$target//*/$CIRCLE_BUILD_NUM}
+            echo ${$target//*/${CIRCLE_BUILD_NUM}}
             mv build/libs/$target build/libs/$(echo ${$target//*/${CIRCLE_BUILD_NUM}})
 
       - store_artifacts:
