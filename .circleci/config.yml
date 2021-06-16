@@ -1,4 +1,5 @@
 version: 2
+
 jobs:
   build:
     docker:
@@ -18,12 +19,20 @@ jobs:
             - v1-dependencies-{{ checksum "build.gradle" }}
             - v1-dependencies-
 
-      - run: gradle shadowJar
+      - run:
+          name: Building Corby
+          command: gradle shadowJar
 
       - save_cache:
           paths:
             - ~/.gradle
           key: v1-dependencies-{{ checksum "build.gradle" }}
+
+      - run:
+          name: Renaming Jar
+          command: |
+            target=$(ls build/libs | grep all.jar)
+            mv build/libs/$target $(echo {$target//*/$CIRCLE_BUILD_NUM})
 
       - store_artifacts:
           path: build/libs
