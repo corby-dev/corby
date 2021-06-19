@@ -20,6 +20,10 @@ jobs:
             - v1-dependencies-
 
       - run:
+          name: Running Tests
+          command: gradle test
+
+      - run:
           name: Building Corby
           command: gradle shadowJar
 

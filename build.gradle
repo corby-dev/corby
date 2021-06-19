@@ -1,5 +1,5 @@
 plugins {
-    id 'java'
+    id 'org.jetbrains.kotlin.jvm' version '1.5.10'
     id 'idea'
     id 'application'
     id 'com.github.johnrengelman.shadow' version '6.0.0'
@@ -26,9 +26,10 @@ repositories {
 }
 
 dependencies {
-    compileOnly "org.projectlombok:lombok:$lombok_version"
-    annotationProcessor "org.projectlombok:lombok:$lombok_version"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
     implementation "org.slf4j:slf4j-simple:$slf4j_version"
     implementation "net.dv8tion:JDA:$jda_version"
     implementation "com.google.code.gson:gson:$gson_version"
@@ -39,6 +40,10 @@ dependencies {
 
 wrapper {
     gradleVersion '6.8.1'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 compileJava.options.encoding = 'UTF-8'
