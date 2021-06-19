@@ -26,11 +26,12 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib"
-    implementation "org.slf4j:slf4j-simple:$slf4j_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_stdlib_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines_core_version"
+    implementation "org.slf4j:slf4j-simple:$slf4j_simple_version"
     implementation "net.dv8tion:JDA:$jda_version"
     implementation "com.google.code.gson:gson:$gson_version"
     implementation "org.mongodb:mongo-java-driver:$mongo_driver_version"
