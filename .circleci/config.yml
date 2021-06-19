@@ -20,6 +20,10 @@ jobs:
             - v1-dependencies-
 
       - run:
+          name: Running Tests
+          command: gradle test
+
+      - run:
           name: Building Corby
           command: gradle shadowJar
 
@@ -30,12 +34,3 @@ jobs:
 
       - store_artifacts:
           path: build/libs
-
-  test:
-    docker:
-      - image: circleci/openjdk:8-jdk
-
-    steps:
-      - run:
-          name: Running Tests
-          command: gradle test
