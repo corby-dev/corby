@@ -1,12 +1,12 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.5.10'
-    id 'idea'
+    id 'org.jetbrains.kotlin.jvm' version "$kotlin_stdlib_version"
+    id 'com.github.johnrengelman.shadow' version "$shadow_version"
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '6.0.0'
+    id 'idea'
 }
 
 group 'xyz.d1snin.corby'
-version project.corby_version
+version corby_version
 
 mainClassName = "xyz.d1snin.corby.Corby"
 
@@ -28,6 +28,9 @@ repositories {
 dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+
+    compileOnly "org.projectlombok:lombok:$lombok_version"
+    annotationProcessor "org.projectlombok:lombok:$lombok_version"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_stdlib_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines_core_version"
