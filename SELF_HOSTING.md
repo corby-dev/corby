@@ -90,7 +90,7 @@ git clone https://github.com/corby-dev/corby.git && cd corby
 
 ### Step 2: Installing MongoDB.
 
-*If this database is already installed on your machine, then you can skip to step 3.*
+*If this xyz.d1snin.corby.database is already installed on your machine, then you can skip to step 3.*
 
 *All you need is to download mongodb and run it. You can download it [here](https://docs.mongodb.com/manual/administration/install-community/).*
 

@@ -8,7 +8,7 @@ import java.io.File
 import java.io.FileReader
 
 @NoArgsConstructor
-data class Config(
+data class Configs(
     val token: String,
     val testBotToken: String,
     val defaultPrefix: String,
@@ -58,12 +58,12 @@ data class Config(
     }
 
     companion object {
-        internal fun init(file: File): Config {
+        internal fun init(file: File): Configs {
             require(file.exists()) {
                 "Config file doesn't exists."
             }
 
-            return Gson().fromJson(FileReader(file), Config::class.java).also {
+            return Gson().fromJson(FileReader(file), Configs::class.java).also {
                 log("Config file was initialized.")
             }
         }

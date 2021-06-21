@@ -3,6 +3,7 @@ package xyz.d1snin.corby
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.OnlineStatus
 import net.dv8tion.jda.api.Permission
+import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder
 import net.dv8tion.jda.api.sharding.ShardManager
@@ -10,8 +11,11 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.slf4j.event.Level
-import xyz.d1snin.corby.model.LaunchFlag
-import xyz.d1snin.corby.util.Config
+import xyz.d1snin.corby.event.ReactionUpdateEvent
+import xyz.d1snin.corby.event.ServerJoinEvent
+import xyz.d1snin.corby.event.reactions.StarboardReactionEvent
+import xyz.d1snin.corby.util.Configs
+import xyz.d1snin.corby.util.LaunchFlags
 import xyz.d1snin.corby.util.formatTimeMillis
 import java.awt.Color
 import java.io.File
@@ -25,32 +29,37 @@ import kotlin.system.exitProcess
 object Corby {
     private const val CONFIG_FILE = "config.json"
 
+    // exit codes
+    const val GOOD_EXIT_CODE = 0
+    const val DATABASE_ERROR = 10
+
     lateinit var log: Logger
     lateinit var scheduler: ScheduledExecutorService
     lateinit var defaultPermissions: Set<Permission>
     lateinit var shards: ShardManager
     lateinit var firstShard: JDA
     lateinit var permissions: MutableSet<Permission>
+    lateinit var selfUser: User
 
     private lateinit var rb: RuntimeMXBean
     private lateinit var format: DecimalFormat
     private lateinit var presences: MutableList<String>
-    private lateinit var config: Config
+
+    lateinit var config: Configs
 
     private var testMode = false
     private var noShardsMode = false
-
-    private val presence
-        get() = presences.run {
-            clear()
-            shuffled().first()
-        }
 
     val ping: String
         get() = format.format(shards.averageGatewayPing)
 
     val uptime: String
         get() = rb.uptime.formatTimeMillis()
+
+    private val presence
+        get() = presences.run {
+            shuffled().first()
+        }
 
     @JvmStatic
     fun main(args: Array<String>) {
@@ -62,16 +71,17 @@ object Corby {
             Permission.MESSAGE_WRITE,
             Permission.MESSAGE_MANAGE,
             Permission.VIEW_CHANNEL,
-            Permission.MANAGE_CHANNEL
+            Permission.MANAGE_CHANNEL,
+            Permission.MESSAGE_EXT_EMOJI
         )
 
-        LaunchFlag.init(
+        LaunchFlags.init(
             args,
-            LaunchFlag("test") {
+            LaunchFlags("test") {
                 testMode = true
                 log("Launch using the bot token for testing...", Level.WARN)
             },
-            LaunchFlag("noshards") {
+            LaunchFlags("noshards") {
                 noShardsMode = true
                 log("Launching without sharding", Level.WARN)
             }
@@ -93,7 +103,7 @@ object Corby {
 
         permissions.addAll(defaultPermissions)
 
-        config = Config.init(File(CONFIG_FILE))
+        config = Configs.init(File(CONFIG_FILE))
 
         if (!noShardsMode) {
             log("Shards loading can be long\n", Level.WARN)
@@ -102,6 +112,13 @@ object Corby {
         shards = DefaultShardManagerBuilder.createDefault(
             if (testMode) config.testBotToken else config.token
         ).run {
+
+            addEventListeners(
+                StarboardReactionEvent,
+                ReactionUpdateEvent,
+                ServerJoinEvent
+            )
+
             enableIntents(
                 GatewayIntent.GUILD_PRESENCES,
                 GatewayIntent.GUILD_MESSAGE_REACTIONS
@@ -116,8 +133,6 @@ object Corby {
             )
 
             setStatus(OnlineStatus.IDLE)
-
-            // addEventListeners()
 
             setShardsTotal(if (noShardsMode) 1 else config.shards)
 
@@ -148,7 +163,7 @@ object Corby {
 
         firstShard = shards.shards.first()
 
-        val selfUser = firstShard.selfUser
+        selfUser = firstShard.selfUser
 
         config.other(
             Color(222, 222, 222),

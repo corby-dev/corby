@@ -1,14 +1,14 @@
-package xyz.d1snin.corby.model
+package xyz.d1snin.corby.util
 
 import xyz.d1snin.corby.Corby.log
 
-data class LaunchFlag(val usage: String, val onArg: () -> Unit) {
+data class LaunchFlags(val usage: String, val onArg: () -> Unit) {
     internal fun execute() = onArg()
 
     companion object {
-        private lateinit var flags: Set<LaunchFlag>
+        private lateinit var flags: Set<LaunchFlags>
 
-        internal fun init(args: Array<String>, vararg flag: LaunchFlag) {
+        internal fun init(args: Array<String>, vararg flag: LaunchFlags) {
             flags = flag.toSet()
 
             if (args.isEmpty()) {
@@ -25,7 +25,7 @@ data class LaunchFlag(val usage: String, val onArg: () -> Unit) {
             }
         }
 
-        private fun getFlagByUsage(usage: String): LaunchFlag? = flags.filter {
+        private fun getFlagByUsage(usage: String): LaunchFlags? = flags.filter {
             "-${it.usage}" == usage
         }.takeIf {
             it.size == 1
