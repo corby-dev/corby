@@ -127,7 +127,7 @@ abstract class AbstractCommand(
 
     private fun isCommand(): Boolean {
         PrefixManager[event.guild].prefix.let {
-            return (provider.args[0].lowercase() == (it + usage))
+            return provider.args[0].lowercase() == it + usage
                     && provider.args[0].startsWith(it)
         }
     }
