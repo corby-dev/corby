@@ -45,7 +45,8 @@ object ServerJoinEvent : Listener<GuildJoinEvent>() {
                     createEmbed(
                         "Thank you for inviting me to your server!" +
                                 "\nI can help you with moderation and administration of your server and much more." +
-                                "\nYou can find out the full list of commands by simply writing to any chat `${PrefixManager[guild]}help`.",
+                                "\nYou can find out the full list of commands by simply writing to any chat `${PrefixManager[guild]}help`." +
+                                "\nInvite me to your server using [this link](${Corby.config.inviteUrl})!",
                         guild
                     )
                 ).queue()

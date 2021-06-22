@@ -13,8 +13,8 @@ open class CommandProvider(val cmd: AbstractCommand) {
     val event = cmd.event
     val msg = event.message
     val author = event.author
-    val content = msg.contentRaw
-    val args = content.split("\\s+")
+    val content = msg.contentRaw.lowercase()
+    val args = content.split("\\s+".toRegex())
     val channel = event.channel
     val guild = event.guild
     val role = guild.botRole!!
@@ -31,13 +31,17 @@ open class CommandProvider(val cmd: AbstractCommand) {
         }
     }
 
-    fun sendFastMessage(content: String, type: EmbedType = EmbedType.DEFAULT) {
+    fun sendFastEmbed(content: String, type: EmbedType = EmbedType.DEFAULT) {
         event.channel.sendMessage(event.createEmbed(content, type = type, u = author)).queue()
     }
 
     fun trigger() {
-        event.channel.sendMessage(event.createEmbed("**Incorrect Syntax:** `$content`\n\n**Usage:**\n${getUsagesAsString()}"))
-            .queue()
+        event.channel.sendMessage(
+            event.createEmbed(
+                "**Incorrect Syntax:** `$content`\n\n**Usage:**\n${getUsagesAsString()}",
+                type = EmbedType.ERROR
+            )
+        ).queue()
     }
 
     private fun getUsagesAsString(): String {

@@ -36,7 +36,7 @@ class CommandExecutor(private val absCmd: AbstractCommand, private val provider:
 
             loop@ for (s in absCmd.statements) {
                 if (s.length != 0 && s.length != provider.args.size - 1) {
-                    continue
+                    continue@loop
                 }
 
                 var argCount = 0

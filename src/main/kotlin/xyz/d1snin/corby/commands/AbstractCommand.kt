@@ -6,7 +6,9 @@ package xyz.d1snin.corby.commands
 
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import org.slf4j.event.Level
 import xyz.d1snin.corby.Corby
+import xyz.d1snin.corby.Corby.log
 import xyz.d1snin.corby.database.managers.PrefixManager
 import xyz.d1snin.corby.event.Listener
 import xyz.d1snin.corby.manager.CommandsManager
@@ -56,7 +58,7 @@ abstract class AbstractCommand(
             }
 
             if (isCommand()) {
-                if (category == Category.ADMIN && isOwner(author)) {
+                if (category == Category.ADMIN && !isOwner(author)) {
                     return@execute
                 }
 
@@ -106,6 +108,11 @@ abstract class AbstractCommand(
     }
 
     fun execute(vararg args: Argument, block: CommandProvider.() -> Unit) {
+        if (args.isEmpty()) {
+            log("Provided arguments is empty.", Level.WARN)
+            return
+        }
+
         val statement = Statement(args.asList(), block)
 
         statements += statement
@@ -130,8 +137,12 @@ abstract class AbstractCommand(
     }
 
     private fun isCommand(): Boolean {
+        if (!CommandsManager.commands.contains(this)) {
+            return false
+        }
+
         PrefixManager[event.guild].prefix.let {
-            return provider.args[0].lowercase() == it + usage
+            return provider.args[0] == it + usage
                     && provider.args[0].startsWith(it)
         }
     }

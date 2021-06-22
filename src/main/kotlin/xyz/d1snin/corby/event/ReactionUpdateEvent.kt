@@ -22,11 +22,11 @@ object ReactionUpdateEvent : Listener<GuildMessageReactionAddEvent>() {
             val msg = retrieveMessage().complete()
             val react = reaction.reactionEmote
 
-            for (data in listeners) {
-                if (data.message == msg
-                    && data.reaction == react
+            for ((message, reaction, block) in listeners) {
+                if (message == msg
+                    && reaction == react
                 ) {
-                    data.block(this)
+                    block(this)
                 }
             }
         }

@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.slf4j.event.Level
+import xyz.d1snin.corby.commands.admin.TerminateCommand
 import xyz.d1snin.corby.commands.misc.PingCommand
 import xyz.d1snin.corby.database.DatabaseManager
 import xyz.d1snin.corby.event.ReactionUpdateEvent
@@ -42,8 +43,8 @@ object Corby {
     const val DATABASE_ERROR = 10
 
     lateinit var log: Logger
+    lateinit var config: Configs
     lateinit var scheduler: ScheduledExecutorService
-    lateinit var defaultPermissions: Set<Permission>
     lateinit var shards: ShardManager
     lateinit var firstShard: JDA
     lateinit var permissions: MutableSet<Permission>
@@ -52,8 +53,7 @@ object Corby {
     private lateinit var rb: RuntimeMXBean
     private lateinit var format: DecimalFormat
     private lateinit var presences: MutableList<String>
-
-    lateinit var config: Configs
+    private lateinit var defaultPermissions: Set<Permission>
 
     private var testMode = false
     private var noShardsMode = false
@@ -115,10 +115,6 @@ object Corby {
 
         config = Configs.init(File(CONFIG_FILE))
 
-        if (!noShardsMode) {
-            log("Shards loading can be long\n", Level.WARN)
-        }
-
         shards = DefaultShardManagerBuilder.createDefault(
             if (testMode) config.testBotToken else config.token
         ).run {
@@ -131,6 +127,7 @@ object Corby {
 
             addEventListeners(
                 CommandsManager.addAll(
+                    TerminateCommand,
                     PingCommand
                 )
             )
@@ -161,6 +158,10 @@ object Corby {
             "Ping: $ping",
             "${shards.guilds.size} Servers!"
         )
+
+        if (!noShardsMode) {
+            log("Shards loading can be long\n", Level.WARN)
+        }
 
         shards.shards.forEach {
             it.awaitReady()

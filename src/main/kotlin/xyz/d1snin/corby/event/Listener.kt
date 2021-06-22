@@ -23,7 +23,9 @@ abstract class Listener<E : GenericGuildEvent>(vararg _requiredPerms: Permission
     @Suppress("UNCHECKED_CAST")
     override fun onGenericGuild(event: GenericGuildEvent) {
         runCatching {
-            if (event.guild.botRole!!.hasPermission(requiredPerms.asList())) {
+            if (event.guild.botRole!!.hasPermission(requiredPerms.asList())
+                || event.guild.selfMember.hasPermission(requiredPerms.asList())
+            ) {
                 /* need better solution, we're just quietly handling tons of exceptions here lol */
                 action(event as E)
             } else {
