@@ -89,7 +89,7 @@ abstract class AbstractCommand(
                     return@execute
                 }
 
-                CooldownsManager.getCooldown(author, this@AbstractCommand).let { // FIXME: 22.06.2021
+                CooldownsManager.getCooldown(author, this@AbstractCommand).let {
                     if (it > 0) {
                         event.channel.sendMessage(
                             event.createEmbed(
