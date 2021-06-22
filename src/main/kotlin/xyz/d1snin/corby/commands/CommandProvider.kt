@@ -9,7 +9,7 @@ import xyz.d1snin.corby.model.EmbedType
 import xyz.d1snin.corby.model.Statement
 import xyz.d1snin.corby.util.createEmbed
 
-open class CommandProvider(val cmd: AbstractCommand) {
+open class CommandProvider(private val cmd: AbstractCommand) {
     val event = cmd.event
     val msg = event.message
     val author = event.author
@@ -19,19 +19,23 @@ open class CommandProvider(val cmd: AbstractCommand) {
     val guild = event.guild
     val role = guild.botRole!!
 
-    fun getContent(startPos: Int): String? {
+    internal fun getContent(startPos: Int): String? {
         if (args.size < startPos) {
             return null
         }
 
+        if (args.lastIndex == startPos) {
+            return args.last()
+        }
+
         return buildString {
-            for (i in startPos..args.size) {
+            for (i in startPos until args.size) {
                 append(args[i]).append(" ")
             }
         }
     }
 
-    fun sendFastEmbed(content: String, type: EmbedType = EmbedType.DEFAULT) {
+    internal fun sendFastEmbed(content: String, type: EmbedType = EmbedType.DEFAULT) {
         event.channel.sendMessage(event.createEmbed(content, type = type, u = author)).queue()
     }
 

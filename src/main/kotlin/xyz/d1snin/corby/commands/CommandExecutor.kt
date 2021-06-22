@@ -11,7 +11,7 @@ import xyz.d1snin.corby.model.Cooldown
 import xyz.d1snin.corby.util.runSafe
 
 class CommandExecutor(private val absCmd: AbstractCommand, private val provider: CommandProvider) {
-    fun tryToExecute(): Boolean {
+    internal fun tryToExecute(): Boolean {
         if (absCmd.defaultAction == null && absCmd.statements.isEmpty()) {
             log(
                 "You did not set the actions on execution. Command can not be executed (Message Content: ${provider.content})",
@@ -25,24 +25,29 @@ class CommandExecutor(private val absCmd: AbstractCommand, private val provider:
                 return false
             }
 
-            absCmd.defaultAction!!(provider)
+            CooldownsManager += Cooldown(provider.author, absCmd)
+
+            runSafe {
+                absCmd.defaultAction!!(provider)
+            }
 
             return true
 
         } else {
+
             if (absCmd.statements.isEmpty()) {
                 return false
             }
 
-            loop@ for (s in absCmd.statements) {
+            out@ for (s in absCmd.statements) {
                 if (s.length != 0 && s.length != provider.args.size - 1) {
-                    continue@loop
+                    continue@out
                 }
 
                 var argCount = 0
                 var i = 0
 
-                for (_i in 0..s.arguments.size) {
+                inner@ for (_i in 0 until s.arguments.size) {
                     val arg = s.arguments[argCount]
 
                     if (arg.usage != null) {
@@ -51,16 +56,16 @@ class CommandExecutor(private val absCmd: AbstractCommand, private val provider:
                                 return false
 
                             } else {
-                                continue@loop
+                                continue@out
                             }
                         }
                         if (arg.isValueRequired) {
                             if (arg.isVariableLength) {
                                 arg.value = provider.getContent(i + 2)!!
-                                break
+                                break@inner
                             }
 
-                            arg.value = provider.getContent(i + 2)!!
+                            arg.value = provider.args[i + 2]
 
                             i += 1
                         }
@@ -71,17 +76,15 @@ class CommandExecutor(private val absCmd: AbstractCommand, private val provider:
 
                         argCount += 1
                     }
-
-                    absCmd.statement = s
-
-                    runSafe {
-                        absCmd.executeStatement(provider)
-                    }
-
-                    CooldownsManager += Cooldown(provider.author, absCmd)
-
-                    return true
                 }
+                absCmd.statement = s
+
+                CooldownsManager += Cooldown(provider.author, absCmd)
+
+                runSafe {
+                    absCmd.executeStatement(provider)
+                }
+                return true
             }
         }
         return false

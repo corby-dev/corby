@@ -32,8 +32,9 @@ abstract class AbstractCommand(
 ) : Listener<GuildMessageReceivedEvent>() {
 
     lateinit var event: GuildMessageReceivedEvent
-    lateinit var statement: Statement
-    lateinit var provider: CommandProvider
+    lateinit var statement: Statement // could not be initialized if only default execution used
+
+    private lateinit var provider: CommandProvider
 
     fun executeStatement(provider: CommandProvider) = statement.block(provider)
 
@@ -88,7 +89,7 @@ abstract class AbstractCommand(
                     return@execute
                 }
 
-                CooldownsManager.getCooldown(author, this@AbstractCommand).let {
+                CooldownsManager.getCooldown(author, this@AbstractCommand).let { // FIXME: 22.06.2021
                     if (it > 0) {
                         event.channel.sendMessage(
                             event.createEmbed(
@@ -107,7 +108,7 @@ abstract class AbstractCommand(
         }
     }
 
-    fun execute(vararg args: Argument, block: CommandProvider.() -> Unit) {
+    protected fun execute(vararg args: Argument, block: CommandProvider.() -> Unit) {
         if (args.isEmpty()) {
             log("Provided arguments is empty.", Level.WARN)
             return
@@ -118,6 +119,11 @@ abstract class AbstractCommand(
         statements += statement
 
         args.forEach {
+            if (it.isVariableLength && !it.isValueRequired) {
+                log("Argument has variable length but value is not required.", Level.ERROR)
+                return
+            }
+
             if (it.isVariableLength) {
                 statement.length = 0
                 return
@@ -132,7 +138,7 @@ abstract class AbstractCommand(
         }
     }
 
-    fun default(block: CommandProvider.() -> Unit) {
+    protected fun default(block: CommandProvider.() -> Unit) {
         defaultAction = block
     }
 

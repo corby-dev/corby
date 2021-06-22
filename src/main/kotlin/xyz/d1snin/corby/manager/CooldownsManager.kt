@@ -13,15 +13,15 @@ import java.util.concurrent.TimeUnit
 
 
 object CooldownsManager {
-    val cooldowns = CopyOnWriteArrayList<Cooldown>()
+    private val cooldowns = CopyOnWriteArrayList<Cooldown>()
 
-    operator fun plusAssign(cooldown: Cooldown) {
+    internal operator fun plusAssign(cooldown: Cooldown) {
         if (!cooldowns.contains(cooldown)) {
             cooldowns += cooldown
         }
     }
 
-    fun getCooldown(u: User, cmd: AbstractCommand): Int {
+    internal fun getCooldown(u: User, cmd: AbstractCommand): Int {
         cooldowns.forEach {
             it.apply {
                 if (user == u && command == cmd) {
@@ -32,7 +32,7 @@ object CooldownsManager {
         return 0
     }
 
-    fun startUpdating() {
+    internal fun startUpdating() {
         Corby.scheduler.scheduleWithFixedDelay(
             {
                 cooldowns.forEach {

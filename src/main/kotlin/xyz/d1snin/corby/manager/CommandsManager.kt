@@ -11,7 +11,7 @@ import xyz.d1snin.corby.commands.AbstractCommand
 object CommandsManager {
     val commands = mutableListOf<AbstractCommand>()
 
-    fun addAll(vararg commandz: AbstractCommand): List<AbstractCommand> {
+    internal fun addAll(vararg commandz: AbstractCommand): List<AbstractCommand> {
         commandz.forEach {
             commands += it
 

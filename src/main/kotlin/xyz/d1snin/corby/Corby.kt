@@ -7,6 +7,7 @@ package xyz.d1snin.corby
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.OnlineStatus
 import net.dv8tion.jda.api.Permission
+import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.requests.GatewayIntent
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder
@@ -15,6 +16,7 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.slf4j.event.Level
+import xyz.d1snin.corby.commands.`fun`.BottomCommand
 import xyz.d1snin.corby.commands.admin.TerminateCommand
 import xyz.d1snin.corby.commands.misc.PingCommand
 import xyz.d1snin.corby.database.DatabaseManager
@@ -33,6 +35,7 @@ import java.lang.management.RuntimeMXBean
 import java.text.DecimalFormat
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 import kotlin.system.exitProcess
 
 object Corby {
@@ -52,7 +55,6 @@ object Corby {
 
     private lateinit var rb: RuntimeMXBean
     private lateinit var format: DecimalFormat
-    private lateinit var presences: MutableList<String>
     private lateinit var defaultPermissions: Set<Permission>
 
     private var testMode = false
@@ -65,7 +67,11 @@ object Corby {
         get() = rb.uptime.formatTimeMillis()
 
     private val presence
-        get() = presences.run {
+        get() = listOf(
+            "Ping: $ping",
+            "${shards.guilds.size} Servers!",
+            "Uptime: $uptime"
+        ).run {
             shuffled().first()
         }
 
@@ -128,7 +134,8 @@ object Corby {
             addEventListeners(
                 CommandsManager.addAll(
                     TerminateCommand,
-                    PingCommand
+                    PingCommand,
+                    BottomCommand
                 )
             )
 
@@ -152,13 +159,6 @@ object Corby {
             build()
         }
 
-        CooldownsManager.startUpdating()
-
-        presences = mutableListOf(
-            "Ping: $ping",
-            "${shards.guilds.size} Servers!"
-        )
-
         if (!noShardsMode) {
             log("Shards loading can be long\n", Level.WARN)
         }
@@ -166,6 +166,9 @@ object Corby {
         shards.shards.forEach {
             it.awaitReady()
         }
+
+        CooldownsManager.startUpdating()
+        startPresenceUpdating()
 
         println(
             """
@@ -222,5 +225,13 @@ object Corby {
         Level.TRACE -> log.trace(message)
         Level.WARN -> log.warn(message)
         else -> log.info(message)
+    }
+
+    private fun startPresenceUpdating() {
+        scheduler.scheduleWithFixedDelay(
+            {
+                shards.setActivity(Activity.watching(presence))
+            }, 0, 10, TimeUnit.SECONDS
+        )
     }
 }
