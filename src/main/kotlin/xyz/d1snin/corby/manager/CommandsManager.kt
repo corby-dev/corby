@@ -1,6 +1,11 @@
+/*
+ * BSD 3-Clause License, Copyright (c) 2021, Corby and contributors, All rights reserved.
+ */
+
 package xyz.d1snin.corby.manager
 
 import xyz.d1snin.corby.Corby
+import xyz.d1snin.corby.Corby.log
 import xyz.d1snin.corby.commands.AbstractCommand
 
 object CommandsManager {
@@ -17,8 +22,11 @@ object CommandsManager {
             } else {
                 it.cooldown
             }
+
+            log("The command is initialized: ${it::class.simpleName}")
         }
 
+        log("Command initialization completed.")
         return commandz.asList()
     }
 }
