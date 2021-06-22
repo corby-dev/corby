@@ -4,7 +4,7 @@ import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent
 import xyz.d1snin.corby.event.Listener
 
-abstract class ReactionEvent(val emoji: String) : Listener<GuildMessageReactionAddEvent>() {
+abstract class ReactionEvent(protected val emoji: String) : Listener<GuildMessageReactionAddEvent>() {
     protected lateinit var msg: Message
     private lateinit var action: GuildMessageReactionAddEvent.() -> Unit
 

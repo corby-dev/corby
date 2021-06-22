@@ -11,9 +11,13 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.slf4j.event.Level
+import xyz.d1snin.corby.commands.misc.PingCommand
+import xyz.d1snin.corby.database.DatabaseManager
 import xyz.d1snin.corby.event.ReactionUpdateEvent
 import xyz.d1snin.corby.event.ServerJoinEvent
 import xyz.d1snin.corby.event.reactions.StarboardReactionEvent
+import xyz.d1snin.corby.manager.CommandsManager
+import xyz.d1snin.corby.manager.CooldownsManager
 import xyz.d1snin.corby.util.Configs
 import xyz.d1snin.corby.util.LaunchFlags
 import xyz.d1snin.corby.util.formatTimeMillis
@@ -97,6 +101,8 @@ object Corby {
     private fun start() {
         log("Starting...")
 
+        DatabaseManager.init()
+
         permissions = mutableSetOf()
         rb = ManagementFactory.getRuntimeMXBean()
         format = DecimalFormat()
@@ -119,6 +125,12 @@ object Corby {
                 ServerJoinEvent
             )
 
+            addEventListeners(
+                CommandsManager.addAll(
+                    PingCommand
+                )
+            )
+
             enableIntents(
                 GatewayIntent.GUILD_PRESENCES,
                 GatewayIntent.GUILD_MESSAGE_REACTIONS
@@ -138,6 +150,8 @@ object Corby {
 
             build()
         }
+
+        CooldownsManager.startUpdating()
 
         presences = mutableListOf(
             "Ping: $ping",

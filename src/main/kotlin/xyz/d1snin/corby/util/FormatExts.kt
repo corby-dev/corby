@@ -9,3 +9,7 @@ fun Long.formatTimeMillis(): String {
         TimeUnit.MILLISECONDS.toSeconds(this) % TimeUnit.MINUTES.toSeconds(1)
     )
 }
+
+fun formatWithKey(key: String, value: String, italic: Boolean = false): String {
+    return "**$key:** ${if (italic) "*$value*" else value}"
+}

@@ -26,16 +26,16 @@ object ServerJoinEvent : Listener<GuildJoinEvent>() {
             if (guild.botRole == null
                 || guild.botRole!!.hasPermission(Corby.permissions)
             ) {
-                guild.owner?.let {
-                    sendDmSafe(
-                        it.user,
-                        createEmbed(
-                            "Hi, you invited me without required permissions, please invite me using [this link](${Corby.config.inviteUrl}), thanks.",
-                            guild,
-                            type = EmbedType.ERROR
-                        )
+                sendDmSafe(
+                    guild.owner?.user,
+                    createEmbed(
+                        "Hi, you invited me without required permissions, please invite me using [this link](${Corby.config.inviteUrl}), thanks.",
+                        type = EmbedType.ERROR
                     )
-                } ?: guild.leave().queue()
+                )
+
+                guild.leave().queue()
+
             } else {
                 channel.sendMessage(
                     createEmbed(

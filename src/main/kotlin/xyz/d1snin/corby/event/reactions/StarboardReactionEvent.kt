@@ -37,9 +37,11 @@ object StarboardReactionEvent : ReactionEvent(emoji = Corby.config.emoteStarUnic
                     val attachment = if (msg.attachments.isEmpty()) null else msg.attachments.first()
                     val embed = if (msg.embeds.isEmpty()) null else msg.embeds.first()
 
-                    starboard.getChannel()!!.sendMessage(
+                    starboard.getJdaChannel()!!.sendMessage(
                         EmbedBuilder().run {
-                            setAuthor(msg.author.asTag, msg.jumpUrl, msg.jumpUrl)
+                            setAuthor(msg.author.asTag, msg.jumpUrl, msg.author.effectiveAvatarUrl)
+
+                            setColor(Corby.config.starboardColor)
 
                             setDescription(
                                 "[[context]](%s)\n%s%s%s".format(
@@ -53,7 +55,7 @@ object StarboardReactionEvent : ReactionEvent(emoji = Corby.config.emoteStarUnic
 
                                     embed?.let {
                                         "%s%s".format(
-                                            embed.title?.let {                       /* help */
+                                            embed.title?.let {
                                                 "\n$it"
                                             } ?: "",
                                             embed.description?.let {
@@ -78,10 +80,9 @@ object StarboardReactionEvent : ReactionEvent(emoji = Corby.config.emoteStarUnic
 
                 }.onFailure {
                     sendDmSafe(
-                        guild.owner!!.user, createEmbed(
+                        guild.owner?.user, createEmbed(
                             "Hey! You received this message because I cannot send messages to the starboard." +
-                                    "Please make sure I have permission.",
-                            guild
+                                    "Please make sure I have permission."
                         )
                     )
                 }

@@ -12,7 +12,7 @@ object PrefixManager : Manager(collectionName = "guildprefix") {
 
     internal operator fun plusAssign(prefix: Prefix) {
         collection.run {
-            if (contains(prefix.getGuild()!!))
+            if (contains(prefix.getJdaGuild()!!))
                 update("{guild: '${prefix.guild}'}").with(prefix)
             else
                 insert(prefix)

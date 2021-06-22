@@ -1,14 +1,20 @@
 package xyz.d1snin.corby.model
 
+import com.fasterxml.jackson.annotation.JsonProperty
+import lombok.NoArgsConstructor
 import net.dv8tion.jda.api.entities.Guild
 import xyz.d1snin.corby.Corby
 
-data class Prefix(val guild: String, val prefix: String) {
+@NoArgsConstructor
+data class Prefix(
+    @JsonProperty("guild") val guild: String,
+    @JsonProperty("prefix") val prefix: String
+) {
     override fun toString(): String {
         return prefix
     }
 
-    fun getGuild(): Guild? {
+    fun getJdaGuild(): Guild? {
         return Corby.shards.getGuildById(guild)
     }
 }

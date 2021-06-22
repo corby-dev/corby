@@ -5,6 +5,7 @@ import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.MessageEmbed
 import net.dv8tion.jda.api.entities.User
+import net.dv8tion.jda.api.events.guild.GenericGuildEvent
 import xyz.d1snin.corby.Corby
 import xyz.d1snin.corby.model.EmbedType
 
@@ -49,3 +50,11 @@ fun createEmbed(
 
         build()
     }
+
+fun GenericGuildEvent.createEmbed(
+    content: String,
+    u: User = Corby.selfUser,
+    image: String? = null,
+    thumbnail: String? = null,
+    type: EmbedType = EmbedType.DEFAULT
+) = createEmbed(content, guild, u, image, thumbnail, type)

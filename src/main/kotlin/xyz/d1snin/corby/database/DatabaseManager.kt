@@ -20,6 +20,7 @@ object DatabaseManager {
         runCatching {
             db = MongoClient(DB_HOST, DB_PORT).getDB(DB_NAME).also {
                 jongo = Jongo(it)
+                log("Successfully connected to the database")
             }
 
         }.onFailure {
