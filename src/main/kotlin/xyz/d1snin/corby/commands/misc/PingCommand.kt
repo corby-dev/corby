@@ -16,7 +16,7 @@ object PingCommand : Command(
 ) {
     init {
         default {
-            sendFastEmbed(formatWithKey("Current Ping", Corby.ping))
+            sendFastEmbed(formatWithKey("Current Ping" to Corby.ping))
         }
     }
 }

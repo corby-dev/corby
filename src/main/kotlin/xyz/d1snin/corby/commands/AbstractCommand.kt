@@ -48,7 +48,7 @@ abstract class AbstractCommand(
             event = this
             provider = CommandProvider(this@AbstractCommand)
 
-            val executor = CommandExecutor(this@AbstractCommand, provider)
+            val executor = CommandExecutor(provider)
 
             if (author.isBot
                 || !provider.msg.isFromGuild

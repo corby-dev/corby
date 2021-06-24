@@ -4,12 +4,13 @@
 
 package xyz.d1snin.corby.commands
 
+import net.dv8tion.jda.api.entities.MessageEmbed
 import xyz.d1snin.corby.database.managers.PrefixManager
 import xyz.d1snin.corby.model.EmbedType
 import xyz.d1snin.corby.model.Statement
 import xyz.d1snin.corby.util.createEmbed
 
-open class CommandProvider(private val cmd: AbstractCommand) {
+open class CommandProvider(val cmd: AbstractCommand) {
     val event = cmd.event
     val msg = event.message
     val author = event.author
@@ -37,6 +38,20 @@ open class CommandProvider(private val cmd: AbstractCommand) {
 
     internal fun sendFastEmbed(content: String, type: EmbedType = EmbedType.DEFAULT) {
         event.channel.sendMessage(event.createEmbed(content, type = type, u = author)).queue()
+    }
+
+    internal fun createFastEmbed(content: String, type: EmbedType = EmbedType.DEFAULT): MessageEmbed {
+        return createEmbed(content, guild, author, type = type)
+    }
+
+    internal fun sendLoadingMessageAndEdit(successEmbed: () -> MessageEmbed) {
+        channel.sendMessage(createEmbed("Processing...", guild, author)).queue {
+            it.editMessage(successEmbed()).queue()
+        }
+    }
+
+    internal fun getArgVal(index: Int): String {
+        return cmd.statement.arguments[index].value
     }
 
     fun trigger() {

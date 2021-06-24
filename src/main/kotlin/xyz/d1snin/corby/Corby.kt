@@ -17,6 +17,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.slf4j.event.Level
 import xyz.d1snin.corby.commands.`fun`.BottomCommand
+import xyz.d1snin.corby.commands.`fun`.CatCommand
+import xyz.d1snin.corby.commands.`fun`.UrbanCommand
 import xyz.d1snin.corby.commands.admin.TerminateCommand
 import xyz.d1snin.corby.commands.misc.PingCommand
 import xyz.d1snin.corby.database.DatabaseManager
@@ -25,6 +27,7 @@ import xyz.d1snin.corby.event.ServerJoinEvent
 import xyz.d1snin.corby.event.reactions.StarboardReactionEvent
 import xyz.d1snin.corby.manager.CommandsManager
 import xyz.d1snin.corby.manager.CooldownsManager
+import xyz.d1snin.corby.manager.ListenersManager
 import xyz.d1snin.corby.util.Configs
 import xyz.d1snin.corby.util.LaunchFlags
 import xyz.d1snin.corby.util.formatTimeMillis
@@ -126,16 +129,20 @@ object Corby {
         ).run {
 
             addEventListeners(
-                StarboardReactionEvent,
-                ReactionUpdateEvent,
-                ServerJoinEvent
+                ListenersManager.addAll(
+                    StarboardReactionEvent,
+                    ReactionUpdateEvent,
+                    ServerJoinEvent
+                )
             )
 
             addEventListeners(
                 CommandsManager.addAll(
                     TerminateCommand,
-                    PingCommand,
-                    BottomCommand
+                    BottomCommand,
+                    CatCommand,
+                    UrbanCommand,
+                    PingCommand
                 )
             )
 

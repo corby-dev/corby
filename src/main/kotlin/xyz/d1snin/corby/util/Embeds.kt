@@ -49,8 +49,8 @@ fun createEmbed(
             Corby.config.botPfpUrl
         )
 
-        image ?: setImage(image)
-        thumbnail ?: setThumbnail(thumbnail)
+        setImage(image)
+        setThumbnail(thumbnail)
 
         build()
     }

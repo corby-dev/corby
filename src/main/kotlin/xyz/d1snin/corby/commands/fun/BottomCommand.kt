@@ -15,7 +15,7 @@ import xyz.d1snin.corby.util.formatWithKey
 object BottomCommand : Command(
     usage = "bottom",
     description = "Encrypts your message using a bottom cipher",
-    category = Category.FUN
+    category = Category.FUN,
 ) {
     init {
         val userLimit = 200
@@ -43,7 +43,7 @@ object BottomCommand : Command(
                 return@execute
             }
 
-            sendFastEmbed(formatWithKey("Result", encodedMessage, false), EmbedType.SUCCESS)
+            sendFastEmbed(formatWithKey("Result" to encodedMessage, false), EmbedType.SUCCESS)
         }
 
         execute(
@@ -67,9 +67,9 @@ object BottomCommand : Command(
                     return@execute
                 }
 
-                sendFastEmbed(formatWithKey("Result", decodedMessage, false), EmbedType.SUCCESS)
+                sendFastEmbed(formatWithKey("Result" to decodedMessage, false), EmbedType.SUCCESS)
             } catch (e: TranslationError) {
-                sendFastEmbed("You cannot decrypt this message: ${e.why}")
+                sendFastEmbed("You cannot decrypt this message: ${e.why}", EmbedType.ERROR)
             }
         }
     }

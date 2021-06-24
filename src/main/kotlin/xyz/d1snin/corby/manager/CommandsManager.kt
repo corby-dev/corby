@@ -23,10 +23,10 @@ object CommandsManager {
                 it.cooldown
             }
 
-            log("The command is initialized: ${it::class.simpleName}")
+            log("Command is initialized: ${it::class.simpleName}")
         }
 
-        log("Command initialization completed.")
+        log("Commands initialization completed.")
         return commandz.asList()
     }
 }

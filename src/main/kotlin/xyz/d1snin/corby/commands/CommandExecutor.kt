@@ -10,9 +10,12 @@ import xyz.d1snin.corby.manager.CooldownsManager
 import xyz.d1snin.corby.model.Cooldown
 import xyz.d1snin.corby.util.runSafe
 
-class CommandExecutor(private val absCmd: AbstractCommand, private val provider: CommandProvider) {
+class CommandExecutor(private val provider: CommandProvider) {
+
+    private val cmd = provider.cmd
+    
     internal fun tryToExecute(): Boolean {
-        if (absCmd.defaultAction == null && absCmd.statements.isEmpty()) {
+        if (cmd.defaultAction == null && cmd.statements.isEmpty()) {
             log(
                 "You did not set the actions on execution. Command can not be executed (Message Content: ${provider.content})",
                 Level.WARN
@@ -21,25 +24,25 @@ class CommandExecutor(private val absCmd: AbstractCommand, private val provider:
         }
 
         if (provider.args.size < 2) {
-            if (absCmd.defaultAction == null) {
+            if (cmd.defaultAction == null) {
                 return false
             }
 
-            CooldownsManager += Cooldown(provider.author, absCmd)
+            CooldownsManager += Cooldown(provider.author, cmd)
 
             runSafe {
-                absCmd.defaultAction!!(provider)
+                cmd.defaultAction!!(provider)
             }
 
             return true
 
         } else {
 
-            if (absCmd.statements.isEmpty()) {
+            if (cmd.statements.isEmpty()) {
                 return false
             }
 
-            out@ for (s in absCmd.statements) {
+            out@ for (s in cmd.statements) {
                 if (s.length != 0 && s.length != provider.args.size - 1) {
                     continue@out
                 }
@@ -52,7 +55,7 @@ class CommandExecutor(private val absCmd: AbstractCommand, private val provider:
 
                     if (arg.usage != null) {
                         if (arg.usage != provider.args[i + 1]) {
-                            if (s == absCmd.statements.last()) {
+                            if (s == cmd.statements.last()) {
                                 return false
 
                             } else {
@@ -77,12 +80,12 @@ class CommandExecutor(private val absCmd: AbstractCommand, private val provider:
                         argCount += 1
                     }
                 }
-                absCmd.statement = s
+                cmd.statement = s
 
-                CooldownsManager += Cooldown(provider.author, absCmd)
+                CooldownsManager += Cooldown(provider.author, cmd)
 
                 runSafe {
-                    absCmd.executeStatement(provider)
+                    cmd.executeStatement(provider)
                 }
                 return true
             }

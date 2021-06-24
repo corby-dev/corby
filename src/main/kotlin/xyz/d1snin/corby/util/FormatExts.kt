@@ -14,6 +14,10 @@ fun Long.formatTimeMillis(): String {
     )
 }
 
-fun formatWithKey(key: String, value: String, italic: Boolean = false): String {
-    return "**$key:** ${if (italic) "*$value*" else value}"
+fun formatWithKey(pair: Pair<String, String>, italic: Boolean = false): String {
+    return "**${pair.first}:** ${if (italic) "*${pair.second}*" else pair.second}"
+}
+
+fun formatJson(pair: Pair<String, String>): String {
+    return "{${pair.first}: '${pair.second}'}"
 }
