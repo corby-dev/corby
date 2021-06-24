@@ -29,10 +29,8 @@ data class LaunchFlags(val usage: String, val onArg: () -> Unit) {
             }
         }
 
-        private fun getFlagByUsage(usage: String): LaunchFlags? = flags.filter {
+        private fun getFlagByUsage(usage: String): LaunchFlags? = flags.firstOrNull {
             "-${it.usage}" == usage
-        }.takeIf {
-            it.size == 1
-        }?.first()
+        }
     }
 }

@@ -49,7 +49,7 @@ object BottomCommand : Command(
         execute(
             Argument(
                 usage = "decode",
-                type = "<Message 2 - $userLimit characters>",
+                type = "<Message 2 - $encodedMessageLimit characters>",
                 isValueRequired = true,
                 isVariableLength = true
             )
@@ -62,7 +62,7 @@ object BottomCommand : Command(
                     return@execute
                 }
 
-                if (decodedMessage.length > encodedMessageLimit /* we also can use this val here */) {
+                if (decodedMessage.length > encodedMessageLimit) {
                     sendFastEmbed(longRes, EmbedType.ERROR)
                     return@execute
                 }
