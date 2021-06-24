@@ -60,7 +60,7 @@ object UrbanCommand : Command(
                                 EmbedType.ERROR
                             )
                         } else {
-                            createFastEmbed(formatWithKey("Definition" to def, false))
+                            createFastEmbed(formatWithKey("Definition" to def, false), EmbedType.SUCCESS)
                         }
                     }
                 } catch (_: JsonIOException) {
