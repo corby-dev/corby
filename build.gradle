@@ -1,5 +1,5 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version "$kotlin_stdlib_version"
+    id 'org.jetbrains.kotlin.jvm' version "$kotlin_version"
     id 'com.github.johnrengelman.shadow' version "$shadow_version"
     id 'application'
     id 'idea'
@@ -32,7 +32,7 @@ dependencies {
     compileOnly "org.projectlombok:lombok:$lombok_version"
     annotationProcessor "org.projectlombok:lombok:$lombok_version"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_stdlib_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines_core_version"
     implementation "org.slf4j:slf4j-simple:$slf4j_simple_version"
     implementation "net.dv8tion:JDA:$jda_version"
