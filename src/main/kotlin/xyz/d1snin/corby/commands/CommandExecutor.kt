@@ -13,7 +13,7 @@ import xyz.d1snin.corby.util.runSafe
 class CommandExecutor(private val provider: CommandProvider) {
 
     private val cmd = provider.cmd
-    
+
     internal fun tryToExecute(): Boolean {
         if (cmd.defaultAction == null && cmd.statements.isEmpty()) {
             log(
@@ -74,7 +74,7 @@ class CommandExecutor(private val provider: CommandProvider) {
                         }
                     } else {
                         if (arg.isVariableLength) {
-                            arg.value = provider.args[i + 1]
+                            arg.value = provider.getContent(i + 1)!!
                         }
 
                         argCount += 1
