@@ -75,8 +75,10 @@ class CommandExecutor(private val provider: CommandProvider) {
                     } else {
                         if (arg.isVariableLength) {
                             arg.value = provider.getContent(i + 1)!!
-                        }
 
+                        } else {
+                            arg.value = provider.args[i + 1]
+                        }
                         argCount += 1
                     }
                 }

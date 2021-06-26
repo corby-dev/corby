@@ -4,6 +4,8 @@
 
 package xyz.d1snin.corby
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.newFixedThreadPoolContext
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.OnlineStatus
 import net.dv8tion.jda.api.Permission
@@ -20,9 +22,10 @@ import xyz.d1snin.corby.commands.`fun`.BottomCommand
 import xyz.d1snin.corby.commands.`fun`.CatCommand
 import xyz.d1snin.corby.commands.`fun`.UrbanCommand
 import xyz.d1snin.corby.commands.admin.TerminateCommand
+import xyz.d1snin.corby.commands.misc.HelpCommand
 import xyz.d1snin.corby.commands.misc.PingCommand
 import xyz.d1snin.corby.database.DatabaseManager
-import xyz.d1snin.corby.event.ReactionUpdateEvent
+import xyz.d1snin.corby.event.ButtonEvent
 import xyz.d1snin.corby.event.ServerJoinEvent
 import xyz.d1snin.corby.event.reactions.StarboardReactionEvent
 import xyz.d1snin.corby.manager.CommandsManager
@@ -47,6 +50,9 @@ object Corby {
     // exit codes
     const val GOOD_EXIT_CODE = 0
     const val DATABASE_ERROR = 10
+
+    @Suppress("EXPERIMENTAL_API_USAGE")
+    val mainScope = CoroutineScope(newFixedThreadPoolContext(5, "corby-worker"))
 
     lateinit var log: Logger
     lateinit var config: Configs
@@ -131,7 +137,7 @@ object Corby {
             addEventListeners(
                 ListenersManager.addAll(
                     StarboardReactionEvent,
-                    ReactionUpdateEvent,
+                    ButtonEvent,
                     ServerJoinEvent
                 )
             )
@@ -142,6 +148,7 @@ object Corby {
                     BottomCommand,
                     CatCommand,
                     UrbanCommand,
+                    HelpCommand,
                     PingCommand
                 )
             )

@@ -23,9 +23,7 @@ object UrbanCommand : Command(
     init {
         execute(
             Argument(
-                usage = null,
                 type = "<Phrase>",
-                isValueRequired = true,
                 isVariableLength = true
             )
         ) {

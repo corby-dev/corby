@@ -27,7 +27,7 @@ abstract class AbstractCommand(
     val category: Category,
     var cooldown: Int = 0,
     val longDescription: String? = null,
-    val userPerms: List<Permission> = mutableListOf(),
+    private val userPerms: List<Permission> = mutableListOf(),
     val botPerms: List<Permission> = mutableListOf()
 ) : Listener<GuildMessageReceivedEvent>() {
 
@@ -80,23 +80,20 @@ abstract class AbstractCommand(
                 }
 
                 if (!hasPermissions()) {
-                    event.channel.sendMessage(
-                        event.createEmbed(
-                            "You must have permissions ${getRequiredPermissionsAsString()} to use this command.",
-                            type = EmbedType.ERROR
-                        )
-                    ).queue()
+                    provider.sendFastEmbed(
+                        "You must have permissions ${getRequiredPermissionsAsString()} to use this command.",
+                        EmbedType.ERROR
+                    )
                     return@execute
                 }
 
                 CooldownsManager.getCooldown(author, this@AbstractCommand).let {
                     if (it > 0) {
-                        event.channel.sendMessage(
-                            event.createEmbed(
-                                "You are currently on cooldown, wait **$it seconds** to use this command again!",
-                                type = EmbedType.ERROR
-                            )
-                        ).queue()
+                        provider.sendEphemeralEmbed(
+                            "You are currently on cooldown, wait **$it seconds** to use this command again!",
+                            EmbedType.ERROR,
+                            7
+                        )
                         return@execute
                     }
                 }
@@ -120,8 +117,7 @@ abstract class AbstractCommand(
 
         args.forEach {
             if (it.isVariableLength && !it.isValueRequired) {
-                log("Argument has variable length but value is not required.", Level.ERROR)
-                return
+                log("Argument has variable length but value is not required. ($it)", Level.WARN)
             }
 
             if (it.isVariableLength) {

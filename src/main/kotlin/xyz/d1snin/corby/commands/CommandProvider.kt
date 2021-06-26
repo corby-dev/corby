@@ -5,19 +5,20 @@
 package xyz.d1snin.corby.commands
 
 import net.dv8tion.jda.api.entities.MessageEmbed
-import xyz.d1snin.corby.database.managers.PrefixManager
+import xyz.d1snin.corby.Corby
+import xyz.d1snin.corby.manager.CommandsManager
 import xyz.d1snin.corby.model.EmbedType
-import xyz.d1snin.corby.model.Statement
 import xyz.d1snin.corby.util.createEmbed
+import java.util.concurrent.TimeUnit
 
 open class CommandProvider(val cmd: AbstractCommand) {
     val event = cmd.event
     val msg = event.message
     val author = event.author
-    val content = msg.contentRaw.lowercase()
+    val content = msg.contentRaw
     val args = content.split("\\s+".toRegex())
     val channel = event.channel
-    val guild = event.guild
+    var guild = event.guild
     val role = guild.botRole!!
 
     internal fun getContent(startPos: Int): String? {
@@ -37,7 +38,15 @@ open class CommandProvider(val cmd: AbstractCommand) {
     }
 
     internal fun sendFastEmbed(content: String, type: EmbedType = EmbedType.DEFAULT) {
-        event.channel.sendMessage(event.createEmbed(content, type = type, u = author)).queue()
+        event.channel.sendMessage(createFastEmbed(content, type = type)).queue()
+    }
+
+    internal fun sendEphemeralEmbed(content: String, type: EmbedType = EmbedType.DEFAULT, delay: Long) {
+        event.channel.sendMessage(createFastEmbed(content, type)).queue {
+            Corby.scheduler.schedule({
+                it.delete().reason("Ephemeral Corby's Message.").queue()
+            }, delay, TimeUnit.SECONDS)
+        }
     }
 
     internal fun createFastEmbed(content: String, type: EmbedType = EmbedType.DEFAULT): MessageEmbed {
@@ -57,44 +66,9 @@ open class CommandProvider(val cmd: AbstractCommand) {
     fun trigger() {
         event.channel.sendMessage(
             event.createEmbed(
-                "**Incorrect Syntax:** `$content`\n\n**Usage:**\n${getUsagesAsString()}",
+                "**Incorrect Syntax:** `$content`\n\n**Usage:**\n${CommandsManager.getUsagesAsString(cmd)}",
                 type = EmbedType.ERROR
             )
         ).queue()
-    }
-
-    private fun getUsagesAsString(): String {
-        val defaultUsage = "`${PrefixManager[guild]}${cmd.usage}`"
-
-        if (cmd.statements.isEmpty()) {
-            return defaultUsage
-        }
-
-        return buildString {
-            if (cmd.defaultAction != null) {
-                append(defaultUsage).append("\n")
-            }
-
-            cmd.statements.forEach {
-                append("`${PrefixManager[guild]}${cmd.usage} ")
-                append(getRequiredArgumentsAsString(it))
-                append("\n")
-            }
-        }
-    }
-
-    private fun getRequiredArgumentsAsString(statement: Statement): String {
-        return buildString {
-            statement.arguments.forEach {
-                append(
-                    if (it.usage == null) {
-                        it.type
-                    } else {
-                        "${it.usage}${if (it.isValueRequired) " ${it.type}" else ""}"
-                    }
-                )
-                append(" ")
-            }
-        }.trim() + "`"
     }
 }

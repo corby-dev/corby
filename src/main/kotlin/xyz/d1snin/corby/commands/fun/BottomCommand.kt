@@ -27,7 +27,6 @@ object BottomCommand : Command(
             Argument(
                 usage = "encode",
                 type = "<Message 2 - $userLimit characters>",
-                isValueRequired = true,
                 isVariableLength = true
             )
         ) {
@@ -50,7 +49,6 @@ object BottomCommand : Command(
             Argument(
                 usage = "decode",
                 type = "<Message 2 - $encodedMessageLimit characters>",
-                isValueRequired = true,
                 isVariableLength = true
             )
         ) {

@@ -5,7 +5,7 @@
 package xyz.d1snin.corby.model
 
 data class Argument(
-    val usage: String?,
+    val usage: String? = null,
     val type: String,
     val isValueRequired: Boolean = false,
     val isVariableLength: Boolean = false,
