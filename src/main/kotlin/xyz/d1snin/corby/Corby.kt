@@ -4,8 +4,11 @@
 
 package xyz.d1snin.corby
 
+import ch.qos.logback.classic.Level
+import com.beust.jcommander.JCommander
+import com.beust.jcommander.Parameter
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.newFixedThreadPoolContext
+import kotlinx.coroutines.Dispatchers
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.OnlineStatus
 import net.dv8tion.jda.api.Permission
@@ -17,9 +20,7 @@ import net.dv8tion.jda.api.sharding.ShardManager
 import net.dv8tion.jda.api.utils.cache.CacheFlag
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.slf4j.event.Level
 import xyz.d1snin.corby.commands.`fun`.BottomCommand
-import xyz.d1snin.corby.commands.`fun`.CatCommand
 import xyz.d1snin.corby.commands.`fun`.UrbanCommand
 import xyz.d1snin.corby.commands.admin.TerminateCommand
 import xyz.d1snin.corby.commands.misc.HelpCommand
@@ -32,7 +33,6 @@ import xyz.d1snin.corby.manager.CommandsManager
 import xyz.d1snin.corby.manager.CooldownsManager
 import xyz.d1snin.corby.manager.ListenersManager
 import xyz.d1snin.corby.util.Configs
-import xyz.d1snin.corby.util.LaunchFlags
 import xyz.d1snin.corby.util.formatTimeMillis
 import java.awt.Color
 import java.io.File
@@ -51,13 +51,12 @@ object Corby {
     const val GOOD_EXIT_CODE = 0
     const val DATABASE_ERROR = 10
 
-    @Suppress("EXPERIMENTAL_API_USAGE")
-    val mainScope = CoroutineScope(newFixedThreadPoolContext(5, "corby-worker"))
+    val defaultScope = CoroutineScope(Dispatchers.Default)
 
     lateinit var log: Logger
     lateinit var config: Configs
     lateinit var scheduler: ScheduledExecutorService
-    lateinit var shards: ShardManager
+    lateinit var sharding: ShardManager
     lateinit var firstShard: JDA
     lateinit var permissions: MutableSet<Permission>
     lateinit var selfUser: User
@@ -66,11 +65,8 @@ object Corby {
     private lateinit var format: DecimalFormat
     private lateinit var defaultPermissions: Set<Permission>
 
-    private var testMode = false
-    private var noShardsMode = false
-
     val ping: String
-        get() = format.format(shards.averageGatewayPing)
+        get() = format.format(sharding.averageGatewayPing)
 
     val uptime: String
         get() = rb.uptime.formatTimeMillis()
@@ -78,16 +74,24 @@ object Corby {
     private val presence
         get() = listOf(
             "Ping: $ping",
-            "${shards.guilds.size} Servers!",
+            "${sharding.guilds.size} Servers!",
             "Uptime: $uptime"
         ).run {
             shuffled().first()
         }
 
-    @JvmStatic
-    fun main(args: Array<String>) {
+    fun launch(args: Array<String>) {
         log = LoggerFactory.getLogger("Loader")
-        scheduler = ScheduledThreadPoolExecutor(10)
+
+        log("Launching...")
+
+        val arguments = Arguments().also {
+            JCommander.newBuilder()
+                .addObject(it)
+                .build()
+                .parse(*args)
+        }
+
         defaultPermissions = setOf(
             Permission.MESSAGE_HISTORY,
             Permission.MESSAGE_READ,
@@ -95,45 +99,17 @@ object Corby {
             Permission.MESSAGE_MANAGE,
             Permission.VIEW_CHANNEL,
             Permission.MANAGE_CHANNEL,
-            Permission.MESSAGE_EXT_EMOJI
         )
 
-        LaunchFlags.init(
-            args,
-            LaunchFlags("test") {
-                testMode = true
-                log("Launch using the bot token for testing...", Level.WARN)
-            },
-            LaunchFlags("noshards") {
-                noShardsMode = true
-                log("Launching without sharding", Level.WARN)
-            }
-        )
-
-        runCatching {
-            start()
-        }.onFailure {
-            it.printStackTrace()
-        }
-    }
-
-    private fun start() {
-        log("Starting...")
-
-        DatabaseManager.init()
-
-        permissions = mutableSetOf()
+        scheduler = ScheduledThreadPoolExecutor(10)
+        permissions = mutableSetOf<Permission>().apply { addAll(defaultPermissions) }
         rb = ManagementFactory.getRuntimeMXBean()
         format = DecimalFormat()
-
-        permissions.addAll(defaultPermissions)
-
         config = Configs.init(File(CONFIG_FILE))
 
-        shards = DefaultShardManagerBuilder.createDefault(
-            if (testMode) config.testBotToken else config.token
+        sharding = DefaultShardManagerBuilder.createDefault(
+            if (arguments.isTestMode) config.testBotToken else config.token
         ).run {
-
             addEventListeners(
                 ListenersManager.addAll(
                     StarboardReactionEvent,
@@ -146,7 +122,6 @@ object Corby {
                 CommandsManager.addAll(
                     TerminateCommand,
                     BottomCommand,
-                    CatCommand,
                     UrbanCommand,
                     HelpCommand,
                     PingCommand
@@ -168,37 +143,12 @@ object Corby {
 
             setStatus(OnlineStatus.IDLE)
 
-            setShardsTotal(if (noShardsMode) 1 else config.shards)
+            setShardsTotal(if (arguments.isNoShards) 1 else config.shards)
 
             build()
         }
 
-        if (!noShardsMode) {
-            log("Shards loading can be long\n", Level.WARN)
-        }
-
-        shards.shards.forEach {
-            it.awaitReady()
-        }
-
-        CooldownsManager.startUpdating()
-        startPresenceUpdating()
-
-        println(
-            """
-                
-                       ██████╗ ██████╗ ██████╗ ██████╗ ██╗   ██╗  
-                      ██╔════╝██╔═══██╗██╔══██╗██╔══██╗╚██╗ ██╔╝  
-                      ██║     ██║   ██║██████╔╝██████╔╝ ╚████╔╝  
-                      ██║     ██║   ██║██╔══██╗██╔══██╗  ╚██╔╝   
-                      ╚██████╗╚██████╔╝██║  ██║██████╔╝   ██║     
-                       ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝    ╚═╝     
-                       
-            """
-        )
-
-        firstShard = shards.shards.first()
-
+        firstShard = sharding.shards.first()
         selfUser = firstShard.selfUser
 
         config.other(
@@ -213,22 +163,18 @@ object Corby {
             selfUser.asTag
         )
 
+        DatabaseManager.init()
+        CooldownsManager.startUpdating()
+        startPresenceUpdating()
+
         log = LoggerFactory.getLogger(config.botName)
 
-        log(
-            """
-                Bot has started up in $uptime!
-                    ~ PFP:         ${config.botPfpUrl}
-                    ~ Name:        ${config.nameAsTag}
-                    ~ ID:          ${config.id}
-                    ~ Invite URL:  ${config.inviteUrl}
-            """.trimIndent()
-        )
+        log("Bot has started up in $uptime!")
     }
 
     internal fun shutdown(exitCode: Int) {
         log.warn("Terminating... Bye!")
-        shards.shutdown()
+        sharding.shutdown()
         scheduler.shutdown()
         exitProcess(exitCode)
     }
@@ -244,8 +190,22 @@ object Corby {
     private fun startPresenceUpdating() {
         scheduler.scheduleWithFixedDelay(
             {
-                shards.setActivity(Activity.watching(presence))
+                sharding.setActivity(Activity.watching(presence))
             }, 0, 10, TimeUnit.SECONDS
         )
+    }
+
+    private class Arguments {
+        @Parameter(
+            names = ["--test", "-T"],
+            description = "Launch the bot using token for testing."
+        )
+        var isTestMode = false
+
+        @Parameter(
+            names = ["--noshards", "-NS"],
+            description = "Launch the bot without sharding."
+        )
+        var isNoShards = false
     }
 }

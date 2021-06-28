@@ -4,7 +4,7 @@
 
 package xyz.d1snin.corby.commands
 
-import org.slf4j.event.Level
+import ch.qos.logback.classic.Level
 import xyz.d1snin.corby.Corby.log
 import xyz.d1snin.corby.manager.CooldownsManager
 import xyz.d1snin.corby.model.Cooldown

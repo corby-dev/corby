@@ -4,10 +4,10 @@
 
 package xyz.d1snin.corby.database
 
+import ch.qos.logback.classic.Level
 import com.mongodb.DB
 import com.mongodb.MongoClient
 import org.jongo.Jongo
-import org.slf4j.event.Level
 import xyz.d1snin.corby.Corby
 import xyz.d1snin.corby.Corby.log
 

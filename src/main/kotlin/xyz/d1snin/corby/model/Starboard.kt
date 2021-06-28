@@ -18,10 +18,10 @@ data class Starboard(
     @JsonProperty("status") val status: Boolean
 ) {
     fun getJdaGuild(): Guild? {
-        return Corby.shards.getGuildById(guild)
+        return Corby.sharding.getGuildById(guild)
     }
 
     fun getJdaChannel(): TextChannel? {
-        return Corby.shards.getTextChannelById(channel)
+        return Corby.sharding.getTextChannelById(channel)
     }
 }

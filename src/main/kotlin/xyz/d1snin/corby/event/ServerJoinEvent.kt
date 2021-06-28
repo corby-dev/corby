@@ -12,7 +12,7 @@ import xyz.d1snin.corby.model.EmbedType
 import xyz.d1snin.corby.util.createEmbed
 import xyz.d1snin.corby.util.sendDmSafe
 
-object ServerJoinEvent : Listener<GuildJoinEvent>() {
+object ServerJoinEvent : EventListener<GuildJoinEvent>() {
     init {
         execute {
             val channels = guild.channels
@@ -43,10 +43,12 @@ object ServerJoinEvent : Listener<GuildJoinEvent>() {
             } else {
                 channel.sendMessage(
                     createEmbed(
-                        "Thank you for inviting me to your server!" +
-                                "\nI can help you with moderation and administration of your server and much more." +
-                                "\nYou can find out the full list of commands by simply writing to any chat `${PrefixManager[guild]}help`." +
-                                "\nInvite me to your server using [this link](${Corby.config.inviteUrl})!",
+                        """
+                            Thank you for inviting me to your server!
+                            I can help you with moderation and administration of your server and much more.
+                            You can find out the full list of commands by simply writing to any chat `${PrefixManager[guild]}help`."
+                            Invite me to your server using [this link](${Corby.config.inviteUrl})!
+                        """.trimIndent(),
                         guild
                     )
                 ).queue()

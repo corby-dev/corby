@@ -4,13 +4,13 @@
 
 package xyz.d1snin.corby.commands
 
+import ch.qos.logback.classic.Level
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
-import org.slf4j.event.Level
 import xyz.d1snin.corby.Corby
 import xyz.d1snin.corby.Corby.log
 import xyz.d1snin.corby.database.managers.PrefixManager
-import xyz.d1snin.corby.event.Listener
+import xyz.d1snin.corby.event.EventListener
 import xyz.d1snin.corby.manager.CommandsManager
 import xyz.d1snin.corby.manager.CooldownsManager
 import xyz.d1snin.corby.model.Argument
@@ -29,7 +29,7 @@ abstract class AbstractCommand(
     val longDescription: String? = null,
     private val userPerms: List<Permission> = mutableListOf(),
     val botPerms: List<Permission> = mutableListOf()
-) : Listener<GuildMessageReceivedEvent>() {
+) : EventListener<GuildMessageReceivedEvent>() {
 
     lateinit var event: GuildMessageReceivedEvent
     lateinit var statement: Statement // could not be initialized if only default execution used

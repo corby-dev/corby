@@ -4,6 +4,7 @@
 
 package xyz.d1snin.corby.commands.admin
 
+import kotlinx.coroutines.runBlocking
 import xyz.d1snin.corby.Corby
 import xyz.d1snin.corby.commands.Command
 import xyz.d1snin.corby.model.Category
@@ -16,7 +17,10 @@ object TerminateCommand : Command(
 ) {
     init {
         default {
-            sendFastEmbed("Terminating... Bye!", type = EmbedType.SUCCESS)
+            runBlocking {
+                sendFastEmbed("Terminating... Bye!", type = EmbedType.SUCCESS)
+            }
+            
             Corby.shutdown(Corby.GOOD_EXIT_CODE)
         }
     }

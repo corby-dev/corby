@@ -15,7 +15,7 @@ enum class EmbedType(val color: Color, private val emote: String? = null) {
 
     fun getEmote(): Emote? {
         return emote?.let {
-            Corby.shards.getEmoteById(emote)
+            Corby.sharding.getEmoteById(emote)
         }
     }
 }

@@ -19,6 +19,6 @@ data class Prefix(
     }
 
     fun getJdaGuild(): Guild? {
-        return Corby.shards.getGuildById(guild)
+        return Corby.sharding.getGuildById(guild)
     }
 }

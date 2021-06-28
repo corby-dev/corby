@@ -7,7 +7,7 @@ package xyz.d1snin.corby.event
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent
 import xyz.d1snin.corby.model.ButtonListenerData
 
-object ButtonEvent : Listener<ButtonClickEvent>() {
+object ButtonEvent : EventListener<ButtonClickEvent>() {
 
     private val listeners = mutableListOf<ButtonListenerData>()
 

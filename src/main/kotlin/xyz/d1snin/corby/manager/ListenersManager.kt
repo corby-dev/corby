@@ -6,10 +6,10 @@ package xyz.d1snin.corby.manager
 
 import xyz.d1snin.corby.Corby
 import xyz.d1snin.corby.Corby.log
-import xyz.d1snin.corby.event.Listener
+import xyz.d1snin.corby.event.EventListener
 
 object ListenersManager {
-    internal fun addAll(vararg listeners: Listener<*>): List<Listener<*>> {
+    internal fun addAll(vararg listeners: EventListener<*>): List<EventListener<*>> {
         listeners.forEach {
             Corby.permissions.addAll(it.requiredPerms)
 
