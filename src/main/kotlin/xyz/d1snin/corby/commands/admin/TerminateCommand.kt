@@ -20,7 +20,7 @@ object TerminateCommand : Command(
             runBlocking {
                 sendFastEmbed("Terminating... Bye!", type = EmbedType.SUCCESS)
             }
-            
+
             Corby.shutdown(Corby.GOOD_EXIT_CODE)
         }
     }
