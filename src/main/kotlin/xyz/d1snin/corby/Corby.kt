@@ -98,7 +98,7 @@ object Corby {
             Permission.MESSAGE_WRITE,
             Permission.MESSAGE_MANAGE,
             Permission.VIEW_CHANNEL,
-            Permission.MANAGE_CHANNEL,
+            Permission.MANAGE_CHANNEL
         )
 
         scheduler = ScheduledThreadPoolExecutor(10)
