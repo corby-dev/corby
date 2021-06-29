@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger
 object HelpCommand : Command(
     usage = "help",
     description = "Gives you information about commands.",
-    category = Category.MISC,
+    category = Category.MISC
 ) {
 
     private const val back = "Back"
@@ -39,7 +39,7 @@ object HelpCommand : Command(
 
         execute(
             Argument(
-                type = "<Command Usage>",
+                type = "<Command Usage>"
             )
         ) {
             val usage = getArgVal(0)

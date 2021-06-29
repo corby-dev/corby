@@ -15,7 +15,7 @@ import xyz.d1snin.corby.util.formatWithKey
 object BottomCommand : Command(
     usage = "bottom",
     description = "Encrypts your message using a bottom cipher",
-    category = Category.FUN,
+    category = Category.FUN
 ) {
     init {
         val userLimit = 200

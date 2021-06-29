@@ -12,7 +12,7 @@ import xyz.d1snin.corby.util.formatWithKey
 object PingCommand : Command(
     usage = "ping",
     description = "Provides the current ping of the bot",
-    category = Category.MISC,
+    category = Category.MISC
 ) {
     init {
         default {
