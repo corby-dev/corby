@@ -12,7 +12,7 @@ import xyz.d1snin.corby.model.EmbedType
 object TerminateCommand : Command(
     usage = "terminate",
     description = "Shuts down the bot",
-    category = Category.ADMIN,
+    category = Category.ADMIN
 ) {
     init {
         noArgs {

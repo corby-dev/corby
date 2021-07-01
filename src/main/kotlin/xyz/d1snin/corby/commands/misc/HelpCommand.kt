@@ -32,11 +32,11 @@ object HelpCommand : Command(
 
             channel.sendMessage(getEmbedByPage(page.get(), this)!!).setActionRow(
                 createButtonSafe(author, back) {
-                    executeButton(page, this, this@noArgs)
+                    executeButton(page, this, this@default)
                 },
 
                 createButtonSafe(author, next) {
-                    executeButton(page, this, this@noArgs)
+                    executeButton(page, this, this@default)
                 }
             ).queue()
         }
@@ -46,7 +46,7 @@ object HelpCommand : Command(
                 type = "<Command Usage>"
             }
         ) {
-            val usage = getArgVal()
+            val usage = getArgVal(0)
             CommandsManager.getCommandByUsage(usage)?.let {
                 sendFastEmbed(
                     """

@@ -9,7 +9,7 @@ import xyz.d1snin.corby.commands.AbstractCommand
 
 data class Cooldown(
     val user: User,
-    val command: AbstractCommand,
+    val command: AbstractCommand
 ) {
     var cooldown = command.cooldown
 }
