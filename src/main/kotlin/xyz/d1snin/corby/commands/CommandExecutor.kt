@@ -4,10 +4,11 @@
 
 package xyz.d1snin.corby.commands
 
-import ch.qos.logback.classic.Level
+import org.slf4j.event.Level
 import xyz.d1snin.corby.Corby.log
 import xyz.d1snin.corby.manager.CooldownsManager
 import xyz.d1snin.corby.model.Cooldown
+import xyz.d1snin.corby.model.Statement
 import xyz.d1snin.corby.util.runSafe
 
 class CommandExecutor(private val provider: CommandProvider) {
@@ -27,13 +28,7 @@ class CommandExecutor(private val provider: CommandProvider) {
             if (cmd.defaultAction == null) {
                 return false
             }
-
-            CooldownsManager += Cooldown(provider.author, cmd)
-
-            runSafe {
-                cmd.defaultAction!!(provider)
-            }
-
+            submit()
             return true
 
         } else {
@@ -42,9 +37,9 @@ class CommandExecutor(private val provider: CommandProvider) {
                 return false
             }
 
-            out@ for (s in cmd.statements) {
+            outer@ for (s in cmd.statements) {
                 if (s.length != 0 && s.length != provider.args.size - 1) {
-                    continue@out
+                    continue@outer
                 }
 
                 var argCount = 0
@@ -59,10 +54,10 @@ class CommandExecutor(private val provider: CommandProvider) {
                                 return false
 
                             } else {
-                                continue@out
+                                continue@outer
                             }
                         }
-                        if (arg.isValueRequired) {
+                        if (arg.isValueRequired || arg.isVariableLength) {
                             if (arg.isVariableLength) {
                                 arg.value = provider.getContent(i + 2)!!
                                 break@inner
@@ -81,17 +76,24 @@ class CommandExecutor(private val provider: CommandProvider) {
                         }
                         argCount += 1
                     }
+                    i += 1
                 }
-                cmd.statement = s
-
-                CooldownsManager += Cooldown(provider.author, cmd)
-
-                runSafe {
-                    cmd.executeStatement(provider)
-                }
+                submit(s)
                 return true
             }
         }
         return false
+    }
+
+    private fun submit(statement: Statement? = null) {
+        statement?.let {
+            cmd.statement = it
+        }
+
+        CooldownsManager += Cooldown(provider.author, cmd)
+
+        runSafe {
+            cmd.statement.block(provider)
+        }
     }
 }

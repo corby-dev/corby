@@ -37,7 +37,7 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines_core_version"
-    implementation "ch.qos.logback:logback-classic:$logback_version"
+    implementation "org.slf4j:slf4j-simple:$slf4j_version"
     implementation "net.dv8tion:JDA:$jda_version"
     implementation "com.google.code.gson:gson:$gson_version"
     implementation "org.mongodb:mongo-java-driver:$mongo_driver_version"

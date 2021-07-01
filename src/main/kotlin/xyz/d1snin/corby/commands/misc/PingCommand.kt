@@ -15,7 +15,7 @@ object PingCommand : Command(
     category = Category.MISC,
 ) {
     init {
-        default {
+        noArgs {
             sendFastEmbed(formatWithKey("Current Ping" to Corby.ping))
         }
     }

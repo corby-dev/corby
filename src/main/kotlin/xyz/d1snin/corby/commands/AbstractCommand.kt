@@ -4,9 +4,9 @@
 
 package xyz.d1snin.corby.commands
 
-import ch.qos.logback.classic.Level
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import org.slf4j.event.Level
 import xyz.d1snin.corby.Corby
 import xyz.d1snin.corby.Corby.log
 import xyz.d1snin.corby.database.managers.PrefixManager
@@ -35,8 +35,6 @@ abstract class AbstractCommand(
     lateinit var statement: Statement // could not be initialized if only default execution used
 
     private lateinit var provider: CommandProvider
-
-    fun executeStatement(provider: CommandProvider) = statement.block(provider)
 
     val statements = mutableListOf<Statement>()
 
@@ -105,7 +103,7 @@ abstract class AbstractCommand(
         }
     }
 
-    protected fun execute(vararg args: Argument, block: CommandProvider.() -> Unit) {
+    protected fun withArgs(vararg args: Argument, block: CommandProvider.() -> Unit) {
         if (args.isEmpty()) {
             log("Provided arguments is empty.", Level.WARN)
             return
@@ -116,16 +114,12 @@ abstract class AbstractCommand(
         statements += statement
 
         args.forEach {
-            if (it.isVariableLength && !it.isValueRequired) {
-                log("Argument has variable length but value is not required. ($it)", Level.WARN)
-            }
-
             if (it.isVariableLength) {
                 statement.length = 0
                 return
             }
 
-            if (it.isValueRequired) {
+            if (it.isValueRequired && it.usage != null) {
                 statement.length += 2
 
             } else {
@@ -134,7 +128,7 @@ abstract class AbstractCommand(
         }
     }
 
-    protected fun default(block: CommandProvider.() -> Unit) {
+    protected fun noArgs(block: CommandProvider.() -> Unit) {
         defaultAction = block
     }
 

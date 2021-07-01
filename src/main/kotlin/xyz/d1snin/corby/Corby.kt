@@ -4,7 +4,6 @@
 
 package xyz.d1snin.corby
 
-import ch.qos.logback.classic.Level
 import com.beust.jcommander.JCommander
 import com.beust.jcommander.Parameter
 import kotlinx.coroutines.CoroutineScope
@@ -20,9 +19,11 @@ import net.dv8tion.jda.api.sharding.ShardManager
 import net.dv8tion.jda.api.utils.cache.CacheFlag
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.slf4j.event.Level
 import xyz.d1snin.corby.commands.`fun`.BottomCommand
 import xyz.d1snin.corby.commands.`fun`.UrbanCommand
 import xyz.d1snin.corby.commands.admin.TerminateCommand
+import xyz.d1snin.corby.commands.misc.AddEmoteCommand
 import xyz.d1snin.corby.commands.misc.HelpCommand
 import xyz.d1snin.corby.commands.misc.PingCommand
 import xyz.d1snin.corby.database.DatabaseManager
@@ -123,6 +124,7 @@ object Corby {
                     TerminateCommand,
                     BottomCommand,
                     UrbanCommand,
+                    AddEmoteCommand,
                     HelpCommand,
                     PingCommand
                 )
@@ -169,7 +171,7 @@ object Corby {
 
         log = LoggerFactory.getLogger(config.botName)
 
-        log("Bot has started up in $uptime!")
+        log("The start-up process is completed in $uptime!")
     }
 
     internal fun shutdown(exitCode: Int) {

@@ -8,7 +8,7 @@ import com.google.gson.JsonIOException
 import com.google.gson.JsonParser
 import jdk.nashorn.api.scripting.URLReader
 import xyz.d1snin.corby.commands.Command
-import xyz.d1snin.corby.model.Argument
+import xyz.d1snin.corby.model.Argument.Companion.argument
 import xyz.d1snin.corby.model.Category
 import xyz.d1snin.corby.model.EmbedType
 import xyz.d1snin.corby.util.formatWithKey
@@ -21,11 +21,11 @@ object UrbanCommand : Command(
     cooldown = 10
 ) {
     init {
-        execute(
-            Argument(
-                type = "<Phrase>",
+        withArgs(
+            argument {
+                type = "<Phrase>"
                 isVariableLength = true
-            )
+            }
         ) {
             sendLoadingMessageAndEdit {
                 val errMessage = createFastEmbed("Could not find this phrase.", EmbedType.ERROR)
@@ -34,7 +34,7 @@ object UrbanCommand : Command(
                     JsonParser.parseReader(
                         URLReader(
                             URL(
-                                "https://api.urbandictionary.com/v0/define?term=${getArgVal(0)}".replace(
+                                "https://api.urbandictionary.com/v0/define?term=${getArgVal()}".replace(
                                     "\\s+".toRegex(),
                                     "%20"
                                 )

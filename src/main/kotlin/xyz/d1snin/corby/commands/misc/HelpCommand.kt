@@ -1,3 +1,7 @@
+/*
+ * BSD 3-Clause License, Copyright (c) 2021, Corby and contributors, All rights reserved.
+ */
+
 package xyz.d1snin.corby.commands.misc
 
 import net.dv8tion.jda.api.entities.MessageEmbed
@@ -6,7 +10,7 @@ import xyz.d1snin.corby.commands.Command
 import xyz.d1snin.corby.commands.CommandProvider
 import xyz.d1snin.corby.database.managers.PrefixManager
 import xyz.d1snin.corby.manager.CommandsManager
-import xyz.d1snin.corby.model.Argument
+import xyz.d1snin.corby.model.Argument.Companion.argument
 import xyz.d1snin.corby.model.Category
 import xyz.d1snin.corby.util.createButtonSafe
 import xyz.d1snin.corby.util.createEmbed
@@ -23,26 +27,26 @@ object HelpCommand : Command(
     private const val next = "Next"
 
     init {
-        default {
+        noArgs {
             val page = AtomicInteger(1)
 
             channel.sendMessage(getEmbedByPage(page.get(), this)!!).setActionRow(
                 createButtonSafe(author, back) {
-                    executeButton(page, this, this@default)
+                    executeButton(page, this, this@noArgs)
                 },
 
                 createButtonSafe(author, next) {
-                    executeButton(page, this, this@default)
+                    executeButton(page, this, this@noArgs)
                 }
             ).queue()
         }
 
-        execute(
-            Argument(
-                type = "<Command Usage>",
-            )
+        withArgs(
+            argument {
+                type = "<Command Usage>"
+            }
         ) {
-            val usage = getArgVal(0)
+            val usage = getArgVal()
             CommandsManager.getCommandByUsage(usage)?.let {
                 sendFastEmbed(
                     """

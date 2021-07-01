@@ -59,7 +59,7 @@ open class CommandProvider(val cmd: AbstractCommand) {
         }
     }
 
-    internal fun getArgVal(index: Int): String {
+    internal fun getArgVal(index: Int = 0): String {
         return cmd.statement.arguments[index].value
     }
 
