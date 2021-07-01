@@ -93,7 +93,11 @@ class CommandExecutor(private val provider: CommandProvider) {
         CooldownsManager += Cooldown(provider.author, cmd)
 
         runSafe {
-            cmd.statement.block(provider)
+            statement?.let {
+                it.block(provider)
+            } ?: cmd.defaultAction?.let {
+                it(provider)
+            }
         }
     }
 }
