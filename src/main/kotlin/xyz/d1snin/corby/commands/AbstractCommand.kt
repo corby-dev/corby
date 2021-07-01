@@ -42,7 +42,7 @@ abstract class AbstractCommand(
     var action: (CommandProvider.() -> Unit?)? = null
 
     init {
-        super.execute {
+        execute {
             event = this
             provider = CommandProvider(this@AbstractCommand)
 
