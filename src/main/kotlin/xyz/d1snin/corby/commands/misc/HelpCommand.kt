@@ -32,11 +32,11 @@ object HelpCommand : Command(
 
             channel.sendMessage(getEmbedByPage(page.get(), this)!!).setActionRow(
                 createButtonSafe(author, back) {
-                    executeButton(page, this, this@default)
+                    executeButton(page, this, this@noArgs)
                 },
 
                 createButtonSafe(author, next) {
-                    executeButton(page, this, this@default)
+                    executeButton(page, this, this@noArgs)
                 }
             ).queue()
         }
