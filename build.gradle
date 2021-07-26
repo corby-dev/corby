@@ -1,14 +1,14 @@
 plugins {
-    id 'java'
-    id 'idea'
+    id 'org.jetbrains.kotlin.jvm' version "$kotlin_version"
+    id 'com.github.johnrengelman.shadow' version "$shadow_version"
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '6.0.0'
+    id 'idea'
 }
 
 group 'xyz.d1snin.corby'
-version project.corby_version
+version corby_version
 
-mainClassName = "xyz.d1snin.corby.Corby"
+mainClassName = "xyz.d1snin.corby.Application"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -26,9 +26,17 @@ repositories {
 }
 
 dependencies {
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+
     compileOnly "org.projectlombok:lombok:$lombok_version"
     annotationProcessor "org.projectlombok:lombok:$lombok_version"
 
+    implementation "com.beust:jcommander:$jcommander_version"
+    annotationProcessor "com.beust:jcommander:$jcommander_version"
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines_core_version"
     implementation "org.slf4j:slf4j-simple:$slf4j_version"
     implementation "net.dv8tion:JDA:$jda_version"
     implementation "com.google.code.gson:gson:$gson_version"
@@ -38,7 +46,11 @@ dependencies {
 }
 
 wrapper {
-    gradleVersion '6.8.1'
+    gradleVersion '6.6.1'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 compileJava.options.encoding = 'UTF-8'
